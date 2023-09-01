@@ -26,7 +26,7 @@ class _PerfilViewState extends State<PerfilView> {
     nombre = "";
     cargoTrabajador = "";
     dni = "";
-    initSharedPreferences();
+    //initSharedPreferences();
   }
 
   @override
@@ -37,7 +37,7 @@ class _PerfilViewState extends State<PerfilView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              formatoInicialesTrabajador(),
+              //formatoInicialesTrabajador(),
               SizedBox(height: 10,),
               formatoCampoDatos('Nombre y apellidos ', (nombre!)),
               formatoCampoDatos('Cargo',cargoTrabajador!),
