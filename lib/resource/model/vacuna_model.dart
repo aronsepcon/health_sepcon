@@ -1,23 +1,25 @@
-import 'package:sepcon_salud/resource/model/vacuna_detail_model.dart';
+import 'package:sepcon_salud/resource/model/vacuna_detalle_model.dart';
 
 class VacunaModel{
-  late VacunaDetailModel documentoIdentidad;
-  late VacunaDetailModel emo;
-  late VacunaDetailModel paseMedico;
-  late VacunaDetailModel vacuna;
+  late int? id;
+  late String? nombre;
+  late String? estado;
+  late String? adjunto;
+  late bool? validated;
+  late bool? hasDocument;
+  late VacunaDetalleModel? vacunaDetalle;
 
-  VacunaModel(this.documentoIdentidad,this.emo,this.paseMedico,this.vacuna);
-
-  VacunaDetailModel get _documentoIdentidad => this.documentoIdentidad;
-  VacunaDetailModel get _emo => this.emo;
-  VacunaDetailModel get _paseMedico => this.paseMedico;
-  VacunaDetailModel get _vacuna => this.vacuna;
+  VacunaModel(this.id,this.nombre,this.estado,this.adjunto,this.validated,this.hasDocument,
+      this.vacunaDetalle);
 
   VacunaModel.fromJson(Map<String,dynamic> formatJson){
-    documentoIdentidad = formatJson['documento_identidad']!;
-    emo = formatJson['EMO']!;
-    paseMedico = formatJson['pase_medico']!;
-    vacuna = formatJson['vacuna']!;
+    id = formatJson['id'];
+    nombre = formatJson['nombre'];
+    estado = formatJson['estado'];
+    adjunto = formatJson['adjunto'];
+    validated = formatJson['validated'];
+    hasDocument = formatJson['has_document'];
+    vacunaDetalle = VacunaDetalleModel.fromJson(formatJson['vacunas_detalle']);
   }
 }
 

@@ -1,40 +1,37 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:sepcon_salud/resource/model/vacuna_detail_model.dart';
-import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
+import 'package:sepcon_salud/resource/model/documento_identidad_model.dart';
+import 'package:sepcon_salud/resource/model/emo_model.dart';
+import 'package:sepcon_salud/resource/model/pase_medico_model.dart';
+import 'package:sepcon_salud/resource/model/vacuna_general_model.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 
 class VacunaApi{
   var client = http.Client();
+  LocalStore localStore = LocalStore();
 
-  Future<VacunaModel?> vacunaByDocument(String documento) async {
+  Future<DocumentVacunaModel?> vacunaByDocument(String documento) async {
+
     var url=Uri.parse('https://rrhhperu.sepcon.net/medica_api/documentosApi.php');
     var map = <String, dynamic>{};
-
     map['dni'] = documento;
-
-    log('dni : $map');
-
     final response = await client.post(url,body:map);
 
-    log("body ${response.body.toString()}" );
     if(response.statusCode==200){
+
       Map<String,dynamic > formatJson = jsonDecode(response.body);
-      var documentoIdentidad = formatJson['documento_identidad']!;
+      localStore.saveDocuments(formatJson);
+      var result = DocumentVacunaModel.formatJsonDocument(formatJson);
 
-      var detail = VacunaDetailModel.fromJson(documentoIdentidad);
-
-      var emo = formatJson['EMO']!;
-      var paseMedico = formatJson['pase_medico']!;
-      var vacuna = formatJson['vacuna']!;
-
-      var data = VacunaModel.fromJson(formatJson);
-      log('result $data');
-      return data;
+      return result;
     }else{
       log('fail');
       return null;
     }
   }
+
+
 }

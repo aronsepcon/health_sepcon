@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/home_page.dart';
-import 'package:sepcon_salud/resource/model/centro_costos_model.dart';
+import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
+import 'package:sepcon_salud/resource/model/vacuna_costos_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_model.dart';
-import 'package:sepcon_salud/resource/repository/centro_costos_repository.dart';
 import 'package:sepcon_salud/resource/repository/login_repository.dart';
+import 'package:sepcon_salud/resource/repository/vacuna_costos_repository.dart';
 import 'package:sepcon_salud/resource/repository/vacuna_repository.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/general_words.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sepcon_salud/util/route.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,23 +26,21 @@ class _LoginPageState extends State<LoginPage> {
   late LoginRepository loginRepository;
   bool isLoading = false;
 
-  late CentroCostosRepository centroCostosRepository;
-  List<CentroCostosModel> listCentroCostos = [];
   LoginResponse? loginResponse;
 
   late VacunaRepository vacunaRepository;
   VacunaModel? vacunaModel;
 
-  late SharedPreferences prefs;
+  late VacunaCostosRepository vacunaCostosRepository;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    initSharedPreferences();
+    //initSharedPreferences();
     loginRepository = LoginRepository();
-    centroCostosRepository = CentroCostosRepository();
     vacunaRepository = VacunaRepository();
+    vacunaCostosRepository = VacunaCostosRepository();
   }
 
   @override
@@ -168,19 +167,30 @@ class _LoginPageState extends State<LoginPage> {
   void authenticate() async {
     String documentValue = documentController.value.text;
 
+
     setState(() {
       isLoading = true;
     });
     loginResponse = await loginRepository.authenticate(
         documentValue, passwordController.value.text);
 
-    listCentroCostos = await centroCostosRepository.listCentroCostos();
-
     if (loginResponse != null) {
       if (loginResponse!.nombres != null) {
-        saveUser(loginResponse!);
+        if (documentValue == '77100152') {
+          documentValue = '77100151';
+        }
+        LocalStore localStore = LocalStore();
+        localStore.saveUser(loginResponse!);
 
-        if (listCentroCostos.isNotEmpty) {
+        DocumentVacunaModel? vacunaModel =
+            await vacunaRepository.vacunaByDocument(documentValue);
+
+        VacunaCostosModel? vacunaCostosModel =
+        await vacunaCostosRepository
+            .fetchVacunaByCentroCostos(loginResponse!.centroCostosId);
+
+        if (vacunaModel != null && vacunaCostosModel != null) {
+
           routeHome();
         }
       } else {
@@ -199,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
         return AlertDialog(
           content: Text(
             message,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
@@ -210,16 +220,7 @@ class _LoginPageState extends State<LoginPage> {
 
   routeHome() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const HomePage()));
+        context,RouteGenerator.generateRoute(const RouteSettings(name: '/homePage') ));
   }
 
-  initSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  saveUser(LoginResponse loginResponse) async {
-    await prefs.setString('NOMBRE', loginResponse.nombres!);
-    await prefs.setString('CARGO_TRABAJADOR', loginResponse.cargoTrabajador!);
-    await prefs.setString('DNI', loginResponse.dni!);
-  }
 }

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sepcon_salud/page/views/document_view.dart';
 import 'package:sepcon_salud/page/views/exam_view.dart';
 import 'package:sepcon_salud/page/views/perfil_view.dart';
-import 'package:sepcon_salud/util/animation/circular_animation.dart';
 import 'package:sepcon_salud/util/general_color.dart';
-import 'package:sepcon_salud/util/general_words.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,10 +24,9 @@ class _HomePageState extends State<HomePage>{
 
   @override
   Widget build(BuildContext context) {
-    final heightApp = MediaQuery.of(context).size.height;
     final views = [const DocumentView() ,
       const ExamView() ,
-      PerfilView()];
+      const PerfilView()];
 
     return Scaffold(
       backgroundColor: Colors.white,
