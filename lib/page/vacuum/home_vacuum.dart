@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sepcon_salud/page/carousel_data/manually_controller_slider.dart';
 import 'package:sepcon_salud/page/home_page.dart';
 import 'package:sepcon_salud/page/vacuum/certificado_vacuna.dart';
-import 'package:sepcon_salud/page/views/document_view.dart';
 import 'package:sepcon_salud/util/general_color.dart';
-import 'package:sepcon_salud/util/general_words.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeVacuum extends StatefulWidget {

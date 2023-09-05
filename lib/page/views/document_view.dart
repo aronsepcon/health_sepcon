@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:sepcon_salud/page/document_identidad/document_home_page.dart';
 import 'package:sepcon_salud/page/document_identidad/document_identity_page.dart';
 import 'package:sepcon_salud/page/pase_medico/init_pase_medico_page.dart';
 import 'package:sepcon_salud/page/vacuum/home_vacuum.dart';
@@ -15,6 +16,7 @@ import 'package:sepcon_salud/util/animation/circular_animation.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/general_words.dart';
+import 'package:sepcon_salud/util/route.dart';
 
 class DocumentView extends StatefulWidget {
   const DocumentView({super.key});
@@ -186,9 +188,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       child: ListTile(
                         onTap: (){
                           FLOW_DOCUMENTO_IDENTIDAD ?
-                          routeDocumentIdentityPage()
-                          : routeHomePaseMedicoPage();
-
+                          routeDocumentoIdentidadHomePage()
+                          :routeDocumentoIdentidadInitPage();
                         },
                         leading: STATE_DOCUMENTO_IDENTIDAD ?
                         const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
@@ -207,7 +208,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       ),
                       child: ListTile(
                           onTap: (){
-                            routeInitVaccinePage();
+                            FLOW_VACUNA ? routeVacuumInitPage()
+                            : routeHomeVacuumPage();
                           },
                         leading: STATE_VACUNA ?
                         const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
@@ -282,21 +284,36 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     );
   }
 
-  routeDocumentIdentityPage(){
+  routeDocumentoIdentidadInitPage(){
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const DocumentIdentityPage()));
+        context, RouteGenerator.generateRoute(
+        const RouteSettings(name: '/documentoIdentidadInit')));
   }
 
-  routeInitVaccinePage(){
+  routeDocumentoIdentidadHomePage(){
+    Navigator.push(
+        context, MaterialPageRoute(
+        builder: (context) => DocumentHomePage(
+            urlPdf: documentVacunaModel!.documentoIdentidadModel.adjunto! ))  );
+  }
+
+  routeVacuumInitPage(){
     Navigator.push(
         context,
         MaterialPageRoute(
              builder: (context) => const InitVacuum()) );
             //builder: (context) => const HomeVacuum()));
   }
-  routeHomeVaccinePage(){
+
+  routeVacuumHomePage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const HomeVacuum()) );
+    //builder: (context) => const HomeVacuum()));
+  }
+
+  routeHomeVacuumPage(){
     Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomeVacuum()));

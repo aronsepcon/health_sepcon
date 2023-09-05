@@ -59,7 +59,9 @@ class _PdfViewerVacuumState extends State<PdfViewerVacuum> {
               const SizedBox(
                 height: 30,
               ),
-              SizedBox(height: 550,child: PdfContainer(file: widget.file,)),
+              SizedBox(height: 550,child: PdfContainer(
+                file: widget.file,urlPdf: "",fontFile: "LOCAL",
+                titlePDF: "Certificado Vacuna",)),
               const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){

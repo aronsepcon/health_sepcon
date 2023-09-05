@@ -5,6 +5,7 @@ class LoginRepository{
 
   final loginApi = LoginApi();
 
-  Future<LoginResponse?> authenticate(String document,String password) => loginApi.fetchLogin(document , password);
+  Future<LoginResponse?> authenticate(String document,String password) =>
+      loginApi.fetchLogin(document , password);
 
 }

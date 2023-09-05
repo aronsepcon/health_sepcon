@@ -1,7 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sepcon_salud/page/document_identidad/pdf_container.dart';
 import 'package:sepcon_salud/page/successful_page.dart';
+import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
+import 'package:sepcon_salud/resource/model/login_response.dart';
+import 'package:sepcon_salud/resource/repository/documento_repository.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
+import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
 class PDFViewerPage extends StatefulWidget {
@@ -14,13 +21,32 @@ class PDFViewerPage extends StatefulWidget {
 }
 
 class _PDFViewerPageState extends State<PDFViewerPage> {
+  late LoginResponse? loginResponse;
+  late LocalStore localStore;
+  late DocumentoRepository documentoRepository;
+  bool loading = false;
+  String fileName = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    localStore = LocalStore();
+    documentoRepository = DocumentoRepository();
+    fetchDataLocal();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
+        child: !loading ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [getLoadEffect()],
+          ),
+        ) :Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
           child: Column(
             children: [
@@ -48,11 +74,14 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
               const SizedBox(
                 height: 30,
               ),
-              SizedBox(height: 550,child: PdfContainer(file: widget.file,)),
+              SizedBox(height: 550,child: PdfContainer(
+                file: widget.file,urlPdf: "",fontFile: "LOCAL",
+                titlePDF: "Documento Identidad",)),
               const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
-                  routePDFViewer(context);
+                  //routePDFViewer(context);
+                  savePDF();
                 },
                 child: Container(
                   padding: const EdgeInsets.only(top: 15,bottom: 15),
@@ -78,10 +107,51 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
     );
   }
 
+  fetchDataLocal() async {
+    loginResponse = await localStore.fetchUser();
+    if(loginResponse != null ){
+      setState(() {
+        loading = true;
+        fileName = "TV-${loginResponse!.dni}-${loginResponse!.nombres!.trim()}.pdf";
+      });
+    }
+  }
+
+  savePDF() async {
+    loading = true;
+    bool result = await documentoRepository.saveDocument(fileName, widget.file);
+
+    if(result){
+      setState(() {
+        loading = false;
+        routePDFViewer(context);
+      });
+    }else{
+      widgetErrorDialog("Volver a intentarlo");
+    }
+
+  }
+
   routePDFViewer(BuildContext context){
-    Navigator.push(
+    Navigator.pushReplacement(
         context ,
         MaterialPageRoute(
             builder: (context) =>const SuccessfulPage()));
+  }
+
+  widgetErrorDialog(String message) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

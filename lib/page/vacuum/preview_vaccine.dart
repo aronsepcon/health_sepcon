@@ -109,37 +109,6 @@ class _PreviewVaccineState extends State<PreviewVaccine> {
     );
   }
 
- /* createPDF(List<File> listFile) async {
-    final pdf = pw.Document();
-
-    // PDF
-    final firstImage = pw.MemoryImage(
-      listFile[0].readAsBytesSync(),
-    );
-
-
-
-    pdf.addPage(pw.Page(build: (pw.Context context) {
-      return pw.Center(
-        child: pw.Column(
-            children: [
-              pw.Image(firstImage,
-                height: 1000,
-                width: 1000)
-
-            ]
-        ),
-      ); // Center
-    })); // Page
-
-    // On Flutter, use the [path_provider](https://pub.dev/packages/path_provider) library:
-    DateTime now = DateTime.now();
-    final output = await getTemporaryDirectory();
-    filePdf = File("${output.path}/example${now.toString().trim()}.pdf");
-    await filePdf.writeAsBytes(await pdf.save());
-
-  }*/
-
   createPDFNew() async {
     PdfDocument document = PdfDocument();
     //final page = document.pages.add();

@@ -4,8 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:opencv_brightness/edge_detection.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sepcon_salud/edge_detection/edge_detector.dart';
 import 'package:sepcon_salud/page/document_identidad/pdf_viewer_page.dart';
+import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
@@ -20,39 +23,46 @@ class DocumentSecondPage extends StatefulWidget {
 
 class _DocumentSecondPageState extends State<DocumentSecondPage> {
   late File filePdf;
+  late bool loading = false;
+  String newPhoto = "";
+
+  late File normalFile;
+  late File claroFile;
+  late File magicFile;
+
+  late String pathNormalFile;
+  late String pathClaroFile;
+  late String pathMagicFile;
+
+  late String viewPhoto;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    createPDFNew(widget.file);
+    //createPDFNew(widget.file);
+    filePdf = File('');
+    createFiles();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: Icon(Icons.arrow_back_ios),
+      ),
       body: SafeArea(
-          child: Padding(
+          child: loading ? Padding(
             padding: const EdgeInsets.only(left: 25, right: 25),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(Icons.arrow_back_ios),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'Segunda cara',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -60,43 +70,157 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
                 const SizedBox(height: 20,),
 
                 Image.file(
-                  widget.file[0],
-                  height: 250,
-                  width: 400,
+                  File(widget.file[0].path),
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  width: MediaQuery.of(context).size.width * 0.9,
                 ),
-                const SizedBox(height: 20,),
                 Image.file(
-                  widget.file[1],
-                  height: 250,
-                  width: 400,
+                  File(viewPhoto),
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  width: MediaQuery.of(context).size.width * 0.9,
                 ),
 
+
                 const SizedBox(height: 20,),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    // normal
+                    GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            setState(() {
+                              viewPhoto = pathNormalFile;
+                            });
+                          });
+                        },
+                        child:Column(
+                          children: [
+                            Image.file(
+                              File(pathNormalFile),
+                              height: 80,
+                              width: 80,
+                            ),
+                            Text('Normal'),
+                          ],
+                        )
+                    ),
+
+                    // claro
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          viewPhoto = pathClaroFile;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Column(
+                          children: [
+                            Image.file(
+                              File(pathClaroFile),
+                              height: 80,
+                              width: 80,
+                            ),
+                            Text('Aclarar'),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // magico
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          viewPhoto = pathMagicFile;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Column(
+                          children: [
+                            Image.file(
+                              File(pathMagicFile),
+                              height: 80,
+                              width: 80,
+                            ),
+                            Text('Magico'),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+                  ],
+                ),
+                const Expanded(
+                  child: SizedBox(),
+                ),
+
 
                 GestureDetector(
                   onTap: (){
-                    routePDFViewer();
+                    //routePDFViewer();
                   },
-                  child: Container(
-                    padding: const EdgeInsets.only(top: 15,bottom: 15),
-                    //margin: const EdgeInsets.symmetric(horizontal: 15),
-                    //height: 50,
-                    decoration: BoxDecoration(
-                        color: GeneralColor.mainColor,
-                        borderRadius: BorderRadius.circular(8)),
-                    child: const Center(
-                        child: Text(
-                          'Generar PDF',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        )),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom:5),
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 15,bottom: 15),
+                      //margin: const EdgeInsets.symmetric(horizontal: 15),
+                      //height: 50,
+                      decoration: BoxDecoration(
+                          color: GeneralColor.mainColor,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: const Center(
+                          child: Text(
+                            'volver a tomar foto',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          )),
+                    ),
                   ),
                 ),
 
 
+                GestureDetector(
+                  onTap: (){
+                    widget.file[1] = File(viewPhoto);
+                    createPDFNew(widget.file);
+                    //routePDFViewer();
+                    // imgFromCamera(context);
+                    // routeSecondPage(context);
+                    //getData();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom:30),
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 15,bottom: 15),
+                      //margin: const EdgeInsets.symmetric(horizontal: 15),
+                      //height: 50,
+                      decoration: BoxDecoration(
+                          color: GeneralColor.mainColor,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: const Center(
+                          child: Text(
+                            'Generar PDF',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          )),
+                    ),
+                  ),
+                ),
               ],
+            ),
+          ) : Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [getLoadEffect()],
             ),
           )),
     );
@@ -104,13 +228,13 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
 
   createPDFNew(List<File> listFile) async {
     PdfDocument document = PdfDocument();
-    //final page = document.pages.add();
+    final page = document.pages.add();
 
-    document.pages.add().graphics.drawImage(
+    page.graphics.drawImage(
         PdfBitmap(await _readImageData( listFile[0].path)),
         const Rect.fromLTWH(0, 0, 500, 350));
 
-    document.pages.add().graphics.drawImage(
+    page.graphics.drawImage(
         PdfBitmap(await _readImageData( listFile[1].path)),
         const Rect.fromLTWH(0, 360, 500, 350));
 
@@ -130,16 +254,69 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
     DateTime now = DateTime.now();
     final output = await getTemporaryDirectory();
     filePdf = File("${output.path}/example${now.toString().trim()}.pdf");
-    await filePdf.writeAsBytes(bytes, flush: true);
+    File tempFile =await filePdf.writeAsBytes(bytes, flush: true);
+
+    if(tempFile.existsSync()){
+      routePDFViewer(filePdf);
+    }
   }
 
 
-  routePDFViewer(){
+  routePDFViewer(File filePDF){
 
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PDFViewerPage(file: filePdf )));
+            builder: (context) => PDFViewerPage(file: filePDF )));
   }
 
+  createFiles() async {
+    Uint8List bytes = widget.file[1].readAsBytesSync();
+
+    final Directory extDir = await getTemporaryDirectory();
+    final String dirPath = '${extDir.path}/Pictures/flutter_test';
+    await Directory(dirPath).create(recursive: true);
+
+    pathNormalFile  = '$dirPath/${(DateTime.now().millisecondsSinceEpoch / 1000).round()}_normal.png';
+    normalFile = File(pathNormalFile);
+    await normalFile.writeAsBytes(bytes);
+
+    pathClaroFile  = '$dirPath/${(DateTime.now().millisecondsSinceEpoch / 1000).round()}_claro.png';
+    claroFile = File(pathClaroFile);
+    await claroFile.writeAsBytes(bytes);
+
+    pathMagicFile  = '$dirPath/${(DateTime.now().millisecondsSinceEpoch / 1000).round()}_magic.png';
+    magicFile = File(pathMagicFile);
+    await magicFile.writeAsBytes(bytes);
+
+    getMagicColor();
+
+  }
+
+  Future getMagicColor() async {
+    Offset topLeft = const Offset(0.0, 0.0);
+    Offset topRight = const Offset(1.0, 0.0);
+    Offset bottomLeft = const Offset(0.0, 1.0);
+    Offset bottomRight = const Offset(1.0, 1.0);
+
+    EdgeDetectionResult edgeDetectionResult = EdgeDetectionResult(
+        topLeft: topLeft,
+        topRight: topRight,
+        bottomLeft: bottomLeft,
+        bottomRight: bottomRight);
+    bool resultMagic = await EdgeDetector().processImage(pathMagicFile,edgeDetectionResult);
+
+    bool resultClaro = await EdgeDetector().processImageLight(pathClaroFile, edgeDetectionResult);
+
+    if (resultMagic == false && resultClaro == false) {
+      return;
+    }
+
+    setState(() {
+      imageCache.clearLiveImages();
+      imageCache.clear();
+      viewPhoto = pathMagicFile;
+      loading = true;
+    });
+  }
 }

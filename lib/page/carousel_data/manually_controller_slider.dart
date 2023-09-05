@@ -1,11 +1,10 @@
 
+import 'dart:developer';
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sepcon_salud/page/document_identidad/document_first_page.dart';
@@ -13,24 +12,8 @@ import 'package:sepcon_salud/page/document_identidad/document_second_page.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_first_page.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_second_page.dart';
 import 'package:sepcon_salud/page/vacuum/preview_vaccine.dart';
+import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
-/*
-final List<String> imgList = [
-  'assets/document/document_frontal_0.png',
-  'assets/document/document_frontal_1.jpeg',
-  'assets/document/document_frontal_2.jpeg',
-  'assets/document/document_frontal_3.png',
-  'assets/document/document_frontal_4.png',
-];
-final List<String> titleList = [
-  '1. Posición correcta del documento',
-  '2. Tomar foto',
-  '3. Verificar foto',
-  '4. Guardar foto',
-  '5. Empezar a tomar la foto',
-];
-*/
-
 
 
 
@@ -56,7 +39,7 @@ class _ManuallyControllerSliderState extends State<ManuallyControllerSlider> {
   int indexChange = 0 ;
   late String titleButton ;
   List<File> listFileLocal = [];
-  final int INDEX_DOCUMENT = 4;
+  final int INDEX_DOCUMENT = 1;
 
   @override
   void initState() {
@@ -64,11 +47,16 @@ class _ManuallyControllerSliderState extends State<ManuallyControllerSlider> {
     super.initState();
     titleButton = "Siguiente";
     listFileLocal = widget.listFile;
+    //deleteTemporaryDirectory();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: Icon(Icons.arrow_back_ios),
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -76,15 +64,7 @@ class _ManuallyControllerSliderState extends State<ManuallyControllerSlider> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.arrow_back_ios),
-                    ],
-                  ),
+
                   const SizedBox(
                     height: 10,
                   ),
@@ -106,55 +86,51 @@ class _ManuallyControllerSliderState extends State<ManuallyControllerSlider> {
                     options: CarouselOptions(enlargeCenterPage: true, height:MediaQuery.of(context).size.height*0.7,onPageChanged: (index,reason){
                       setState(() {
                         indexChange = index;
-                        if(index == 4){
+                        log("INDEX ${indexChange}");
+                        if(index == INDEX_DOCUMENT){
                           titleButton = "Iniciar";
                         }
                       });
                     }),
                     carouselController: _controller,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: (){
-                          if(indexChange != 4){
-                            _controller.nextPage();
-                          }
-                          if(indexChange == 4){
-                            getImageFromCamera(context);
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 15,bottom: 15),
-                          //margin: const EdgeInsets.symmetric(horizontal: 15),
-                          width: MediaQuery.of(context).size.width*0.8,
-                          decoration: BoxDecoration(
-                              color: GeneralColor.mainColor,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10,right: 10),
-                                child: Row(
-                                  mainAxisAlignment: indexChange == 4 ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    indexChange == 4 ? Icon(Icons.photo_camera,color: Colors.white,) : Container(),
-                                    Text(
-                                      titleButton,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    ),
-                                    indexChange == 4 ? Container() : Icon(Icons.arrow_forward,color: Colors.white,)
-                                  ],
-                                ),
-                              )),
-                        ),
-                      ),
 
-                    ],
-                  )
+                  GestureDetector(
+                    onTap: (){
+                      if(indexChange != INDEX_DOCUMENT){
+                        _controller.nextPage();
+                      }
+                      if(indexChange == INDEX_DOCUMENT){
+                        getImageFromCamera(context);
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 15,bottom: 15),
+                      //margin: const EdgeInsets.symmetric(horizontal: 15),
+                      width: MediaQuery.of(context).size.width*0.9,
+                      decoration: BoxDecoration(
+                          color: GeneralColor.mainColor,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 10,right: 10),
+                            child: Row(
+                              mainAxisAlignment: indexChange == 4 ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+                              children: [
+                                indexChange == 4 ? Icon(Icons.photo_camera,color: Colors.white,) : Container(),
+                                Text(
+                                  titleButton,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                                indexChange == 4 ? Container() : Icon(Icons.arrow_forward,color: Colors.white,)
+                              ],
+                            ),
+                          )),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -230,16 +206,22 @@ class _ManuallyControllerSliderState extends State<ManuallyControllerSlider> {
       _imagePath = imagePath;
     });
 
-    listFileLocal.add(File(_imagePath!));
-    if(widget.numberWidget == 1) {
+
+    if(widget.numberWidget ==  Constants.DOCUMENT_INIT) {
+      listFileLocal.clear();
+      listFileLocal.add(File(_imagePath!));
       routeDocumentFirstPage(_imagePath!, buildContext);
-    }else if(widget.numberWidget == 2){
+    }else if(widget.numberWidget == Constants.DOCUMENT_SECOND){
+      listFileLocal.add(File(_imagePath!));
       routeDocumentSecondPage(_imagePath!, buildContext);
     }else if(widget.numberWidget == 3){
+      listFileLocal.add(File(_imagePath!));
       routePreViewVaccinePage(_imagePath!, buildContext);
     }else if(widget.numberWidget == 4){
       routePaseMedicoFirstPage(_imagePath!, buildContext);
+      listFileLocal.add(File(_imagePath!));
     }else if(widget.numberWidget == 5){
+      listFileLocal.add(File(_imagePath!));
       routePaseMedicoSecondPage(_imagePath!, buildContext);
     }
 
@@ -278,5 +260,11 @@ class _ManuallyControllerSliderState extends State<ManuallyControllerSlider> {
         context,
         MaterialPageRoute(
             builder: (context) =>PaseMedicoSecondPage(file:listFileLocal)));
+  }
+
+  deleteTemporaryDirectory() async {
+    Directory dir = await getTemporaryDirectory();
+    dir.deleteSync(recursive: true);
+    dir.create();
   }
 }

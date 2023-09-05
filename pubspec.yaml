@@ -52,11 +52,13 @@ dependencies:
   syncfusion_flutter_pdf: ^22.2.9
   http: ^1.1.0
   shared_preferences: ^2.2.0
+  dio: ^5.1.2
+  open_file: ^3.3.1
   opencv_brightness:
     git:
       url: https://github.com/AnthonyFisi/opencv_brigthness.git
-      ref: cdd20da8fa3caca71d596ad0a62d375bdd89ec56
-
+      ref: 39e14ec8de6ca25d382536a4917986399fac6d9a
+  flutter_file_downloader: ^1.1.2
 
 dev_dependencies:
   flutter_test:

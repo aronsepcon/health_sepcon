@@ -58,7 +58,9 @@ class _CertificadoVacunaState extends State<CertificadoVacuna> {
                     ],
                   ),
 
-                  SizedBox(height: 550,child: PdfContainer(file: file,)),
+                  SizedBox(height: 550,child: PdfContainer(
+                    file: file,urlPdf: "",fontFile: "NETWORK",
+                    titlePDF: "Certificado Vacuna",)),
 
                 ],
               ),
