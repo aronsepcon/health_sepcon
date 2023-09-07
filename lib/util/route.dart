@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sepcon_salud/page/document_identidad/document_home_page.dart';
-import 'package:sepcon_salud/page/document_identidad/document_identity_page.dart';
+import 'package:sepcon_salud/page/document_identidad/document_init_page.dart';
 import 'package:sepcon_salud/page/home_page.dart';
 import 'package:sepcon_salud/page/login/login_page.dart';
 import 'package:sepcon_salud/page/splash_page.dart';
@@ -21,7 +21,7 @@ class RouteGenerator {
 
       case "/documentoIdentidadInit":
         return MaterialPageRoute(builder: (_) =>
-        const DocumentIdentityPage());
+        const DocumentInitPage());
 
       case "/documentoIdentidadHome":
         return MaterialPageRoute(builder: (_) =>

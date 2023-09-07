@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as Path;
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:sepcon_salud/page/carousel_data/manually_controller_slider.dart';
-import 'package:sepcon_salud/page/document_identidad/pdf_container.dart';
+import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
+import 'package:sepcon_salud/util/widget/pdf_container.dart';
 import 'package:sepcon_salud/util/constantes.dart';
+import 'package:sepcon_salud/util/custom_permission.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
 class DocumentHomePage extends StatefulWidget {
@@ -22,15 +22,6 @@ class DocumentHomePage extends StatefulWidget {
 
 class _DocumentHomePageState extends State<DocumentHomePage> {
 
-  final List<String> imgList = [
-    'assets/document/document_frontal_0.png',
-    'assets/document/document_frontal_4.png',
-  ];
-  final List<String> titleList = [
-    '1. Posición correcta del documento',
-    '2. Empezar a tomar la foto',
-  ];
-
   bool isPermission = false;
   var checkAllPermissions = CheckPermission();
   bool dowloading = false;
@@ -40,11 +31,13 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
   late String filePath;
   late CancelToken cancelToken;
   var getPathFile = DirectoryPath();
+  late LocalStore localStore;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    initVariable();
     checkPermission();
     setState(() {
       fileName = Path.basename(widget.urlPdf);
@@ -86,60 +79,12 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
                 height: 30,
               ),
               SizedBox(height: 450,child: PdfContainer(
-                file: File(""),urlPdf: widget.urlPdf,fontFile: "NETWORK",
+               urlPdf: widget.urlPdf, isLocal: false,
                 titlePDF: "Documento Identidad",)),
               const Expanded(
                 child: SizedBox(),
               ),
 
-
-             /* Card(
-                elevation: 10,
-                shadowColor: Colors.grey.shade100,
-                child: ListTile(
-                    title: Text("Documento"),
-                    leading: IconButton(
-                        onPressed: () {
-                          fileExists && dowloading == false
-                              ? openfile()
-                              : cancelDownload();
-                        },
-                        icon: fileExists && dowloading == false
-                            ? const Icon(
-                          Icons.window,
-                          color: Colors.green,
-                        )
-                            : const Icon(Icons.close)),
-                    trailing: IconButton(
-                        onPressed: () {
-                          fileExists && dowloading == false
-                              ? openfile()
-                              : startDownload();
-                        },
-                        icon: fileExists
-                            ? const Icon(
-                          Icons.save,
-                          color: Colors.green,
-                        )
-                            : dowloading
-                            ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CircularProgressIndicator(
-                              value: progress,
-                              strokeWidth: 3,
-                              backgroundColor: Colors.grey,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                  Colors.blue),
-                            ),
-                            Text(
-                              "${(progress * 100).toStringAsFixed(2)}",
-                              style: TextStyle(fontSize: 12),
-                            )
-                          ],
-                        )
-                            : const Icon(Icons.download))),
-              ),*/
               GestureDetector(
                 onTap: () {
                   //DateTime now = DateTime.now();
@@ -185,7 +130,7 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
               ),
               GestureDetector(
                 onTap: (){
-                  routePDFViewer();
+                  routeDocumentCarouselPage();
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 15),
@@ -214,18 +159,20 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
     );
   }
 
-  routePDFViewer(){
-    List<File> listfile = [];
+  initVariable(){
+    localStore = LocalStore();
+  }
+
+  routeDocumentCarouselPage() async {
+    await localStore.deleteKey(Constants.DOCUMENT_IDENTIDAD);
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>ManuallyControllerSlider(
-              imgList: imgList,
-              titleList: titleList,listFile: listfile,
-              numberWidget: Constants.DOCUMENT_INIT,)));
+            builder: (context) =>DocumentCarouselPage(
+              imgList: Constants.imgListDocumentFirst,
+              titleList: Constants.titleListDocumentFirst,
+              numberPage: Constants.DOCUMENT_FIRST,)));
   }
-
-
 
   checkPermission() async {
     var permission = await checkAllPermissions.isStoragePermission();
@@ -300,32 +247,3 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
 }
 
 
-
-class CheckPermission {
-  isStoragePermission() async {
-    var isStorage = await Permission.storage.status;
-    if (!isStorage.isGranted) {
-      await Permission.storage.request();
-      if (!isStorage.isGranted) {
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      return true;
-    }
-  }
-}
-
-class DirectoryPath {
-  getPath() async {
-    final Directory? tempDir = await getExternalStorageDirectory();
-    final filePath = Directory("${tempDir!.path}/files");
-    if (await filePath.exists()) {
-      return filePath.path;
-    } else {
-      await filePath.create(recursive: true);
-      return filePath.path;
-    }
-  }
-}

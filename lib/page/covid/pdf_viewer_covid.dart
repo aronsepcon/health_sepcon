@@ -1,30 +1,29 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/document_identidad/pdf_container.dart';
-import 'package:sepcon_salud/page/successful_page.dart';
-import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
+import 'package:sepcon_salud/util/widget/pdf_container.dart';
+import 'package:sepcon_salud/page/vacuum/successful_vacuum_page.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
 import 'package:sepcon_salud/resource/repository/documento_repository.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
-import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class PDFViewerPage extends StatefulWidget {
+class PdfViewerCovid extends StatefulWidget {
   final File file;
 
-  const PDFViewerPage({super.key, required this.file});
+  const PdfViewerCovid({super.key,required this.file});
 
   @override
-  _PDFViewerPageState createState() => _PDFViewerPageState();
+  State<PdfViewerCovid> createState() => _PdfViewerCovidState();
 }
 
-class _PDFViewerPageState extends State<PDFViewerPage> {
-  late LoginResponse? loginResponse;
-  late LocalStore localStore;
+
+class _PdfViewerCovidState extends State<PdfViewerCovid> {
   late DocumentoRepository documentoRepository;
-  bool loading = false;
+  late LocalStore localStore;
+  late LoginResponse? loginResponse;
   String fileName = "";
 
   @override
@@ -34,6 +33,7 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
     localStore = LocalStore();
     documentoRepository = DocumentoRepository();
     fetchDataLocal();
+
   }
 
   @override
@@ -41,12 +41,7 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: !loading ? Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [getLoadEffect()],
-          ),
-        ) :Padding(
+        child: Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
           child: Column(
             children: [
@@ -75,8 +70,8 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
                 height: 30,
               ),
               SizedBox(height: 550,child: PdfContainer(
-                file: widget.file,urlPdf: "",fontFile: "LOCAL",
-                titlePDF: "Documento Identidad",)),
+                urlPdf:  widget.file.path ,isLocal : true,
+                titlePDF: "Certificado Vacuna",)),
               const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
@@ -107,51 +102,30 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
     );
   }
 
+  routePDFViewer(BuildContext context){
+    Navigator.push(
+        context ,
+        MaterialPageRoute(
+            builder: (context) =>const SuccesfulVacuumPage()));
+  }
   fetchDataLocal() async {
     loginResponse = await localStore.fetchUser();
     if(loginResponse != null ){
       setState(() {
-        loading = true;
-        fileName = "TV-${loginResponse!.dni}-${loginResponse!.nombres!.trim()}.pdf";
+        fileName = "TV-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
       });
     }
   }
 
   savePDF() async {
-    loading = true;
     bool result = await documentoRepository.saveDocument(fileName, widget.file);
-
     if(result){
       setState(() {
-        loading = false;
         routePDFViewer(context);
       });
     }else{
-      widgetErrorDialog("Volver a intentarlo");
+      log("error");
     }
-
   }
 
-  routePDFViewer(BuildContext context){
-    Navigator.pushReplacement(
-        context ,
-        MaterialPageRoute(
-            builder: (context) =>const SuccessfulPage()));
-  }
-
-  widgetErrorDialog(String message) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(
-            message,
-            style: const TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        );
-      },
-    );
-  }
 }

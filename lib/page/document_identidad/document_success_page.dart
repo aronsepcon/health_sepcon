@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sepcon_salud/page/home_page.dart';
 import 'package:sepcon_salud/util/general_color.dart';
-import 'package:sepcon_salud/util/general_words.dart';
 
-class SuccessfulPage extends StatefulWidget {
-  const SuccessfulPage({super.key});
+class DocumentSuccessPage extends StatefulWidget {
+  const DocumentSuccessPage({super.key});
 
   @override
-  State<SuccessfulPage> createState() => _SuccessfulPageState();
+  State<DocumentSuccessPage> createState() => _DocumentSuccessPageState();
 }
 
-class _SuccessfulPageState extends State<SuccessfulPage> {
+class _DocumentSuccessPageState extends State<DocumentSuccessPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

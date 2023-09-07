@@ -11,6 +11,7 @@ import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/general_words.dart';
 import 'package:sepcon_salud/util/route.dart';
+import 'package:sepcon_salud/util/share_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,27 +21,23 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   final documentController = TextEditingController();
   final passwordController = TextEditingController();
 
   late LoginRepository loginRepository;
-  bool isLoading = false;
-
-  LoginResponse? loginResponse;
-
-  late VacunaRepository vacunaRepository;
-  VacunaModel? vacunaModel;
-
   late VacunaCostosRepository vacunaCostosRepository;
+  late VacunaRepository vacunaRepository;
+  LoginResponse? loginResponse;
+  late bool isLoading;
+  VacunaModel? vacunaModel;
+  late LocalStore localStore;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //initSharedPreferences();
-    loginRepository = LoginRepository();
-    vacunaRepository = VacunaRepository();
-    vacunaCostosRepository = VacunaCostosRepository();
+    initVariable();
   }
 
   @override
@@ -164,63 +161,58 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void authenticate() async {
-    String documentValue = documentController.value.text;
+  initVariable(){
+    loginRepository = LoginRepository();
+    vacunaRepository = VacunaRepository();
+    vacunaCostosRepository = VacunaCostosRepository();
+    isLoading = false;
+    localStore = LocalStore();
+  }
 
+
+  authenticate() async {
+
+    localStore.deleteUser();
+
+    String documentValue = documentController.value.text;
 
     setState(() {
       isLoading = true;
     });
+
     loginResponse = await loginRepository.authenticate(
         documentValue, passwordController.value.text);
 
     if (loginResponse != null) {
+
       if (loginResponse!.nombres != null) {
+
         if (documentValue == '77100152') {
-          documentValue = '77100151';
+          loginResponse!.dni = '77100151';
         }
-        LocalStore localStore = LocalStore();
+
         localStore.saveUser(loginResponse!);
 
         DocumentVacunaModel? vacunaModel =
-            await vacunaRepository.vacunaByDocument(documentValue);
+            await vacunaRepository.vacunaByDocument(loginResponse!.dni!);
 
-        VacunaCostosModel? vacunaCostosModel =
-        await vacunaCostosRepository
+        VacunaCostosModel? vacunaCostosModel = await vacunaCostosRepository
             .fetchVacunaByCentroCostos(loginResponse!.centroCostosId);
 
         if (vacunaModel != null && vacunaCostosModel != null) {
-
-          routeHome();
+          routePage();
         }
       } else {
         setState(() {
           isLoading = false;
-          widgetErrorDialog('Verificar el usuario o contraseña');
+          widgetErrorDialog('Verificar el usuario o contraseña',context);
         });
       }
     }
   }
 
-  widgetErrorDialog(String message) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(
-            message,
-            style: const TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  routeHome() {
+  routePage() {
     Navigator.push(
         context,RouteGenerator.generateRoute(const RouteSettings(name: '/homePage') ));
   }
-
 }

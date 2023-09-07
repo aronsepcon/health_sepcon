@@ -1,41 +1,35 @@
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/carousel_data/manually_controller_slider.dart';
+import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/general_words.dart';
 
 
-class DocumentIdentityPage extends StatefulWidget {
-  const DocumentIdentityPage({super.key});
+class DocumentInitPage extends StatefulWidget {
+  const DocumentInitPage({super.key});
 
   @override
-  State<DocumentIdentityPage> createState() => _DocumentIdentityPageState();
+  State<DocumentInitPage> createState() => _DocumentInitPageState();
 }
 
-class _DocumentIdentityPageState extends State<DocumentIdentityPage> {
+class _DocumentInitPageState extends State<DocumentInitPage> {
 
-  late File filePdf;
+  late LocalStore localStore;
 
-  final List<String> imgList = [
-    'assets/document/document_frontal_0.png',
-    'assets/document/document_frontal_4.png',
-  ];
-  final List<String> titleList = [
-    '1. Posición correcta del documento',
-    '2. Empezar a tomar la foto',
-  ];
-
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initVariable();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: Icon(Icons.arrow_back_ios),
+        leading: const Icon(Icons.arrow_back_ios),
       ),
       body: SafeArea(
           child: Padding(
@@ -50,25 +44,26 @@ class _DocumentIdentityPageState extends State<DocumentIdentityPage> {
                   children: [
                     Text(
                       GeneralWord.identityDocumentHome,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 24,
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                const Image(image: AssetImage('assets/empty_document_identity.png'),height: 400,width: 400,),
+                const Image(image:AssetImage('assets/empty_document_identity.png'),
+                  height: 400,width: 400,),
 
-                Expanded(
+                const Expanded(
                   child: SizedBox(),
                 ),
                 GestureDetector(
                   onTap: (){
-                    //_imgFromCamera();
-                    routePDFViewer();
+                    routePage();
                   },
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 30),
+                    padding: const EdgeInsets.only(bottom: 30),
                     child: Container(
                       padding: const EdgeInsets.only(top: 15,bottom: 15),
                       //margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -87,23 +82,24 @@ class _DocumentIdentityPageState extends State<DocumentIdentityPage> {
                     ),
                   ),
                 ),
-
-
               ],
         ),
       )),
     );
   }
 
-  routePDFViewer(){
-    List<File> listfile = [];
+  initVariable(){
+    localStore = LocalStore();
+  }
+  routePage() async {
+    await localStore.deleteKey(Constants.DOCUMENT_IDENTIDAD);
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>ManuallyControllerSlider(
-              imgList: imgList,
-              titleList: titleList,listFile: listfile,
-              numberWidget: Constants.DOCUMENT_INIT,)));
+            builder: (context) =>DocumentCarouselPage(
+              imgList: Constants.imgListDocumentFirst,
+              titleList: Constants.titleListDocumentFirst,
+              numberPage : Constants.DOCUMENT_FIRST,)));
   }
 
 }

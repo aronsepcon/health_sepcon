@@ -1,9 +1,9 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:sepcon_salud/page/covid/home_covid_page.dart';
+import 'package:sepcon_salud/page/covid/init_covid_page.dart';
 import 'package:sepcon_salud/page/document_identidad/document_home_page.dart';
-import 'package:sepcon_salud/page/document_identidad/document_identity_page.dart';
 import 'package:sepcon_salud/page/pase_medico/init_pase_medico_page.dart';
 import 'package:sepcon_salud/page/vacuum/home_vacuum.dart';
 import 'package:sepcon_salud/page/vacuum/init_vacuum.dart';
@@ -26,19 +26,18 @@ class DocumentView extends StatefulWidget {
 }
 
 class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderStateMixin{
+  
   late AnimationController progressController;
   late Animation animation;
-  late String path;
   late LocalStore localStore;
-  late DocumentVacunaModel? documentVacunaModel;
-  late VacunaCostosModel? vacunaCostosModel;
+  late DocumentVacunaModel? documentVacuumModel;
+  late VacunaCostosModel? vacuumCostosModel;
   late LoginResponse? loginResponse;
-  bool showHome = false;
-  double porcentaje = 0.0;
-  int documentosCompletos = 0;
-  int totalDocumentos = 0;
-  var stateDcumentMap = <String,bool?>{};
-  var stateFlowMap = <String,bool?>{};
+  late String path, urlCovid;
+  late bool showHome;
+  late double porcentaje;
+  late int documentosCompletos , totalDocumentos;
+  var stateDcumentMap, stateFlowMap;
 
   bool STATE_DOCUMENTO_IDENTIDAD = false;
   bool STATE_VACUNA = false;
@@ -62,9 +61,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   void initState() {
     // TODO: implement initState
     super.initState();
-    localStore = LocalStore();
-    fetchDataLocal();
-    //animatePorcentaje();
+    initVariable();
+    findUserAndDocumentAndCostosLocalStorage();
   }
 
   @override
@@ -81,7 +79,6 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
               padding: const EdgeInsets.only(left: 25, right: 25),
               child: Column(
                 children: [
-
                   // HEADER
                   const SizedBox(
                     height: 50,
@@ -158,8 +155,6 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                               ),)),
                             ),
                           ),
-
-
                         ],
                       ),
                     ),
@@ -208,8 +203,9 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       ),
                       child: ListTile(
                           onTap: (){
-                            FLOW_VACUNA ? routeVacuumInitPage()
-                            : routeHomeVacuumPage();
+                            FLOW_VACUNA ?
+                            routeHomeVacuumPage()
+                            :routeVacuumInitPage();
                           },
                         leading: STATE_VACUNA ?
                         const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
@@ -267,7 +263,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       ),
                       child: ListTile(
                         onTap: (){
-                          print(GeneralWord.covidHome);
+                          FLOW_COVID19 ? routeHomeCovidPage()
+                              : routeInitCovidPage();
                         },
                         leading:  STATE_COVID19 ?
                         const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
@@ -284,54 +281,24 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     );
   }
 
-  routeDocumentoIdentidadInitPage(){
-    Navigator.push(
-        context, RouteGenerator.generateRoute(
-        const RouteSettings(name: '/documentoIdentidadInit')));
+  initVariable(){
+    localStore = LocalStore();
+    showHome = false;
+    porcentaje = 0.0;
+    documentosCompletos = 0;
+    totalDocumentos = 0;
+    stateDcumentMap = <String,bool?>{};
+    stateFlowMap = <String,bool?>{};
+    urlCovid = "";
   }
 
-  routeDocumentoIdentidadHomePage(){
-    Navigator.push(
-        context, MaterialPageRoute(
-        builder: (context) => DocumentHomePage(
-            urlPdf: documentVacunaModel!.documentoIdentidadModel.adjunto! ))  );
-  }
-
-  routeVacuumInitPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-             builder: (context) => const InitVacuum()) );
-            //builder: (context) => const HomeVacuum()));
-  }
-
-  routeVacuumHomePage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const HomeVacuum()) );
-    //builder: (context) => const HomeVacuum()));
-  }
-
-  routeHomeVacuumPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeVacuum()));
-  }
-
-  routeHomePaseMedicoPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const InitPaseMedicoPage()));
-  }
-
-  fetchDataLocal() async {
-    documentVacunaModel = await localStore.fetchVacunaGeneral();
+  findUserAndDocumentAndCostosLocalStorage() async {
+    documentVacuumModel = await localStore.fetchVacunaGeneral();
     loginResponse = await localStore.fetchUser();
-    vacunaCostosModel = await localStore.fetchVacunaCostos();
+    vacuumCostosModel = await localStore.fetchVacunaCostos();
 
-    if(documentVacunaModel != null && loginResponse != null
-        && vacunaCostosModel != null){
+    if(documentVacuumModel != null && loginResponse != null
+        && vacuumCostosModel != null){
       animatePorcentaje(validatePorcentaje());
       setState(() {
         showHome = true;
@@ -345,13 +312,13 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     var porcentajeMap = <String,bool?>{};
 
     porcentajeMap[KEY_DOCUMENTO_IDENTIDAD] =
-        documentVacunaModel!.documentoIdentidadModel.validated!;
+        documentVacuumModel!.documentoIdentidadModel.validated!;
     porcentajeMap[KEY_EMO] = false;
     porcentajeMap[KEY_PASE_MEDICO] =
-        documentVacunaModel!.paseMedicoModel!.validated;
+        documentVacuumModel!.paseMedicoModel!.validated;
 
-    for(VacunaModel vacunaModel in documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!){
-      for(String vacuna in vacunaCostosModel!.vacunas){
+    for(VacunaModel vacunaModel in documentVacuumModel!.vacunaGeneralModel!.tiposVacunas!){
+      for(String vacuna in vacuumCostosModel!.vacunas){
         if(vacuna == vacunaModel.nombre){
             porcentajeMap[vacunaModel.nombre!] = vacunaModel.validated;
         }
@@ -362,8 +329,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
         vacunaModel.validated!;
       }
     }
-
-
+    
     porcentajeMap.forEach((key, value) {
       if(value!){
         documentosCompletos++;
@@ -372,9 +338,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     });
 
     porcentaje = (documentosCompletos.toDouble() / totalDocumentos.toDouble())*100.0;
-
-    log("completos : ${documentosCompletos.toDouble()} / total : ${totalDocumentos.toDouble()}");
-
+    
     return porcentaje;
   }
 
@@ -390,22 +354,22 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
 
   validateStateDocument(){
 
-    int tempTotal = vacunaCostosModel!.vacunas.length;
-    int tempCompleto = 0;
+    int tempTotal = vacuumCostosModel!.vacunas.length;
+    int tempComplete = 0;
     double tempPorcentaje = 0;
 
     STATE_DOCUMENTO_IDENTIDAD =
-    documentVacunaModel!.documentoIdentidadModel.validated!;
+    documentVacuumModel!.documentoIdentidadModel.validated!;
 
     STATE_EMO = false;
     STATE_PASE_MEDICO =
-        documentVacunaModel!.paseMedicoModel!.validated!;
+        documentVacuumModel!.paseMedicoModel!.validated!;
 
-    for(VacunaModel vacunaModel in documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!){
-      for(String vacuna in vacunaCostosModel!.vacunas){
+    for(VacunaModel vacunaModel in documentVacuumModel!.vacunaGeneralModel!.tiposVacunas!){
+      for(String vacuna in vacuumCostosModel!.vacunas){
         if(vacuna == vacunaModel.nombre){
           if(vacunaModel.validated!){
-            tempCompleto++;
+            tempComplete++;
           }
         }
       }
@@ -416,7 +380,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
       }
     }
 
-    tempPorcentaje = (tempCompleto.toDouble() / tempTotal.toDouble()) * 100.0;
+    tempPorcentaje = (tempComplete.toDouble() / tempTotal.toDouble()) * 100.0;
 
     if(tempPorcentaje == 100.0){
       STATE_VACUNA = true;
@@ -424,29 +388,78 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   }
 
   validateFlowDocument(){
-    log("documento : "+documentVacunaModel!.documentoIdentidadModel.adjunto!);
     FLOW_DOCUMENTO_IDENTIDAD =
-    documentVacunaModel!.documentoIdentidadModel.adjunto!.length > 0
+    documentVacuumModel!.documentoIdentidadModel.adjunto!.isNotEmpty
         ? true : false;
 
     STATE_EMO = false;
 
     FLOW_PASE_MEDICO =
-    documentVacunaModel!.paseMedicoModel!.adjunto!.length > 0
+    documentVacuumModel!.paseMedicoModel!.adjunto!.isNotEmpty
         ? true : false;
 
     FLOW_VACUNA =
-    documentVacunaModel!.vacunaGeneralModel!.tiposVacunas![0].adjunto!.length > 0
+    documentVacuumModel!.vacunaGeneralModel!.tiposVacunas![0].adjunto!.isNotEmpty
         ? true : false;
 
-    for(VacunaModel vacunaModel in documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!){
+    for(VacunaModel vacunaModel in documentVacuumModel!.vacunaGeneralModel!.tiposVacunas!){
 
       if(vacunaModel.nombre == "Covid19"){
+        urlCovid = vacunaModel.adjunto!;
         FLOW_COVID19 =
-        vacunaModel.adjunto!.length > 0 ? true : false;
+        vacunaModel.adjunto!.isNotEmpty ? true : false;
       }
     }
-
   }
 
+  routeDocumentoIdentidadInitPage(){
+    Navigator.push(
+        context, RouteGenerator.generateRoute(
+        const RouteSettings(name: '/documentoIdentidadInit')));
+  }
+
+  routeDocumentoIdentidadHomePage(){
+    Navigator.push(
+        context, MaterialPageRoute(
+        builder: (context) => DocumentHomePage(
+            urlPdf: documentVacuumModel!.documentoIdentidadModel.adjunto!)));
+  }
+
+  routeVacuumInitPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const InitVacuum()));
+  }
+
+  routeVacuumHomePage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const HomeVacuum()));
+  }
+
+  routeHomeVacuumPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeVacuum()));
+  }
+
+  routeHomePaseMedicoPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const InitPaseMedicoPage()));
+  }
+
+  routeInitCovidPage(){
+    Navigator.push(
+        context, MaterialPageRoute(
+        builder: (context) => const InitCovidHome()));
+  }
+
+  routeHomeCovidPage(){
+    Navigator.push(
+        context, MaterialPageRoute(
+        builder: (context) =>  CovidHomePage(urlPdf: urlCovid,)));
+  }
 }
