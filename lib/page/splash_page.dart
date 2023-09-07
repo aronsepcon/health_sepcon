@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sepcon_salud/page/home_page.dart';
 import 'package:sepcon_salud/page/login/login_page.dart';
+import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
+import 'package:sepcon_salud/resource/repository/vacuna_repository.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/general_words.dart';
@@ -16,12 +19,13 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
 
   late LocalStore localStore;
+  late VacunaRepository vacunaRepository;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    isUserSaveLocal();
+    initVariable();
+    findUserLocalStorage();
   }
 
   @override
@@ -59,30 +63,29 @@ class _SplashPageState extends State<SplashPage> {
         ));
   }
 
-  void routeSplash() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const LoginPage()));
+  initVariable(){
+    vacunaRepository = VacunaRepository();
+    localStore = LocalStore();
   }
 
-  isUserSaveLocal() async {
-    localStore = LocalStore();
+  findUserLocalStorage() async {
     LoginResponse? loginResponse = await localStore.fetchUser();
 
     if(loginResponse != null){
-      Navigator.pushReplacement(
-          context,
-          RouteGenerator.generateRoute(const RouteSettings(name: '/homePage'))
-      );
+      DocumentVacunaModel? vacuumModel =
+      await vacunaRepository.vacunaByDocument(loginResponse.dni!);
 
+      if(vacuumModel != null){
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage())
+        );
+      }
     }else{
       Navigator.pushReplacement(
           context,
-          RouteGenerator.generateRoute(const RouteSettings(name: '/loginPage'))
+          MaterialPageRoute(builder: (context) => const LoginPage())
       );
     }
   }
-
-
 }

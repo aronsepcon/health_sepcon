@@ -14,16 +14,17 @@ class DocumentoApi{
     var map = <String, dynamic>{};
 
     var bytesPdf = base64Encode(filePdf.readAsBytesSync()) ;
-    //TV-77100151-JHONCURI.pdf
 
     map['base64data'] = bytesPdf ;
     map['filename'] = fileName;
 
-    log('base64data : $bytesPdf');
-    log('filename : $fileName');
+    DateTime now = DateTime.now();
+    log("start2 : ${now.toString()}");
 
     final response = await client.post(url,body:map);
     if(response.statusCode==200){
+      DateTime now2 = DateTime.now();
+      log("end : ${now2.toString()}");
       log(response.body);
       //Map<String,dynamic> json = jsonDecode(response.body);
       log(json.toString());

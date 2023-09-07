@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/views/document_view.dart';
-import 'package:sepcon_salud/page/views/exam_view.dart';
-import 'package:sepcon_salud/page/views/perfil_view.dart';
+import 'package:sepcon_salud/page/menu_bottom_navigation/document_view.dart';
+import 'package:sepcon_salud/page/menu_bottom_navigation/exam_view.dart';
+import 'package:sepcon_salud/page/menu_bottom_navigation/perfil_view.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,16 +15,10 @@ class _HomePageState extends State<HomePage>{
 
   int selectedIndex = 0;
 
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final views = [const DocumentView() ,
+    final views = [
+      const DocumentView() ,
       const ExamView() ,
       const PerfilView()];
 

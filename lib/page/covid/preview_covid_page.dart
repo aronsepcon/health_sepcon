@@ -1,28 +1,36 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:opencv_brightness/edge_detection.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/document_identidad/document_preview_pdf_page.dart';
-import 'package:sepcon_salud/util/edge_detection/edge_detector.dart';
+import 'package:sepcon_salud/page/covid/collect_photo_covid_page.dart';
+import 'package:sepcon_salud/page/vacuum/collect_photo_vacuum.dart';
+import 'package:sepcon_salud/page/vacuum/pdf_viewer_vacuum.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
+import 'package:sepcon_salud/util/constantes.dart';
+import 'package:sepcon_salud/util/edge_detection/edge_detector.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class DocumentSecondPage extends StatefulWidget {
-  final List<File> file;
+class PreviewCovidPage extends StatefulWidget {
+  final File file;
+  final String titlePage;
 
-  const DocumentSecondPage({super.key,required this.file});
+  const PreviewCovidPage({super.key,required this.file,required this.titlePage});
 
   @override
-  State<DocumentSecondPage> createState() => _DocumentSecondPageState();
+  State<PreviewCovidPage> createState() => _PreviewCovidPageState();
 }
 
-class _DocumentSecondPageState extends State<DocumentSecondPage> {
+class _PreviewCovidPageState extends State<PreviewCovidPage> {
+
+  late File _image;
+  List<File> listFile = [];
   late File filePdf;
+
   late bool loading = false;
   String newPhoto = "";
 
@@ -38,11 +46,17 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    //createPDFNew(widget.file);
-    filePdf = File('');
+    //listFile = widget.file;
+    _image = File("");
+    filePdf = File("");
+    //createPDF(listFile);
+    createPDFNew();
     createFiles();
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,17 +66,16 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
         leading: Icon(Icons.arrow_back_ios),
       ),
       body: SafeArea(
-          child: loading ? Padding(
+          child: loading? Padding(
             padding: const EdgeInsets.only(left: 25, right: 25),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Segunda cara',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      widget.titlePage,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -70,13 +83,8 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
                 const SizedBox(height: 20,),
 
                 Image.file(
-                  File(widget.file[0].path),
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                ),
-                Image.file(
                   File(viewPhoto),
-                  height: MediaQuery.of(context).size.height * 0.25,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   width: MediaQuery.of(context).size.width * 0.9,
                 ),
 
@@ -160,12 +168,34 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
                 ),
 
 
+                const SizedBox(height: 20,),
+
                 GestureDetector(
-                  onTap: (){
+                  onTap: () async {
+                    //print(filePdf.path);
                     //routePDFViewer();
+                    List<File> listFile = [];
+                    listFile.add(File(viewPhoto));
+
+
+                    LocalStore localStore = LocalStore();
+                    List<String> tempList = await localStore.fetchPathsFileByTypeDocument(Constants.COVID);
+
+                    tempList.add(viewPhoto);
+                    log("LIST ${tempList.length}");
+                    bool result = await localStore.saveFilePaths(Constants.COVID,tempList);
+
+                    if(result){
+                      Navigator.pushReplacement(
+                          context ,
+                          MaterialPageRoute(
+                              builder: (_) => CollectPhotoCovidPage()));
+                    }
+
+
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom:5),
+                    padding: const EdgeInsets.only(bottom: 20),
                     child: Container(
                       padding: const EdgeInsets.only(top: 15,bottom: 15),
                       //margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -175,7 +205,7 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
                           borderRadius: BorderRadius.circular(8)),
                       child: const Center(
                           child: Text(
-                            'volver a tomar foto',
+                            'Siguiente',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -186,35 +216,6 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
                 ),
 
 
-                GestureDetector(
-                  onTap: (){
-                    widget.file[1] = File(viewPhoto);
-                    createPDFNew(widget.file);
-                    //routePDFViewer();
-                    // imgFromCamera(context);
-                    // routeSecondPage(context);
-                    //getData();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom:30),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 15,bottom: 15),
-                      //margin: const EdgeInsets.symmetric(horizontal: 15),
-                      //height: 50,
-                      decoration: BoxDecoration(
-                          color: GeneralColor.mainColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: const Center(
-                          child: Text(
-                            'Generar PDF',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          )),
-                    ),
-                  ),
-                ),
               ],
             ),
           ) : Center(
@@ -222,21 +223,23 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [getLoadEffect()],
             ),
-          )),
+          )) ,
     );
   }
 
-  createPDFNew(List<File> listFile) async {
+  createPDFNew() async {
     PdfDocument document = PdfDocument();
-    final page = document.pages.add();
+    //final page = document.pages.add();
 
-    page.graphics.drawImage(
+    //Set the page size
+    //document.pageSettings.size = PdfPageSize.a4;
+
+    //Change the page orientation to landscape
+    document.pageSettings.orientation = PdfPageOrientation.landscape;
+
+    document.pages.add().graphics.drawImage(
         PdfBitmap(await _readImageData( listFile[0].path)),
-        const Rect.fromLTWH(0, 0, 500, 350));
-
-    page.graphics.drawImage(
-        PdfBitmap(await _readImageData( listFile[1].path)),
-        const Rect.fromLTWH(0, 360, 500, 350));
+        const Rect.fromLTWH(0, 0, 750, 500));
 
     List<int> bytes = document.saveSync();
     document.dispose();
@@ -253,24 +256,20 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
     DateTime now = DateTime.now();
     final output = await getTemporaryDirectory();
     filePdf = File("${output.path}/example${now.toString().trim()}.pdf");
-    File tempFile =await filePdf.writeAsBytes(bytes, flush: true);
-
-    if(tempFile.existsSync()){
-      routePDFViewer(filePdf);
-    }
+    await filePdf.writeAsBytes(bytes, flush: true);
   }
 
 
-  routePDFViewer(File filePDF){
+  routePDFViewer(){
 
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => DocumentPreviewPdfPage(file: filePDF )));
+            builder: (context) => PdfViewerVacuum(file: filePdf )));
   }
 
   createFiles() async {
-    Uint8List bytes = widget.file[1].readAsBytesSync();
+    Uint8List bytes = widget.file.readAsBytesSync();
 
     final Directory extDir = await getTemporaryDirectory();
     final String dirPath = '${extDir.path}/Pictures/flutter_test';

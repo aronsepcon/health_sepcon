@@ -5,31 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:opencv_brightness/edge_detection.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/edge_detection/edge_detector.dart';
-import 'package:sepcon_salud/page/carousel_data/manually_controller_slider.dart';
+import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
+import 'package:sepcon_salud/page/document_identidad/document_collect_page.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
+import 'package:sepcon_salud/util/edge_detection/edge_detector.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
 class DocumentFirstPage extends StatefulWidget {
-  final List<File> file;
+  final File file;
+  final int numberPage;
 
-  const DocumentFirstPage({super.key, required this.file});
+  const DocumentFirstPage({super.key, required this.file,required this.numberPage });
 
   @override
   State<DocumentFirstPage> createState() => _DocumentFirstPageState();
 }
 
 class _DocumentFirstPageState extends State<DocumentFirstPage> {
-
-  final List<String> imgList = [
-    'assets/document/document_reverso_0.png',
-    'assets/document/document_frontal_4.png',
-  ];
-  final List<String> titleList = [
-    '1. Posición correcta del documento',
-    '2. Empezar a tomar la foto',
-  ];
 
   late bool loading = false;
   String newPhoto = "";
@@ -43,10 +37,12 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
   late String pathMagicFile;
 
   late String viewPhoto;
+  late LocalStore localStore;
 
   @override
   void initState() {
     super.initState();
+    initVariable();
     createFiles();
   }
 
@@ -163,13 +159,12 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
                   child: SizedBox(),
                 ),
 
-
                 GestureDetector(
                   onTap: (){
-                    routeFirstPage();
+                    routeDocumentCarouselPage();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom:5),
+                    padding: const EdgeInsets.only(bottom:30),
                     child: Container(
                       padding: const EdgeInsets.only(top: 15,bottom: 15),
                       //margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -192,9 +187,7 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
 
                 GestureDetector(
                   onTap: (){
-                   // imgFromCamera(context);
-                   routeSecondPage(context);
-                    //getData();
+                    saveLocalStoragePaths();
                     },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom:30),
@@ -228,37 +221,38 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
     );
   }
 
-  routeSecondPage(BuildContext context){
-    List<File> listFile = [];
-    listFile.add(File(viewPhoto));
+  initVariable(){
+    localStore = LocalStore();
+  }
 
+  saveLocalStoragePaths() async {
+    List<String> tempList = await localStore.fetchPathsFileByTypeDocument(Constants.DOCUMENT_IDENTIDAD);
+    tempList.add(viewPhoto);
+    bool result = await localStore.saveFilePaths(Constants.DOCUMENT_IDENTIDAD,tempList);
+    if(result){
+      routeDocumentCollectPage();
+    }
+  }
+
+  routeDocumentCarouselPage(){
+    Navigator.pushReplacement(
+        context ,
+        MaterialPageRoute(
+            builder: (_) => DocumentCarouselPage(
+                imgList: Constants.imgListDocumentFirst,
+                titleList: Constants.titleListDocumentFirst,
+                numberPage: Constants.DOCUMENT_FIRST)));
+  }
+
+  routeDocumentCollectPage(){
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>ManuallyControllerSlider(imgList: imgList,
-              titleList: titleList,listFile: listFile,numberWidget: Constants.DOCUMENT_SECOND,)));
-  }
-
-  routeFirstPage(){
-     var imgListOne = [
-      'assets/document/document_frontal_0.png',
-      'assets/document/document_frontal_4.png',
-    ];
-    var titleListOne = [
-      '1. Posición correcta del documento',
-      '2. Empezar a tomar la foto',
-    ];
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>ManuallyControllerSlider(
-              imgList: imgListOne,
-              titleList: titleListOne,listFile: [],
-              numberWidget: Constants.DOCUMENT_INIT,)));
+            builder: (context) => DocumentCollectPage(numberPage: widget.numberPage,)));
   }
 
   createFiles() async {
-    Uint8List bytes = widget.file[0].readAsBytesSync();
+    Uint8List bytes = widget.file.readAsBytesSync();
 
     final Directory extDir = await getTemporaryDirectory();
     final String dirPath = '${extDir.path}/Pictures/flutter_test';
@@ -306,4 +300,5 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
       loading = true;
     });
   }
+
 }

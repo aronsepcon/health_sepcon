@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sepcon_salud/page/carousel_data/manually_controller_slider.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
 class PaseMedicoFirstPage extends StatefulWidget {
@@ -130,9 +129,10 @@ class _PaseMedicoFirstPageState extends State<PaseMedicoFirstPage> {
 
 
   routeSecondPage(BuildContext context){
-    Navigator.push(
+    /*Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>ManuallyControllerSlider(imgList: imgList, titleList: titleList,listFile: listFile,numberWidget: 5,)));
+  */
   }
 }

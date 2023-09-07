@@ -1,32 +1,37 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/util/widget/pdf_container.dart';
-import 'package:sepcon_salud/page/vacuum/successful_vacuum_page.dart';
+import 'package:sepcon_salud/page/document_identidad/document_success_page.dart';
+import 'package:sepcon_salud/resource/model/login_response.dart';
 import 'package:sepcon_salud/resource/repository/documento_repository.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
+import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/general_color.dart';
+import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
-class PdfViewerVacuum extends StatefulWidget {
+class DocumentPreviewPdfPage extends StatefulWidget {
   final File file;
 
-  const PdfViewerVacuum({super.key,required this.file});
+  const DocumentPreviewPdfPage({super.key, required this.file});
 
   @override
-  State<PdfViewerVacuum> createState() => _PdfViewerVacuumState();
+  _DocumentPreviewPdfPageState createState() => _DocumentPreviewPdfPageState();
 }
 
-
-class _PdfViewerVacuumState extends State<PdfViewerVacuum> {
+class _DocumentPreviewPdfPageState extends State<DocumentPreviewPdfPage> {
+  late LoginResponse? loginResponse;
+  late LocalStore localStore;
   late DocumentoRepository documentoRepository;
+  bool loading = false;
+  String fileName = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    localStore = LocalStore();
     documentoRepository = DocumentoRepository();
-
+    fetchDataLocal();
   }
 
   @override
@@ -34,7 +39,12 @@ class _PdfViewerVacuumState extends State<PdfViewerVacuum> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
+        child: !loading ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [getLoadEffect()],
+          ),
+        ) :Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
           child: Column(
             children: [
@@ -63,8 +73,8 @@ class _PdfViewerVacuumState extends State<PdfViewerVacuum> {
                 height: 30,
               ),
               SizedBox(height: 550,child: PdfContainer(
-               urlPdf: widget.file.path ,isLocal : true,
-                titlePDF: "Certificado Vacuna",)),
+                urlPdf: widget.file.path, isLocal : true,
+                titlePDF: "Documento Identidad",)),
               const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
@@ -95,28 +105,51 @@ class _PdfViewerVacuumState extends State<PdfViewerVacuum> {
     );
   }
 
-  routePDFViewer(BuildContext context){
-    Navigator.push(
-        context ,
-        MaterialPageRoute(
-            builder: (context) =>const SuccesfulVacuumPage()));
-  }
-
-
-  savePDF() async {
-
-    DateTime now = DateTime.now();
-    log("start1 : ${now.toString()}");
-
-    String pathFile = "TV-77100151-JHONCURISARAVIA.pdf";
-    bool result = await documentoRepository.saveDocument(pathFile, widget.file);
-    if(result){
+  fetchDataLocal() async {
+    loginResponse = await localStore.fetchUser();
+    if(loginResponse != null ){
       setState(() {
-        routePDFViewer(context);
+        loading = true;
+        fileName = "TV-${loginResponse!.dni}-${loginResponse!.nombres!.trim()}.pdf";
       });
-    }else{
-      log("error");
     }
   }
 
+  savePDF() async {
+    loading = true;
+    bool result = await documentoRepository.saveDocument(fileName, widget.file);
+
+    if(result){
+      setState(() {
+        loading = false;
+        routePDFViewer(context);
+      });
+    }else{
+      widgetErrorDialog("Volver a intentarlo");
+    }
+
+  }
+
+  routePDFViewer(BuildContext context){
+    Navigator.pushReplacement(
+        context ,
+        MaterialPageRoute(
+            builder: (context) =>const DocumentSuccessPage()));
+  }
+
+  widgetErrorDialog(String message) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

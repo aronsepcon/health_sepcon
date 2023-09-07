@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/carousel_data/manually_controller_slider.dart';
+import 'package:sepcon_salud/page/vacuum/carousel_vacuum.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
+import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
 class InitVacuum extends StatefulWidget {
@@ -13,21 +15,13 @@ class InitVacuum extends StatefulWidget {
 
 class _InitVacuumState extends State<InitVacuum> {
 
-  late File filePdf;
-
   final List<String> imgList = [
     'assets/vaccine/vacuna_1.png',
-    'assets/vaccine/vacuna_2.jpeg',
-    'assets/vaccine/vacuna_2.jpeg',
-    'assets/vaccine/vacuna_2.jpeg',
     'assets/document/document_frontal_4.png',
   ];
   final List<String> titleList = [
     '1. Posición correcta del documento',
-    '2. Tomar foto',
-    '3. Verificar foto',
-    '4. Guardar foto',
-    '5. Empezar a tomar la foto',
+    '2. Empezar a tomar la foto',
   ];
 
 
@@ -95,12 +89,17 @@ class _InitVacuumState extends State<InitVacuum> {
     );
   }
 
-  routePDFViewer(){
-    List<File> listfile = [];
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>ManuallyControllerSlider(imgList: imgList, titleList: titleList,listFile: listfile,numberWidget: 3,)));
+  routePDFViewer() async {
+    LocalStore localStore = LocalStore();
+    bool result = await localStore.deleteKey(Constants.DOCUMENT_VACUUM);
+    if(result){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>CarouselVacuum(
+                imgList: imgList,
+                titleList: titleList,titlePage: "Certificado de vacunas",)));
+    }
   }
 
 }

@@ -59,6 +59,7 @@ dependencies:
       url: https://github.com/AnthonyFisi/opencv_brigthness.git
       ref: 39e14ec8de6ca25d382536a4917986399fac6d9a
   flutter_file_downloader: ^1.1.2
+  file_picker: ^5.5.0
 
 dev_dependencies:
   flutter_test:
@@ -105,6 +106,7 @@ flutter:
      - assets/pasemedico/pase_medico_reversa_1.png
      - assets/pasemedico/pase_medico_reversa_2.PNG
      - assets/dni_proof.jpeg
+     - assets/proof_doc.pdf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

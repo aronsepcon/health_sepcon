@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/document_identidad/pdf_viewer_page.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
@@ -136,10 +135,10 @@ class _PaseMedicoSecondPageState extends State<PaseMedicoSecondPage> {
 
   routePDFViewer(){
 
-    Navigator.push(
+    /*Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PDFViewerPage(file: filePdf )));
+            builder: (context) => PDFViewerPage(file: filePdf )));*/
   }
 
 }

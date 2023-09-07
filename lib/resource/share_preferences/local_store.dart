@@ -40,6 +40,15 @@ class LocalStore{
     }
   }
 
+  deleteUser() async {
+    SharedPreferences prefs = await init();
+    await prefs.remove('NOMBRE');
+    await prefs.remove('CARGO_TRABAJADOR');
+    await prefs.remove('DNI');
+    await prefs.remove('CENTRO_COSTOS');
+    await prefs.remove('CENTRO_COSTOS_ID');
+  }
+
   saveDocuments(Map<String,dynamic> document) async {
     SharedPreferences prefs = await init();
     await prefs.setString('DOCUMENTOS', json.encode(document));
@@ -74,4 +83,36 @@ class LocalStore{
       return vacunaCostosModel;
     }
   }
+
+  Future<bool> saveFilePaths(String typeDocument , List<String> filePaths) async{
+    SharedPreferences prefs = await init();
+    bool result = await prefs.setString(typeDocument, encode(filePaths));
+    if(!result) return false;
+    return true;
+  }
+
+  Future<List<String>> fetchPathsFileByTypeDocument(String typeDocument) async {
+    SharedPreferences prefs = await init();
+    var result = prefs.getString(typeDocument);
+    if( result == null){
+      return [];
+    }else{
+      List<String> pathFiles = decode(result);
+      return pathFiles;
+    }
+  }
+
+  Future<bool> deleteKey(String pattern) async{
+    SharedPreferences prefs = await init();
+    bool  result = await prefs.remove(pattern);
+    return result;
+  }
+
+  static String encode(List<String> pathsPdf) => json.encode(
+    pathsPdf.map<String>((pdf) => pdf.toString()).toList(),
+  );
+
+  static List<String> decode(String pathFiles) => json.decode(pathFiles)
+          .map<String>((item) => item.toString())
+          .toList();
 }

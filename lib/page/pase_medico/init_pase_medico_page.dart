@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/carousel_data/manually_controller_slider.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/general_words.dart';
 
@@ -96,11 +95,12 @@ class _InitPaseMedicoPageState extends State<InitPaseMedicoPage> {
   }
 
   routePDFViewer(){
-    List<File> listfile = [];
+    /*List<File> listfile = [];
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>ManuallyControllerSlider(imgList: imgList, titleList: titleList,listFile: listfile,numberWidget: 4,)));
+  */
   }
 
 }
