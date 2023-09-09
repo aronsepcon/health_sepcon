@@ -50,7 +50,7 @@ class _InitVacuumState extends State<InitVacuum> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Vacunas',
+                      Constants.TITLE_CERTIFICADO_VACUNA,
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],

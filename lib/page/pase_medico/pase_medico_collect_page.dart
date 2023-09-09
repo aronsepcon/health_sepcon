@@ -1,34 +1,35 @@
 
 import 'dart:io';
 
+import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
-import 'package:sepcon_salud/page/document_identidad/document_preview_pdf_page.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sepcon_salud/page/pase_medico/pase_medico_carousel_page.dart';
+import 'package:sepcon_salud/page/pase_medico/pase_medico_preview_pdf_page.dart';
+import 'package:sepcon_salud/page/vacuum/pdf_viewer_vacuum.dart';
+import 'package:sepcon_salud/page/vacuum/preview_vaccine.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:flutter/services.dart' show Uint8List, rootBundle;
 
-class DocumentCollectPage extends StatefulWidget {
+class PaseMedicoCollectPage extends StatefulWidget {
   final int numberPage;
-  const DocumentCollectPage({super.key,required this.numberPage});
+  const PaseMedicoCollectPage({super.key,required this.numberPage});
 
   @override
-  State<DocumentCollectPage> createState() => _DocumentCollectPageState();
+  State<PaseMedicoCollectPage> createState() => _PaseMedicoCollectPageState();
 }
 
-class _DocumentCollectPageState extends State<DocumentCollectPage> {
+class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
 
   late List<String> filePaths;
   late List<File> files = [];
   bool loading = false;
   File filePdf = File("");
-  late double? heightScreen;
-  late double? widthScreen;
-
   @override
   void initState() {
     // TODO: implement initState
@@ -38,34 +39,22 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    heightScreen =  MediaQuery.of(context).size.height;
-    widthScreen =  MediaQuery.of(context).size.width;
-
     return Scaffold(
-      backgroundColor: Colors.white ,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor:  Colors.white,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios,
-                color: Colors.black),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          )
+        backgroundColor: Colors.white,
+        leading: Icon(Icons.arrow_back_ios),
       ),
       body: loading ? Padding(
-        padding: const EdgeInsets.only(left: 25.0,right: 25.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Documento de identidad',
-                  style: TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+                  'Certificado de vacunas y adjuntos',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -100,7 +89,7 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
                 routeDocumentCarouselPage();
               },
               child: Padding(
-                padding: const EdgeInsets.only(bottom:15),
+                padding: const EdgeInsets.only(bottom:5),
                 child: Container(
                   padding: const EdgeInsets.only(top: 15,bottom: 15),
                   //margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -124,7 +113,7 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
                 createPDFNew();
               },
               child: Padding(
-                padding: const EdgeInsets.only(bottom:15),
+                padding: const EdgeInsets.only(bottom:5),
                 child: Container(
                   padding: const EdgeInsets.only(top: 15,bottom: 15),
                   //margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -133,20 +122,12 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
                       color: GeneralColor.mainColor,
                       borderRadius: BorderRadius.circular(8)),
                   child: const Center(
-                      child:  Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.picture_as_pdf_outlined,
+                      child: Text(
+                        'Crear PDF',
+                        style: TextStyle(
                             color: Colors.white,
-                          ),
-                          Text(
-                            'Exportar',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16),
-                          ),
-                        ],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       )),
                 ),
               ),
@@ -184,6 +165,7 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
 
     if(result != null){
       setState(() {
+
         for (var element in result) {
           File file = File(element);
           files.add(file);
@@ -199,13 +181,13 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
     //Change the page orientation to landscape
     final page = document.pages.add();
 
-    page.graphics.drawImage(
-        PdfBitmap(await _readImageData( files[0].path)),
-        const Rect.fromLTWH(0, 0, 500, 350));
+    document.pageSettings.orientation = PdfPageOrientation.landscape;
 
-    page.graphics.drawImage(
-        PdfBitmap(await _readImageData( files[1].path)),
-        const Rect.fromLTWH(0, 360, 500, 350));
+    for(File file in files){
+      document.pages.add().graphics.drawImage(
+          PdfBitmap(await _readImageData( file.path)),
+          const Rect.fromLTWH(0, 0, 750, 500));
+    }
 
     List<int> bytes = document.saveSync();
     document.dispose();
@@ -232,14 +214,14 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => DocumentPreviewPdfPage(file: filePdf)));
+            builder: (context) => PaseMedicoPreviewPdfPage(file: filePdf)));
   }
 
   routeDocumentCarouselPage(){
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>DocumentCarouselPage(
+            builder: (context) => PaseMedicoCarouselPage(
               imgList: Constants.imgListDocumentSecond,
               titleList: Constants.titleListDocumentSecond,
               numberPage : Constants.DOCUMENT_SECOND,)));

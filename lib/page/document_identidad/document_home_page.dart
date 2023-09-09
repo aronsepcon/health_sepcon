@@ -1,27 +1,27 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path/path.dart' as Path;
 import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
+import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
+import 'package:sepcon_salud/resource/model/documento_identidad_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
-import 'package:sepcon_salud/util/widget/pdf_container.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/custom_permission.dart';
 import 'package:sepcon_salud/util/general_color.dart';
+import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
 class DocumentHomePage extends StatefulWidget {
-  final String urlPdf;
-  const DocumentHomePage({super.key,required this.urlPdf});
+  final DocumentoIdentidadModel documentoIdentidadModel;
+
+  const DocumentHomePage({super.key,
+  required this.documentoIdentidadModel});
 
   @override
   State<DocumentHomePage> createState() => _DocumentHomePageState();
 }
 
 class _DocumentHomePageState extends State<DocumentHomePage> {
-
   bool isPermission = false;
   var checkAllPermissions = CheckPermission();
   bool dowloading = false;
@@ -32,6 +32,9 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
   late CancelToken cancelToken;
   var getPathFile = DirectoryPath();
   late LocalStore localStore;
+  late bool isDownloading = false;
+  late double? heightScreen;
+  late double? widthScreen;
 
   @override
   void initState() {
@@ -39,115 +42,140 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
     super.initState();
     initVariable();
     checkPermission();
-    setState(() {
-      fileName = Path.basename(widget.urlPdf);
-    });
-
+    fileName = "DNI-${DateTime.now().millisecondsSinceEpoch}";
   }
 
   @override
   Widget build(BuildContext context) {
+    heightScreen =  MediaQuery.of(context).size.height;
+    widthScreen =  MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
           child: Column(
             children: [
-              const SizedBox(
-                height: 50,
-              ),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.arrow_back_ios),
+                  Text(
+                    'Documento de Identidad',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+
                 ],
               ),
               const SizedBox(
                 height: 10,
               ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Vista previa',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+              statusDocument(),
               const SizedBox(
                 height: 30,
               ),
-              SizedBox(height: 450,child: PdfContainer(
-               urlPdf: widget.urlPdf, isLocal: false,
-                titlePDF: "Documento Identidad",)),
+              SizedBox(
+                  height: heightScreen! * 0.6,
+                  child: PdfContainer(
+                    urlPdf: widget.documentoIdentidadModel.adjunto!,
+                    isLocal: false,
+                    titlePDF: titlePdf(),
+                  )),
               const Expanded(
                 child: SizedBox(),
               ),
-
               GestureDetector(
                 onTap: () {
-                  //DateTime now = DateTime.now();
-                  var fileName = "DNI-${DateTime.now().millisecondsSinceEpoch}";
-                  downloadFile(fileName);
+                  if(!isDownloading){
+                    var fileName = "DNI-${DateTime.now().millisecondsSinceEpoch}";
+                    downloadFile(fileName);
+                    isDownloading = true;
+                  }
                 },
-                child:Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 15, bottom: 15),
-                          //margin: const EdgeInsets.symmetric(horizontal: 15),
-                          //height: 50,
-                          decoration: BoxDecoration(
-                              color: GeneralColor.mainColor,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Center(
-                              child:   dowloading
-                                  ? Stack(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 15, bottom: 15),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: GeneralColor.mainColor),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Center(
+                        child: dowloading
+                            ? Stack(
                                 alignment: Alignment.center,
                                 children: [
                                   CircularProgressIndicator(
                                     value: progress,
                                     strokeWidth: 3,
                                     backgroundColor: Colors.white,
-                                    valueColor: const AlwaysStoppedAnimation<Color>(
-                                        GeneralColor.mainColor),
+                                    valueColor:
+                                        const AlwaysStoppedAnimation<Color>(
+                                            GeneralColor.mainColor),
                                   ),
-                                  Text(
-                                    "${(progress * 100).toStringAsFixed(2)}",
-                                    style: TextStyle(fontSize: 12,color: Colors.white),
+                                  Text("${(progress * 100).toInt()}%",
+                                    style: const TextStyle(
+                                        fontSize: 12, color:  GeneralColor.mainColor,),
                                   )
                                 ],
                               )
-                                  : Text(
-                            'Descargar',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          )),
-                        ),
-                      ),
+                            : const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.download,
+                                    color: GeneralColor.mainColor,
+                                  ),
+                                  Text(
+                                    'Descargar',
+                                    style: TextStyle(
+                                        color: GeneralColor.mainColor,
+                                        fontSize: 16),
+                                  ),
+                                ],
+                              )),
+                  ),
+                ),
               ),
+
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   routeDocumentCarouselPage();
+                  //widgetDirectoryDialog("prueba");
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: Container(
-                    padding: const EdgeInsets.only(top: 15,bottom: 15),
+                    padding: const EdgeInsets.only(top: 15, bottom: 15),
                     //margin: const EdgeInsets.symmetric(horizontal: 15),
                     //height: 50,
                     decoration: BoxDecoration(
                         color: GeneralColor.mainColor,
                         borderRadius: BorderRadius.circular(8)),
                     child: const Center(
-                        child: Text(
-                          'Actualizar documento',
-                          style: TextStyle(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.refresh,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
+                            ),
+                            Text(
+                              'Actualizar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16),
+                            ),
+                          ],
                         )),
                   ),
                 ),
@@ -159,7 +187,7 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
     );
   }
 
-  initVariable(){
+  initVariable() {
     localStore = LocalStore();
   }
 
@@ -168,10 +196,11 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>DocumentCarouselPage(
-              imgList: Constants.imgListDocumentFirst,
-              titleList: Constants.titleListDocumentFirst,
-              numberPage: Constants.DOCUMENT_FIRST,)));
+            builder: (context) => DocumentCarouselPage(
+                  imgList: Constants.imgListDocumentFirst,
+                  titleList: Constants.titleListDocumentFirst,
+                  numberPage: Constants.DOCUMENT_FIRST,
+                )));
   }
 
   checkPermission() async {
@@ -183,54 +212,76 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
     }
   }
 
-  downloadFile(String name){
+  downloadFile(String name) {
     print(name.replaceAll(" ", ""));
     FileDownloader.downloadFile(
-        url: widget.urlPdf,
+        url: widget.documentoIdentidadModel.adjunto!,
         name: name,
         onProgress: (String? fileName, double progressInput) {
           setState(() {
             dowloading = true;
-            progress = progressInput;
+            progress = (progressInput)/ 100.00;
           });
         },
         onDownloadCompleted: (String path) {
           var splitMessage = path.split("/");
-          var message = splitMessage[splitMessage.length-1];
+          var message = splitMessage[splitMessage.length - 1];
           setState(() {
             dowloading = false;
+            isDownloading = false;
             widgetDirectoryDialog(message);
+            openfile(path);
           });
           print('FILE DOWNLOADED TO PATH: $path');
         },
         onDownloadError: (String error) {
           print('DOWNLOAD ERROR: $error');
         });
-
   }
 
   widgetDirectoryDialog(String message) {
     return showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: SizedBox(
-            height: 100,
+      builder: (_) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: Container(
+            height: heightScreen! * 0.3,
+            decoration:  BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8)),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: GestureDetector(
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: Icon(Icons.arrow_back_ios)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5,),
+                Icon(Icons.check_circle,color: GeneralColor.greenColor,size: 50,),
                 const Text(
-                  "Verificar documento en la carpeta Descargados",
+                  "El PDF fue almacenado en la carpeta de descarga como :",
                   style: TextStyle(
                     fontSize: 16,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   message,
-                  style: TextStyle(
-                    fontSize: 16,fontWeight: FontWeight.bold
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
+
               ],
             ),
           ),
@@ -244,6 +295,26 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
     print("fff $path");
   }
 
+  String titlePdf(){
+    List<String> splitUrl = widget.documentoIdentidadModel.adjunto!.split("/");
+    return splitUrl.last;
+  }
+
+  Widget statusDocument(){
+    if(widget.documentoIdentidadModel.validated!){
+      return const Row(
+        children: [
+          Icon(Icons.check_circle,color: GeneralColor.greenColor,),
+          Text("Verificado",style: TextStyle(color: GeneralColor.greenColor),)
+        ],
+      );
+    }else{
+      return const Row(
+        children: [
+          Icon(Icons.check_circle,color: Colors.amber,),
+          Text("Pendiente de verificar",style: TextStyle(color: Colors.amber,),)
+        ],
+      );
+    }
+  }
 }
-
-

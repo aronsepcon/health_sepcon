@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
+import 'package:sepcon_salud/page/pase_medico/pase_medico_carousel_page.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/general_words.dart';
 
 
-class DocumentInitPage extends StatefulWidget {
-  const DocumentInitPage({super.key});
+class PaseMedicoInitPage extends StatefulWidget {
+  const PaseMedicoInitPage({super.key});
 
   @override
-  State<DocumentInitPage> createState() => _DocumentInitPageState();
+  State<PaseMedicoInitPage> createState() => _PaseMedicoInitPageState();
 }
 
-class _DocumentInitPageState extends State<DocumentInitPage> {
+class _PaseMedicoInitPageState extends State<PaseMedicoInitPage> {
 
   late LocalStore localStore;
-  late double? heightScreen;
-  late double? widthScreen;
 
   @override
   void initState() {
@@ -27,21 +25,11 @@ class _DocumentInitPageState extends State<DocumentInitPage> {
   }
   @override
   Widget build(BuildContext context) {
-
-    heightScreen =  MediaQuery.of(context).size.height;
-    widthScreen =  MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
+        leading: const Icon(Icons.arrow_back_ios),
       ),
       body: SafeArea(
           child: Padding(
@@ -55,7 +43,7 @@ class _DocumentInitPageState extends State<DocumentInitPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      GeneralWord.identityDocumentHome,
+                      "Pase medico",
                       style: TextStyle(fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
@@ -64,8 +52,8 @@ class _DocumentInitPageState extends State<DocumentInitPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Image(image:AssetImage('assets/empty_document_identity.png'),
-                  height: heightScreen! * 0.6 ,width: widthScreen! *0.8,),
+                const Image(image:AssetImage('assets/empty_document_identity.png'),
+                  height: 400,width: 400,),
 
                 const Expanded(
                   child: SizedBox(),
@@ -88,6 +76,7 @@ class _DocumentInitPageState extends State<DocumentInitPage> {
                             'Iniciar',
                             style: TextStyle(
                                 color: Colors.white,
+                                fontWeight: FontWeight.bold,
                                 fontSize: 16),
                           )),
                     ),
@@ -107,7 +96,7 @@ class _DocumentInitPageState extends State<DocumentInitPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>DocumentCarouselPage(
+            builder: (context) => PaseMedicoCarouselPage(
               imgList: Constants.imgListDocumentFirst,
               titleList: Constants.titleListDocumentFirst,
               numberPage : Constants.DOCUMENT_FIRST,)));

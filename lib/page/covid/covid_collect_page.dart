@@ -7,9 +7,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf_manipulator/pdf_manipulator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sepcon_salud/page/covid/pdf_viewer_covid.dart';
-import 'package:sepcon_salud/page/covid/preview_covid_page.dart';
+import 'package:sepcon_salud/page/covid/covid_filter_page.dart';
+import 'package:sepcon_salud/page/covid/covid_preview_pdf_page.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
@@ -17,14 +18,14 @@ import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class CollectPhotoCovidPage extends StatefulWidget {
-  const CollectPhotoCovidPage({super.key});
+class CovidCollectPage extends StatefulWidget {
+  const CovidCollectPage({super.key});
 
   @override
-  State<CollectPhotoCovidPage> createState() => _CollectPhotoCovidPageState();
+  State<CovidCollectPage> createState() => _CovidCollectPageState();
 }
 
-class _CollectPhotoCovidPageState extends State<CollectPhotoCovidPage> {
+class _CovidCollectPageState extends State<CovidCollectPage> {
 
   late List<String> filePaths;
   late List<File> files = [];
@@ -207,7 +208,9 @@ class _CollectPhotoCovidPageState extends State<CollectPhotoCovidPage> {
     if (!mounted) return;
 
     setState(() {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PreviewCovidPage(file: File(imagePath),titlePage:"Evidencia de vacunas",)));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) =>
+              CovidFilterPage(file: File(imagePath),titlePage:"Evidencia de vacunas",)));
     });
 
   }
@@ -241,9 +244,11 @@ class _CollectPhotoCovidPageState extends State<CollectPhotoCovidPage> {
     document.pageSettings.orientation = PdfPageOrientation.landscape;
 
     for(File file in files){
-      document.pages.add().graphics.drawImage(
-          PdfBitmap(await _readImageData( file.path)),
-          const Rect.fromLTWH(0, 0, 750, 500));
+      if(!file.path.contains(".pdf")){
+        document.pages.add().graphics.drawImage(
+            PdfBitmap(await _readImageData( file.path)),
+            const Rect.fromLTWH(0, 0, 750, 500));
+      }
     }
 
 
@@ -265,16 +270,33 @@ class _CollectPhotoCovidPageState extends State<CollectPhotoCovidPage> {
     filePdf = File("${output.path}/example${now.toString().trim()}.pdf");
     File file = await filePdf.writeAsBytes(bytes, flush: true);
     if(file.existsSync()){
-      routePDFViewer();
+      String? mergePath = await mergePaths(file.path);
+      if(mergePath!= null){
+        routePDFViewer(mergePath);
+      }
     }
   }
 
-  routePDFViewer(){
+  Future<String?> mergePaths(String mergeFilePhoto) async {
+    List<String> filePdf = [];
+    for(File file in files){
+      if(file.path.contains(".pdf")){
+        filePdf.add(file.path);
+      }
+    }
+    filePdf.add(mergeFilePhoto);
+    String? mergedPdfPath = await PdfManipulator().mergePDFs(
+      params: PDFMergerParams(pdfsPaths: filePdf),
+    );
+    return mergedPdfPath;
+  }
 
+  routePDFViewer(String path){
+    File tempFile = File(path);
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PdfViewerCovid(file: filePdf )));
+            builder: (context) => CovidPreviewPdfPage(file: tempFile )));
   }
 
   findGalleryPhone() async {
@@ -298,7 +320,7 @@ class _CollectPhotoCovidPageState extends State<CollectPhotoCovidPage> {
         Navigator.pushReplacement(
             context ,
             MaterialPageRoute(
-                builder: (_) => CollectPhotoCovidPage()));
+                builder: (_) => CovidCollectPage()));
       }
 
     } else {

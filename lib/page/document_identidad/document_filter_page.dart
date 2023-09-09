@@ -13,17 +13,17 @@ import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class DocumentFirstPage extends StatefulWidget {
+class DocumentFilterPage extends StatefulWidget {
   final File file;
   final int numberPage;
 
-  const DocumentFirstPage({super.key, required this.file,required this.numberPage });
+  const DocumentFilterPage({super.key, required this.file,required this.numberPage });
 
   @override
-  State<DocumentFirstPage> createState() => _DocumentFirstPageState();
+  State<DocumentFilterPage> createState() => _DocumentFilterPageState();
 }
 
-class _DocumentFirstPageState extends State<DocumentFirstPage> {
+class _DocumentFilterPageState extends State<DocumentFilterPage> {
 
   late bool loading = false;
   String newPhoto = "";
@@ -38,6 +38,9 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
 
   late String viewPhoto;
   late LocalStore localStore;
+  late double? heightScreen;
+  late double? widthScreen;
+
 
   @override
   void initState() {
@@ -48,11 +51,22 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    heightScreen =  MediaQuery.of(context).size.height;
+    widthScreen =  MediaQuery.of(context).size.width;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: loading ? Colors.black : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: Icon(Icons.arrow_back_ios),
+        backgroundColor: loading ? Colors.black: Colors.white,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: IconButton(
+              icon: Icon(Icons.arrow_back_ios,
+                color: loading ? Colors.white : Colors.black,),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          )
       ),
       body: SafeArea(
           child: loading ?
@@ -60,33 +74,31 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
             padding: const EdgeInsets.only(left: 25, right: 25),
             child: Column(
               children: [
-
                 const SizedBox(
                   height: 10,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Primera cara',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      widget.numberPage == 1 ? "Frente" : "Posterior",
+                      style: const TextStyle(fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
 
                 Image.file(
                   File(viewPhoto),
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: heightScreen! * 0.3,
                 ),
 
-
                 const SizedBox(height: 20,),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     // normal
                     GestureDetector(
                       onTap: (){
@@ -96,15 +108,29 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
                           });
                         });
                       },
-                      child:Column(
-                        children: [
-                          Image.file(
-                            File(pathNormalFile),
-                            height: 80,
-                            width: 80,
-                          ),
-                          Text('Normal'),
-                        ],
+                      child:Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Stack(
+                          children: [
+                            Image.file(
+                              File(pathNormalFile),
+                              height: 80,
+                              width: widthScreen! * 0.28,
+                            ),
+                            Container(
+                              width: widthScreen! * 0.28,
+                              color: Colors.black38,
+                              height: 20,
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 5),
+                                child: Text('Normal',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white,
+                                  ),),
+                              ),
+                            )
+                          ],
+                        ),
                       )
                     ),
 
@@ -116,15 +142,26 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
                         });
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Column(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Stack(
                           children: [
                             Image.file(
                               File(pathClaroFile),
                               height: 80,
-                              width: 80,
+                              width: widthScreen! * 0.28,
                             ),
-                            Text('Aclarar'),
+                            Container(
+                              width: widthScreen! * 0.28,
+                              color: Colors.black38,
+                              height: 20,
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 5),
+                                child: Text('Aclarar',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white,
+                                  ),),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -138,52 +175,68 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
                         });
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Column(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Stack(
                           children: [
                             Image.file(
                               File(pathMagicFile),
-                              height: 80,
-                              width: 80,
+                              width: widthScreen! * 0.28,
                             ),
-                            Text('Magico'),
+                            Container(
+                              width: widthScreen! * 0.28,
+                              color: Colors.black38,
+                              height: 20,
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 5),
+                                child: Text('Mágico',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white,
+                                  ),),
+                              ),
+                            )
                           ],
                         ),
                       ),
                     ),
-
-
                   ],
                 ),
+
                 const Expanded(
                   child: SizedBox(),
                 ),
 
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     routeDocumentCarouselPage();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom:30),
+                    padding: const EdgeInsets.only(bottom: 15),
                     child: Container(
-                      padding: const EdgeInsets.only(top: 15,bottom: 15),
-                      //margin: const EdgeInsets.symmetric(horizontal: 15),
-                      //height: 50,
+                      padding: const EdgeInsets.only(top: 15, bottom: 15),
                       decoration: BoxDecoration(
-                          color: GeneralColor.mainColor,
+                          color: Colors.white,
+                          border: Border.all(color: GeneralColor.mainColor,
+                              width: 2),
                           borderRadius: BorderRadius.circular(8)),
                       child: const Center(
-                          child: Text(
-                            'Volver a tomar foto',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.photo_camera,
+                                color: GeneralColor.mainColor,
+                              ),
+                              Text(
+                                'Reintentar',
+                                style: TextStyle(
+                                    color: GeneralColor.mainColor,
+                                    fontSize: 16),
+                              ),
+                            ],
                           )),
                     ),
                   ),
                 ),
-
 
                 GestureDetector(
                   onTap: (){
@@ -200,15 +253,15 @@ class _DocumentFirstPageState extends State<DocumentFirstPage> {
                           borderRadius: BorderRadius.circular(8)),
                       child: const Center(
                           child: Text(
-                            'Siguiente',
+                            'Confirmar',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
                                 fontSize: 16),
                           )),
                     ),
                   ),
                 ),
+
               ],
             ),
           ) : Center(

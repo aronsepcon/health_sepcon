@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:sepcon_salud/page/covid/covid_success_page.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 import 'package:sepcon_salud/page/vacuum/successful_vacuum_page.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
@@ -10,17 +11,17 @@ import 'package:sepcon_salud/resource/repository/documento_repository.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class PdfViewerCovid extends StatefulWidget {
+class CovidPreviewPdfPage extends StatefulWidget {
   final File file;
 
-  const PdfViewerCovid({super.key,required this.file});
+  const CovidPreviewPdfPage({super.key,required this.file});
 
   @override
-  State<PdfViewerCovid> createState() => _PdfViewerCovidState();
+  State<CovidPreviewPdfPage> createState() => _CovidPreviewPdfPageState();
 }
 
 
-class _PdfViewerCovidState extends State<PdfViewerCovid> {
+class _CovidPreviewPdfPageState extends State<CovidPreviewPdfPage> {
   late DocumentoRepository documentoRepository;
   late LocalStore localStore;
   late LoginResponse? loginResponse;
@@ -106,13 +107,13 @@ class _PdfViewerCovidState extends State<PdfViewerCovid> {
     Navigator.push(
         context ,
         MaterialPageRoute(
-            builder: (context) =>const SuccesfulVacuumPage()));
+            builder: (context) =>const CovidSuccessPage()));
   }
   fetchDataLocal() async {
     loginResponse = await localStore.fetchUser();
     if(loginResponse != null ){
       setState(() {
-        fileName = "TV-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
+        fileName = "COVID19-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
       });
     }
   }

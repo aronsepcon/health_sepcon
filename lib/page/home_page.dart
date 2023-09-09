@@ -5,7 +5,8 @@ import 'package:sepcon_salud/page/menu_bottom_navigation/perfil_view.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final bool isRoot;
+  const HomePage({super.key,required this.isRoot});
 
   @override
   State<HomePage> createState() => _HomePageState();

@@ -3,21 +3,20 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/covid/carousel_covid_page.dart';
-import 'package:sepcon_salud/page/covid/collect_photo_covid_page.dart';
-import 'package:sepcon_salud/page/covid/preview_covid_page.dart';
+import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
+import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class InitCovidHome extends StatefulWidget {
-  const InitCovidHome({super.key});
+class CovidInitPage extends StatefulWidget {
+  const CovidInitPage({super.key});
 
   @override
-  State<InitCovidHome> createState() => _InitCovidHomeState();
+  State<CovidInitPage> createState() => _CovidInitPageState();
 }
 
-class _InitCovidHomeState extends State<InitCovidHome> {
+class _CovidInitPageState extends State<CovidInitPage> {
 
   final List<String> imgList = [
     'assets/vaccine/vacuna_1.png',
@@ -97,7 +96,7 @@ class _InitCovidHomeState extends State<InitCovidHome> {
     if(result){
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) =>
-              CarouselCovidPage(imgList: imgList, titleList: titleList, titlePage: "COVID documentos")));
+              CovidCarouselPage(imgList: imgList, titleList: titleList, titlePage: "COVID documentos")));
 
     }
   }
@@ -175,7 +174,7 @@ class _InitCovidHomeState extends State<InitCovidHome> {
         Navigator.pushReplacement(
             context ,
             MaterialPageRoute(
-                builder: (_) => CollectPhotoCovidPage()));
+                builder: (_) => CovidCollectPage()));
       }
 
     } else {

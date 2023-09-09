@@ -60,6 +60,8 @@ dependencies:
       ref: 39e14ec8de6ca25d382536a4917986399fac6d9a
   flutter_file_downloader: ^1.1.2
   file_picker: ^5.5.0
+  pdf_manipulator: ^0.5.9
+  liquid_progress_indicator_v2: ^0.5.0
 
 dev_dependencies:
   flutter_test:

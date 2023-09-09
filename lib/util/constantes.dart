@@ -9,6 +9,7 @@ class Constants{
   static const String DOCUMENT_IDENTIDAD = "DOCUMENT_IDENTIDAD";
   static const String DOCUMENT_VACUUM = "DOCUMENT_VACUUM";
   static const String COVID = "COVID";
+  static const String TITLE_CERTIFICADO_VACUNA = 'Certificado de Vacunas';
 
   static final List<String> imgListDocumentFirst = [
     'assets/document/document_frontal_0.png',
@@ -27,5 +28,4 @@ class Constants{
     '1. Posición correcta del documento',
     '2. Empezar a tomar la foto',
   ];
-
 }

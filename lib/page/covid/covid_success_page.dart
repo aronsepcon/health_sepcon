@@ -1,16 +1,17 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/covid/home_covid_page.dart';
-import 'package:sepcon_salud/page/vacuum/home_vacuum.dart';
+import 'package:sepcon_salud/page/home_page.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class SuccesfulCovidPage extends StatefulWidget {
-  const SuccesfulCovidPage({super.key});
+class CovidSuccessPage extends StatefulWidget {
+  const CovidSuccessPage({super.key});
 
   @override
-  State<SuccesfulCovidPage> createState() => _SuccesfulCovidPageState();
+  State<CovidSuccessPage> createState() => _CovidSuccessPageState();
 }
 
-class _SuccesfulCovidPageState extends State<SuccesfulCovidPage> {
+class _CovidSuccessPageState extends State<CovidSuccessPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,9 +53,10 @@ class _SuccesfulCovidPageState extends State<SuccesfulCovidPage> {
   }
 
   routePDFViewer(BuildContext context){
+    log("COVID HOME");
     Navigator.push(
         context ,
         MaterialPageRoute(
-            builder: (context) =>const CovidHomePage(urlPdf: "")));
+            builder: (context) =>const HomePage(isRoot: false,)));
   }
 }

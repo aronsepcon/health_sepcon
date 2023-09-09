@@ -17,15 +17,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const LoginPage());
 
       case "/homePage":
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(builder: (_) => const HomePage(isRoot: false,));
 
       case "/documentoIdentidadInit":
         return MaterialPageRoute(builder: (_) =>
         const DocumentInitPage());
-
-      case "/documentoIdentidadHome":
-        return MaterialPageRoute(builder: (_) =>
-        const DocumentHomePage(urlPdf: "",));
 
       default:
         return _errorRoute();

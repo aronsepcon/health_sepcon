@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -6,23 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:opencv_brightness/edge_detection.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/document_identidad/document_preview_pdf_page.dart';
+import 'package:sepcon_salud/page/pase_medico/pase_medico_carousel_page.dart';
+import 'package:sepcon_salud/page/pase_medico/pase_medico_collect_page.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/edge_detection/edge_detector.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
+import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class DocumentSecondPage extends StatefulWidget {
-  final List<File> file;
+class PaseMedicoFilterPage extends StatefulWidget {
+  final File file;
+  final int numberPage;
 
-  const DocumentSecondPage({super.key,required this.file});
+  const PaseMedicoFilterPage({super.key, required this.file,required this.numberPage });
 
   @override
-  State<DocumentSecondPage> createState() => _DocumentSecondPageState();
+  State<PaseMedicoFilterPage> createState() => _PaseMedicoFilterPageState();
 }
 
-class _DocumentSecondPageState extends State<DocumentSecondPage> {
-  late File filePdf;
+class _PaseMedicoFilterPageState extends State<PaseMedicoFilterPage> {
+
   late bool loading = false;
   String newPhoto = "";
 
@@ -35,14 +37,15 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
   late String pathMagicFile;
 
   late String viewPhoto;
+  late LocalStore localStore;
 
   @override
   void initState() {
     super.initState();
-    //createPDFNew(widget.file);
-    filePdf = File('');
+    initVariable();
     createFiles();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,31 +55,28 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
         leading: Icon(Icons.arrow_back_ios),
       ),
       body: SafeArea(
-          child: loading ? Padding(
+          child: loading ?
+          Padding(
             padding: const EdgeInsets.only(left: 25, right: 25),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+
+                const SizedBox(
+                  height: 10,
+                ),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Segunda cara',
+                      'Primera cara',
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 20,),
-
-                Image.file(
-                  File(widget.file[0].path),
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                ),
                 Image.file(
                   File(viewPhoto),
-                  height: MediaQuery.of(context).size.height * 0.25,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   width: MediaQuery.of(context).size.width * 0.9,
                 ),
 
@@ -89,23 +89,23 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
 
                     // normal
                     GestureDetector(
-                        onTap: (){
+                      onTap: (){
+                        setState(() {
                           setState(() {
-                            setState(() {
-                              viewPhoto = pathNormalFile;
-                            });
+                            viewPhoto = pathNormalFile;
                           });
-                        },
-                        child:Column(
-                          children: [
-                            Image.file(
-                              File(pathNormalFile),
-                              height: 80,
-                              width: 80,
-                            ),
-                            Text('Normal'),
-                          ],
-                        )
+                        });
+                      },
+                      child:Column(
+                        children: [
+                          Image.file(
+                            File(pathNormalFile),
+                            height: 80,
+                            width: 80,
+                          ),
+                          Text('Normal'),
+                        ],
+                      )
                     ),
 
                     // claro
@@ -159,41 +159,9 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
                   child: SizedBox(),
                 ),
 
-
                 GestureDetector(
                   onTap: (){
-                    //routePDFViewer();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom:5),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 15,bottom: 15),
-                      //margin: const EdgeInsets.symmetric(horizontal: 15),
-                      //height: 50,
-                      decoration: BoxDecoration(
-                          color: GeneralColor.mainColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: const Center(
-                          child: Text(
-                            'volver a tomar foto',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          )),
-                    ),
-                  ),
-                ),
-
-
-                GestureDetector(
-                  onTap: (){
-                    widget.file[1] = File(viewPhoto);
-                    createPDFNew(widget.file);
-                    //routePDFViewer();
-                    // imgFromCamera(context);
-                    // routeSecondPage(context);
-                    //getData();
+                    routeDocumentCarouselPage();
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom:30),
@@ -206,7 +174,33 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
                           borderRadius: BorderRadius.circular(8)),
                       child: const Center(
                           child: Text(
-                            'Generar PDF',
+                            'Volver a tomar foto',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          )),
+                    ),
+                  ),
+                ),
+
+
+                GestureDetector(
+                  onTap: (){
+                    saveLocalStoragePaths();
+                    },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom:30),
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 15,bottom: 15),
+                      //margin: const EdgeInsets.symmetric(horizontal: 15),
+                      //height: 50,
+                      decoration: BoxDecoration(
+                          color: GeneralColor.mainColor,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: const Center(
+                          child: Text(
+                            'Siguiente',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -222,55 +216,43 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [getLoadEffect()],
             ),
-          )),
+          )
+      ),
     );
   }
 
-  createPDFNew(List<File> listFile) async {
-    PdfDocument document = PdfDocument();
-    final page = document.pages.add();
-
-    page.graphics.drawImage(
-        PdfBitmap(await _readImageData( listFile[0].path)),
-        const Rect.fromLTWH(0, 0, 500, 350));
-
-    page.graphics.drawImage(
-        PdfBitmap(await _readImageData( listFile[1].path)),
-        const Rect.fromLTWH(0, 360, 500, 350));
-
-    List<int> bytes = document.saveSync();
-    document.dispose();
-    saveAndLaunchFile(bytes);
+  initVariable(){
+    localStore = LocalStore();
   }
 
-  Future<Uint8List> _readImageData(String name) async {
-    File imageFile = File(name);
-    return imageFile.readAsBytes();
-
-  }
-
-  Future<void> saveAndLaunchFile(List<int> bytes) async {
-    DateTime now = DateTime.now();
-    final output = await getTemporaryDirectory();
-    filePdf = File("${output.path}/example${now.toString().trim()}.pdf");
-    File tempFile =await filePdf.writeAsBytes(bytes, flush: true);
-
-    if(tempFile.existsSync()){
-      routePDFViewer(filePdf);
+  saveLocalStoragePaths() async {
+    List<String> tempList = await localStore.fetchPathsFileByTypeDocument(Constants.DOCUMENT_IDENTIDAD);
+    tempList.add(viewPhoto);
+    bool result = await localStore.saveFilePaths(Constants.DOCUMENT_IDENTIDAD,tempList);
+    if(result){
+      routeDocumentCollectPage();
     }
   }
 
+  routeDocumentCarouselPage(){
+    Navigator.pushReplacement(
+        context ,
+        MaterialPageRoute(
+            builder: (_) => PaseMedicoCarouselPage(
+                imgList: Constants.imgListDocumentFirst,
+                titleList: Constants.titleListDocumentFirst,
+                numberPage: Constants.DOCUMENT_FIRST)));
+  }
 
-  routePDFViewer(File filePDF){
-
+  routeDocumentCollectPage(){
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => DocumentPreviewPdfPage(file: filePDF )));
+            builder: (context) => PaseMedicoCollectPage(numberPage: widget.numberPage,)));
   }
 
   createFiles() async {
-    Uint8List bytes = widget.file[1].readAsBytesSync();
+    Uint8List bytes = widget.file.readAsBytesSync();
 
     final Directory extDir = await getTemporaryDirectory();
     final String dirPath = '${extDir.path}/Pictures/flutter_test';
@@ -318,4 +300,5 @@ class _DocumentSecondPageState extends State<DocumentSecondPage> {
       loading = true;
     });
   }
+
 }

@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:opencv_brightness/edge_detection.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/covid/collect_photo_covid_page.dart';
-import 'package:sepcon_salud/page/vacuum/collect_photo_vacuum.dart';
+import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
 import 'package:sepcon_salud/page/vacuum/pdf_viewer_vacuum.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
@@ -15,17 +14,17 @@ import 'package:sepcon_salud/util/edge_detection/edge_detector.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class PreviewCovidPage extends StatefulWidget {
+class CovidFilterPage extends StatefulWidget {
   final File file;
   final String titlePage;
 
-  const PreviewCovidPage({super.key,required this.file,required this.titlePage});
+  const CovidFilterPage({super.key,required this.file,required this.titlePage});
 
   @override
-  State<PreviewCovidPage> createState() => _PreviewCovidPageState();
+  State<CovidFilterPage> createState() => _CovidFilterPageState();
 }
 
-class _PreviewCovidPageState extends State<PreviewCovidPage> {
+class _CovidFilterPageState extends State<CovidFilterPage> {
 
   late File _image;
   List<File> listFile = [];
@@ -189,7 +188,7 @@ class _PreviewCovidPageState extends State<PreviewCovidPage> {
                       Navigator.pushReplacement(
                           context ,
                           MaterialPageRoute(
-                              builder: (_) => CollectPhotoCovidPage()));
+                              builder: (_) => CovidCollectPage()));
                     }
 
 

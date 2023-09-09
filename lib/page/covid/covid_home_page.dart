@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as Path;
-import 'package:sepcon_salud/page/covid/carousel_covid_page.dart';
-import 'package:sepcon_salud/page/covid/collect_photo_covid_page.dart';
+import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
+import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
@@ -176,7 +176,7 @@ class _CovidHomePageState extends State<CovidHomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>CarouselCovidPage(
+            builder: (context) => CovidCarouselPage(
               titlePage: "COVID",
               imgList: imgList,
               titleList: titleList)));
@@ -328,7 +328,7 @@ class _CovidHomePageState extends State<CovidHomePage> {
         Navigator.pushReplacement(
             context ,
             MaterialPageRoute(
-                builder: (_) => CollectPhotoCovidPage()));
+                builder: (_) => CovidCollectPage()));
       }
 
     } else {

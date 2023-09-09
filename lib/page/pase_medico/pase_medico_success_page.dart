@@ -6,14 +6,14 @@ import 'package:sepcon_salud/resource/repository/vacuna_repository.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class DocumentSuccessPage extends StatefulWidget {
-  const DocumentSuccessPage({super.key});
+class PaseMedicoSuccessPage extends StatefulWidget {
+  const PaseMedicoSuccessPage({super.key});
 
   @override
-  State<DocumentSuccessPage> createState() => _DocumentSuccessPageState();
+  State<PaseMedicoSuccessPage> createState() => _PaseMedicoSuccessPageState();
 }
 
-class _DocumentSuccessPageState extends State<DocumentSuccessPage> {
+class _PaseMedicoSuccessPageState extends State<PaseMedicoSuccessPage> {
 
   @override
   Widget build(BuildContext context) {

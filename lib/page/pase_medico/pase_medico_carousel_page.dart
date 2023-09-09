@@ -1,47 +1,52 @@
+
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sepcon_salud/page/covid/preview_covid_page.dart';
+import 'package:sepcon_salud/page/pase_medico/pase_medico_filter_page.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class CarouselCovidPage extends StatefulWidget {
+class PaseMedicoCarouselPage extends StatefulWidget {
   final List<String> imgList;
   final List<String> titleList;
-  final String titlePage;
-  const CarouselCovidPage({super.key,required this.imgList, required this.titleList,required this.titlePage});
+  final int numberPage;
+
+  const PaseMedicoCarouselPage({super.key,
+    required this.imgList, required this.titleList, required this.numberPage});
 
 
   @override
-  State<CarouselCovidPage> createState() => _CarouselCovidPageState();
+  State<PaseMedicoCarouselPage> createState() => _PaseMedicoCarouselPageState();
 }
 
-class _CarouselCovidPageState extends State<CarouselCovidPage> {
+class _PaseMedicoCarouselPageState extends State<PaseMedicoCarouselPage> {
 
-  String? _imagePath;
   late final EdgeDetection edgeDetection;
-  final CarouselController _controller = CarouselController();
-  int indexChange = 0 ;
-  late String titleButton = "Siguiente";
-  List<File> listFileLocal = [];
-  final int INDEX_DOCUMENT = 1;
+  late final CarouselController _controller;
+  late int indexChange, INDEX_DOCUMENT;
+  late String titleButton ;
+
+  @override
+  void initState() {
+    super.initState();
+    initVariable();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          leading: Icon(Icons.arrow_back_ios),
+          leading: const Icon(Icons.arrow_back_ios),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.only(left: 25,right: 25),
+              padding: const EdgeInsets.only(left: 25,right: 25),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -53,9 +58,11 @@ class _CarouselCovidPageState extends State<CarouselCovidPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width*0.6,
-                        child: Text(widget.titleList[indexChange],style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold), maxLines: 2,overflow: TextOverflow.ellipsis,),
+                        child: Text(widget.titleList[indexChange],
+                          style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
+                          maxLines: 2,overflow: TextOverflow.ellipsis,),
                       )
                     ],
                   ),
@@ -64,7 +71,9 @@ class _CarouselCovidPageState extends State<CarouselCovidPage> {
                   ),
                   CarouselSlider(
                     items: widgetCarousel(),
-                    options: CarouselOptions(enlargeCenterPage: true, height:MediaQuery.of(context).size.height*0.7,onPageChanged: (index,reason){
+                    options: CarouselOptions(enlargeCenterPage: true,
+                        height:MediaQuery.of(context).size.height*0.7,
+                        onPageChanged: (index,reason){
                       setState(() {
                         indexChange = index;
                         if(index == INDEX_DOCUMENT){
@@ -93,11 +102,15 @@ class _CarouselCovidPageState extends State<CarouselCovidPage> {
                           borderRadius: BorderRadius.circular(8)),
                       child: Center(
                           child: Padding(
-                            padding: EdgeInsets.only(left: 10,right: 10),
+                            padding: const EdgeInsets.only(left: 10,right: 10),
                             child: Row(
-                              mainAxisAlignment: indexChange == 4 ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: indexChange == 4 ?
+                              MainAxisAlignment.center
+                                  : MainAxisAlignment.spaceBetween,
                               children: [
-                                indexChange == 4 ? Icon(Icons.photo_camera,color: Colors.white,) : Container(),
+                                indexChange == INDEX_DOCUMENT ?
+                                const Icon(Icons.photo_camera,color: Colors.white,)
+                                    : Container(),
                                 Text(
                                   titleButton,
                                   style: const TextStyle(
@@ -105,7 +118,9 @@ class _CarouselCovidPageState extends State<CarouselCovidPage> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
                                 ),
-                                indexChange == 4 ? Container() : Icon(Icons.arrow_forward,color: Colors.white,)
+                                indexChange == INDEX_DOCUMENT ?
+                                Container() : const
+                                Icon(Icons.arrow_forward,color: Colors.white,)
                               ],
                             ),
                           )),
@@ -120,7 +135,6 @@ class _CarouselCovidPageState extends State<CarouselCovidPage> {
 
   List<Widget> widgetCarousel(){
     List<Widget> listWidget = [];
-    int index = 0;
     for(String path in widget.imgList){
       Widget container = Container(
         child: Container(
@@ -138,6 +152,13 @@ class _CarouselCovidPageState extends State<CarouselCovidPage> {
       listWidget.add(container);
     }
     return listWidget;
+  }
+
+  initVariable(){
+    indexChange = 0 ;
+    titleButton = "Siguiente";
+    _controller = CarouselController();
+    INDEX_DOCUMENT = 1;
   }
 
   Future<void> getImageFromCamera(BuildContext buildContext) async {
@@ -178,12 +199,21 @@ class _CarouselCovidPageState extends State<CarouselCovidPage> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    setState(() {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) =>
-              PreviewCovidPage(file: File(imagePath),titlePage: widget.titlePage,)));
-    });
+    routePaseMedicoFirstPage(imagePath, context);
+  }
 
+  routePaseMedicoFirstPage(String path,BuildContext context){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PaseMedicoFilterPage(file: File(path), numberPage: widget.numberPage,)));
+  }
+
+
+  deleteTemporaryDirectory() async {
+    Directory dir = await getTemporaryDirectory();
+    dir.deleteSync(recursive: true);
+    dir.create();
   }
 
 }

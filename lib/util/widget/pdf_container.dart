@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PdfContainer extends StatefulWidget {
@@ -33,7 +34,7 @@ class _PdfContainerState extends State<PdfContainer> {
       backgroundColor: Colors.black12,
       appBar: AppBar(
         leading: const Icon(Icons.picture_as_pdf),
-        backgroundColor: Colors.white10,
+        backgroundColor: Colors.white24,
         title: Text(widget.titlePDF),
       ),
       body:Container(
@@ -53,4 +54,5 @@ class _PdfContainerState extends State<PdfContainer> {
   initVariable(){
     file = File(widget.urlPdf);
   }
+
 }

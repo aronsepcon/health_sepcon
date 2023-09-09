@@ -78,7 +78,7 @@ class _SplashPageState extends State<SplashPage> {
       if(vacuumModel != null){
         Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage())
+            MaterialPageRoute(builder: (context) => const HomePage(isRoot: false,))
         );
       }
     }else{
