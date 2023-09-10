@@ -6,8 +6,8 @@ import 'package:sepcon_salud/page/covid/covid_init_page.dart';
 import 'package:sepcon_salud/page/document_identidad/document_home_page.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_home_page.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_init_page.dart';
-import 'package:sepcon_salud/page/vacuum/home_vacuum.dart';
-import 'package:sepcon_salud/page/vacuum/init_vacuum.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_home_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_init_page.dart';
 import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
 import 'package:sepcon_salud/resource/model/vacuna_costos_model.dart';
@@ -39,6 +39,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   late double porcentaje;
   late int documentosCompletos , totalDocumentos;
   var stateDcumentMap, stateFlowMap;
+  late VacunaModel covidModel;
 
   bool STATE_DOCUMENTO_IDENTIDAD = false;
   bool STATE_VACUNA = false;
@@ -205,7 +206,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       child: ListTile(
                           onTap: (){
                             FLOW_VACUNA ?
-                            routeHomeVacuumPage()
+                            routeVacuumHomePage()
                             :routeVacuumInitPage();
                           },
                         leading: STATE_VACUNA ?
@@ -410,6 +411,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     for(VacunaModel vacunaModel in documentVacuumModel!.vacunaGeneralModel!.tiposVacunas!){
 
       if(vacunaModel.nombre == "Covid19"){
+        covidModel = vacunaModel;
         urlCovid = vacunaModel.adjunto!;
         FLOW_COVID19 =
         vacunaModel.adjunto!.isNotEmpty ? true : false;
@@ -434,21 +436,17 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const InitVacuum()));
+            builder: (context) => const VacuumInitPage()));
   }
 
   routeVacuumHomePage(){
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const HomeVacuum()));
+            builder: (context) => VacuumHomePage(
+              vacunaGeneralModel: documentVacuumModel!.vacunaGeneralModel!,)));
   }
 
-  routeHomeVacuumPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeVacuum()));
-  }
 
   routePaseMedicoInitPage(){
     Navigator.push(
@@ -459,7 +457,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   routePaseMedicoHomePage(){
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PaseMedicoHomePage(urlPdf: urlPaseMedico)));
+        MaterialPageRoute(builder: (context) =>
+            PaseMedicoHomePage(paseMedicoModel: documentVacuumModel!.paseMedicoModel! ,)));
   }
 
   routeInitCovidPage(){
@@ -469,8 +468,10 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   }
 
   routeHomeCovidPage(){
+    log(covidModel.nombre!);
+    log(covidModel.adjunto!);
     Navigator.push(
         context, MaterialPageRoute(
-        builder: (context) =>  CovidHomePage(urlPdf: urlCovid,)));
+        builder: (context) =>  CovidHomePage(covidModel: covidModel,)));
   }
 }

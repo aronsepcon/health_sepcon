@@ -12,17 +12,17 @@ import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/edge_detection/edge_detector.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class CovidFilterPage extends StatefulWidget {
+class ControlMedicoFilterPage extends StatefulWidget {
   final File file;
   final String titlePage;
 
-  const CovidFilterPage({super.key,required this.file,required this.titlePage});
+  const ControlMedicoFilterPage({super.key,required this.file,required this.titlePage});
 
   @override
-  State<CovidFilterPage> createState() => _CovidFilterPageState();
+  State<ControlMedicoFilterPage> createState() => _ControlMedicoFilterPageState();
 }
 
-class _CovidFilterPageState extends State<CovidFilterPage> {
+class _ControlMedicoFilterPageState extends State<ControlMedicoFilterPage> {
 
   late bool loading;
   late File normalFile;

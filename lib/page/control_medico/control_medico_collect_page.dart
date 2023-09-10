@@ -20,14 +20,14 @@ import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class CovidCollectPage extends StatefulWidget {
-  const CovidCollectPage({super.key});
+class ControlMedicoCollectPage extends StatefulWidget {
+  const ControlMedicoCollectPage({super.key});
 
   @override
-  State<CovidCollectPage> createState() => _CovidCollectPageState();
+  State<ControlMedicoCollectPage> createState() => _ControlMedicoCollectPageState();
 }
 
-class _CovidCollectPageState extends State<CovidCollectPage> {
+class _ControlMedicoCollectPageState extends State<ControlMedicoCollectPage> {
 
   late List<String> filePaths;
   late List<File> files;

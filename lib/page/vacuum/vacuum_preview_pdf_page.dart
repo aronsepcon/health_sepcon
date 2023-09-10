@@ -6,24 +6,27 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:sepcon_salud/page/home_page.dart';
+import 'package:sepcon_salud/page/vacuum/successful_vacuum_page.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
+import 'package:sepcon_salud/resource/repository/documento_repository.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
-class PaseMedicoPreviewPdfPage extends StatefulWidget {
+class VacuumPreviewPdfPage extends StatefulWidget {
   final File file;
 
-  const PaseMedicoPreviewPdfPage({super.key, required this.file});
+  const VacuumPreviewPdfPage({super.key, required this.file});
 
   @override
-  _PaseMedicoPreviewPdfPageState createState() =>
-      _PaseMedicoPreviewPdfPageState();
+  State<VacuumPreviewPdfPage> createState() => _VacuumPreviewPdfPageState();
 }
 
-class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
+class _VacuumPreviewPdfPageState extends State<VacuumPreviewPdfPage> {
+
+  late DocumentoRepository documentoRepository;
   late LoginResponse? loginResponse;
   late LocalStore localStore;
   late double? heightScreen;
@@ -50,12 +53,13 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
     loadingPDF = false;
     dio = Dio();
     localStore = LocalStore();
+    documentoRepository = DocumentoRepository();
     progressAnimation = 0.0;
     stateProgress = 1;
-    title = Constants.TITLE_PASE_MEDICO;
-    titlePdf = Constants.TITLE_PASE_MEDICO;
+    title = Constants.TITLE_CERTIFICADO_VACUNA;
+    titlePdf = Constants.TITLE_CERTIFICADO_VACUNA;
     titleUploadButton = "Subir PDF";
-    nomenclaturaLink = "PM";
+    nomenclaturaLink = "TV";
   }
 
   appBarWidget() {
@@ -255,6 +259,11 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
     );
   }
 
+  routePDFViewer(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const SuccesfulVacuumPage()));
+  }
+
   savePDF() async {
     setState(() {
       loadingPDF = true;
@@ -267,8 +276,7 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
     if (loginResponse != null) {
       setState(() {
         loading = true;
-        fileName =
-            "$nomenclaturaLink-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
+        fileName = "$nomenclaturaLink-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
       });
     }
   }
@@ -313,7 +321,7 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
         savePDF();
       },
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.all(15.0),
         child: Container(
           padding: const EdgeInsets.only(top: 15, bottom: 15),
           //margin: const EdgeInsets.symmetric(horizontal: 15),

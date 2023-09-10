@@ -1,29 +1,27 @@
-
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sepcon_salud/page/pase_medico/pase_medico_filter_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_filter_page.dart';
 import 'package:sepcon_salud/util/edge_detection/process_image.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class PaseMedicoCarouselPage extends StatefulWidget {
+class ControlMedicoCarouselPage extends StatefulWidget {
   final List<String> imgList;
   final List<String> titleList;
-  final int numberPage;
-
-  const PaseMedicoCarouselPage({super.key,
-    required this.imgList, required this.titleList, required this.numberPage});
+  final String titlePage;
+  const ControlMedicoCarouselPage({super.key,required this.imgList, required this.titleList,required this.titlePage});
 
 
   @override
-  State<PaseMedicoCarouselPage> createState() => _PaseMedicoCarouselPageState();
+  State<ControlMedicoCarouselPage> createState() => _ControlMedicoCarouselPageState();
 }
 
-class _PaseMedicoCarouselPageState extends State<PaseMedicoCarouselPage> {
+class _ControlMedicoCarouselPageState extends State<ControlMedicoCarouselPage> {
 
   late String? _imagePath;
   late CarouselController _controller;
@@ -68,7 +66,7 @@ class _PaseMedicoCarouselPageState extends State<PaseMedicoCarouselPage> {
     if(_imagePath!.isNotEmpty){
       bool result = await ProcessImage.getImageFromCamera(_imagePath!);
       if(result){
-        routePaseMedicoFirstPage(_imagePath!,context);
+        routeVacuumFilterPage();
       }
     }
   }
@@ -152,13 +150,12 @@ class _PaseMedicoCarouselPageState extends State<PaseMedicoCarouselPage> {
     );
   }
 
-  routePaseMedicoFirstPage(String path,BuildContext context){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                PaseMedicoFilterPage(file: File(path),
-                  numberPage: widget.numberPage,)));
+  // REPLACE
+
+  routeVacuumFilterPage(){
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) =>
+            ControlMedicoFilterPage(file: File(_imagePath!),titlePage: widget.titlePage,)));
   }
 
   @override

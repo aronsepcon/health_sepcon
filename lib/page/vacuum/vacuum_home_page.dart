@@ -1,28 +1,29 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/home_page.dart';
-import 'package:sepcon_salud/page/vacuum/carousel_vacuum.dart';
-import 'package:sepcon_salud/page/vacuum/certificado_vacuna.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_carousel_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_certificado_page.dart';
 import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
 import 'package:sepcon_salud/resource/model/dosis_model.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
 import 'package:sepcon_salud/resource/model/refuerzo_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_costos_model.dart';
+import 'package:sepcon_salud/resource/model/vacuna_general_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
+import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeVacuum extends StatefulWidget {
-  const HomeVacuum({super.key});
+class VacuumHomePage extends StatefulWidget {
+  final VacunaGeneralModel vacunaGeneralModel;
+
+  const VacuumHomePage({super.key,required this.vacunaGeneralModel});
   @override
-  State<HomeVacuum> createState() => _HomeVacuumState();
+  State<VacuumHomePage> createState() => _VacuumHomePageState();
 }
 
-class _HomeVacuumState extends State<HomeVacuum> {
+class _VacuumHomePageState extends State<VacuumHomePage> {
 
   List<String> list = [
     'Fiebre Amarilla',
@@ -38,21 +39,6 @@ class _HomeVacuumState extends State<HomeVacuum> {
   ];
   late File filePdf;
 
-  final List<String> imgList = [
-    'assets/vaccine/vacuna_1.png',
-    'assets/vaccine/vacuna_2.jpeg',
-    'assets/vaccine/vacuna_2.jpeg',
-    'assets/vaccine/vacuna_2.jpeg',
-    'assets/document/document_frontal_4.png',
-  ];
-  final List<String> titleList = [
-    '1. Posición correcta del documento',
-    '2. Tomar foto',
-    '3. Verificar foto',
-    '4. Guardar foto',
-    '5. Empezar a tomar la foto',
-  ];
-
   String path = "";
   late File file;
   late DocumentVacunaModel? documentVacunaModel;
@@ -63,7 +49,8 @@ class _HomeVacuumState extends State<HomeVacuum> {
   late List<VacunaModel> listNotRequiredVacuum;
   late VacunaCostosModel? vacunaCostosModel;
   late LoginResponse? loginResponse;
-
+  late double? heightScreen;
+  late double? widthScreen;
   @override
   void initState() {
     // TODO: implement initState
@@ -77,11 +64,21 @@ class _HomeVacuumState extends State<HomeVacuum> {
 
   @override
   Widget build(BuildContext context) {
+
+    heightScreen =  MediaQuery.of(context).size.height;
+    widthScreen =  MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: Icon(Icons.arrow_back_ios),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
       ),
       body: SafeArea(
           child: SingleChildScrollView(
@@ -96,26 +93,12 @@ class _HomeVacuumState extends State<HomeVacuum> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Vacunas',
+                        Constants.TITLE_CERTIFICADO_VACUNA,
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                 Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.my_location),
-                      Text(
-                         loginResponse!.centroCostos!,
-                        style: TextStyle(fontSize: 16),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+
                   const SizedBox(
                     height: 10,
                   ),
@@ -172,6 +155,25 @@ class _HomeVacuumState extends State<HomeVacuum> {
                   // DOCUMENTS
                   const SizedBox(
                     height: 20,
+                  ),
+                  Container(
+                    width: widthScreen! * 0.5,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: GeneralColor.mainColor,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.location_on_outlined,size: 15,color: Colors.white,),
+                        Text(
+                          loginResponse!.centroCostos!,
+                          style: TextStyle(fontSize: 12,color: Colors.white),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -402,20 +404,20 @@ class _HomeVacuumState extends State<HomeVacuum> {
   }
 
   routePDFViewer(){
-    List<File> listfile = [];
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>CarouselVacuum(
-              titlePage: "Vacunas",
-              imgList: imgList, titleList: titleList)));
+            builder: (context) =>  VacuumCarouselPage(
+              titlePage: Constants.TITLE_CERTIFICADO_VACUNA,
+              imgList: Constants.imgListVacuum, titleList: Constants.titleListVacuum)));
   }
 
   certificadoVacuna(){
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CertificadoVacuna(urlPdf: path,)));
+            builder: (context) => VacuumCertificadoPage(
+              vacunaGeneralModel: widget.vacunaGeneralModel ,)));
   }
 
   fetchDataLocal() async {

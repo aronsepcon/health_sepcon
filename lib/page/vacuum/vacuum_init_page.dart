@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/pase_medico/pase_medico_carousel_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_carousel_page.dart';
+import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-
-class PaseMedicoInitPage extends StatefulWidget {
-  const PaseMedicoInitPage({super.key});
+class VacuumInitPage extends StatefulWidget {
+  const VacuumInitPage({super.key});
 
   @override
-  State<PaseMedicoInitPage> createState() => _PaseMedicoInitPageState();
+  State<VacuumInitPage> createState() => _VacuumInitPageState();
 }
 
-class _PaseMedicoInitPageState extends State<PaseMedicoInitPage> {
+class _VacuumInitPageState extends State<VacuumInitPage> {
 
   late double? heightScreen;
   late double? widthScreen;
   late String title;
   late String titleButton;
   late String pathIllustration;
-  late List<String> imgList;
-  late List<String> titleList;
 
   @override
   void initState() {
@@ -28,11 +26,9 @@ class _PaseMedicoInitPageState extends State<PaseMedicoInitPage> {
   }
 
   initVariable(){
-    title = Constants.TITLE_PASE_MEDICO;
+    title = Constants.TITLE_CERTIFICADO_VACUNA;
     titleButton = "Iniciar";
-    pathIllustration = 'assets/empty_document_identity.png';
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    pathIllustration = 'assets/medicine.png';
   }
 
   appBarWidget(){
@@ -68,19 +64,21 @@ class _PaseMedicoInitPageState extends State<PaseMedicoInitPage> {
   buttonWidget(String titleButton){
     return GestureDetector(
       onTap: (){
-        routePage();
+        routeCarouselPage();
       },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 15),
         child: Container(
           padding: const EdgeInsets.only(top: 15,bottom: 15),
+          //margin: const EdgeInsets.symmetric(horizontal: 15),
+          //height: 50,
           decoration: BoxDecoration(
               color: GeneralColor.mainColor,
               borderRadius: BorderRadius.circular(8)),
           child: Center(
               child: Text(
                 titleButton,
-                style: const TextStyle(
+                style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16),
@@ -96,15 +94,20 @@ class _PaseMedicoInitPageState extends State<PaseMedicoInitPage> {
     );
   }
 
-  routePage() async {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PaseMedicoCarouselPage(
-              imgList: imgList ,
-              titleList: titleList,
-              numberPage : Constants.DOCUMENT_FIRST,)));
+  // REPLACE
+  routeCarouselPage() async {
+    LocalStore localStore = LocalStore();
+    bool result = await localStore.deleteKey(Constants.KEY_CERTIFICADO_VACUNA);
+    if(result){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => VacuumCarouselPage(
+                imgList: Constants.imgListVacuum,
+                titleList: Constants.titleListVacuum,titlePage: "Certificado de vacunas",)));
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +120,7 @@ class _PaseMedicoInitPageState extends State<PaseMedicoInitPage> {
       appBar: appBarWidget(),
       body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25),
+            padding: EdgeInsets.only(left: 25, right: 25),
             child: Column(
               children: [
                 titleWidget(title),

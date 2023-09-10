@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:sepcon_salud/page/pase_medico/pase_medico_carousel_page.dart';
-import 'package:sepcon_salud/resource/model/pase_medico_model.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_carousel_page.dart';
+import 'package:sepcon_salud/resource/model/vacuna_general_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/custom_permission.dart';
@@ -10,15 +10,15 @@ import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/share_widget.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
-class PaseMedicoHomePage extends StatefulWidget {
-  final PaseMedicoModel paseMedicoModel;
-  const PaseMedicoHomePage({super.key,required this.paseMedicoModel});
+class VacuumCertificadoPage extends StatefulWidget {
+  final VacunaGeneralModel vacunaGeneralModel;
+  const VacuumCertificadoPage({super.key,required this.vacunaGeneralModel});
 
   @override
-  State<PaseMedicoHomePage> createState() => _PaseMedicoHomePageState();
+  State<VacuumCertificadoPage> createState() => _VacuumCertificadoPageState();
 }
 
-class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
+class _VacuumCertificadoPageState extends State<VacuumCertificadoPage> {
 
   late CheckPermission checkAllPermissions;
   late DirectoryPath getPathFile;
@@ -29,7 +29,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   late double? heightScreen;
   late double? widthScreen;
   late bool isDownloading;
-
+  
   late String title;
   late String urlPdfContainer;
   late LocalStore localStore;
@@ -38,12 +38,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   late String titleUpdateButton;
   late String titleValidated;
   late String noTitleValidated;
-  late bool statuValidated;
-  late String splitUrl;
-  late List<String> imgList;
-  late List<String> titleList;
-  late int numberPage;
-
+  
   @override
   void initState() {
     super.initState();
@@ -51,15 +46,11 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   }
 
   initVariable(){
-    title =  Constants.TITLE_PASE_MEDICO;
-    urlPdfContainer = widget.paseMedicoModel.adjunto!;
-    keyDocument = Constants.KEY_PASE_MEDICO;
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
-    numberPage = Constants.PASE_MEDICO_FIRST_PAGE;
-    downloadName = "PM-${DateTime.now().millisecondsSinceEpoch}";
-
+    title =  Constants.TITLE_CERTIFICADO_VACUNA;
+    urlPdfContainer = widget.vacunaGeneralModel.tiposVacunas![2].adjunto!;
+    downloadName = "TV-${DateTime.now().millisecondsSinceEpoch}";
     localStore = LocalStore();
+    keyDocument = Constants.KEY_CERTIFICADO_VACUNA;
     titleDownloadButton = "Descargar";
     titleUpdateButton = "Actualizar";
     isDownloading = false;
@@ -69,8 +60,6 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     getPathFile = DirectoryPath();
     titleValidated = "Verificado";
     noTitleValidated = "Pendiente de verificar";
-    statuValidated = widget.paseMedicoModel.validated!;
-    splitUrl = widget.paseMedicoModel.adjunto!;
   }
 
   titleWidget(String title){
@@ -78,7 +67,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          title,
+         title,
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ],
@@ -96,7 +85,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
       child: SizedBox(),
     );
   }
-
+  
   pdfContainerWidget(String urlPdf){
     return SizedBox( height: heightScreen! * 0.6,child:
     PdfContainer(
@@ -104,7 +93,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
       isLocal : false,
       titlePDF: titlePdf(),));
   }
-
+  
   downloadButtonWidget(String titleButton){
     return GestureDetector(
       onTap: () {
@@ -159,7 +148,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
       ),
     );
   }
-
+  
   updateButtonWidget(String titleButton,String keyDocument){
     return  GestureDetector(
       onTap: (){
@@ -196,7 +185,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   }
 
   Widget statusDocument(){
-    if(statuValidated){
+    if(widget.vacunaGeneralModel.validated!){
       return Row(
         children: [
           const Icon(Icons.check_circle,color: GeneralColor.greenColor,),
@@ -214,10 +203,10 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   }
 
   String titlePdf(){
-    List<String> splitUrl = this.splitUrl.split("/");
+    List<String> splitUrl = widget.vacunaGeneralModel.tiposVacunas![2].adjunto!.split("/");
     return splitUrl.last;
   }
-
+  
   downloadFile(String name) async {
     var permission = await checkAllPermissions.isStoragePermission();
     if (permission) {
@@ -265,10 +254,11 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>PaseMedicoCarouselPage(
-                imgList: imgList ,
-                titleList: titleList,
-                numberPage: numberPage,)));
+              builder: (context) => VacuumCarouselPage(
+                imgList: Constants.imgListVacuum,
+                titleList: Constants.titleListVacuum,
+                titlePage: Constants.TITLE_CERTIFICADO_VACUNA,
+              )));
     }
   }
 
@@ -277,7 +267,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
 
     heightScreen =  MediaQuery.of(context).size.height;
     widthScreen =  MediaQuery.of(context).size.width;
-
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: appBarWidget(),
@@ -301,5 +291,3 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     );
   }
 }
-
-

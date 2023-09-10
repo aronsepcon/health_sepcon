@@ -180,7 +180,7 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
   fetchFilePaths() async {
     LocalStore localStore = LocalStore();
     List<String>? result = await localStore
-        .fetchPathsFileByTypeDocument(Constants.DOCUMENT_IDENTIDAD);
+        .fetchPathsFileByTypeDocument(Constants.KEY_DOCUMENTO_IDENTIDAD);
 
     if(result != null){
       setState(() {

@@ -13,17 +13,18 @@ import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
-class PaseMedicoPreviewPdfPage extends StatefulWidget {
+class ControlMedicoPreviewPage extends StatefulWidget {
   final File file;
 
-  const PaseMedicoPreviewPdfPage({super.key, required this.file});
+  const ControlMedicoPreviewPage({super.key,required this.file});
 
   @override
-  _PaseMedicoPreviewPdfPageState createState() =>
-      _PaseMedicoPreviewPdfPageState();
+  State<ControlMedicoPreviewPage> createState() => _ControlMedicoPreviewPageState();
 }
 
-class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
+
+class _ControlMedicoPreviewPageState extends State<ControlMedicoPreviewPage> {
+
   late LoginResponse? loginResponse;
   late LocalStore localStore;
   late double? heightScreen;
@@ -52,10 +53,10 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
     localStore = LocalStore();
     progressAnimation = 0.0;
     stateProgress = 1;
-    title = Constants.TITLE_PASE_MEDICO;
-    titlePdf = Constants.TITLE_PASE_MEDICO;
+    title = Constants.TITLE_COVID;
+    titlePdf = Constants.TITLE_COVID;
     titleUploadButton = "Subir PDF";
-    nomenclaturaLink = "PM";
+    nomenclaturaLink = "COVID19";
   }
 
   appBarWidget() {
@@ -96,7 +97,7 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
     Widget step = Container();
     if (stateStep == 1) {
       var stateColor =
-          progressAnimation < 0.5 ? GeneralColor.mainColor : Colors.white;
+      progressAnimation < 0.5 ? GeneralColor.mainColor : Colors.white;
       step = Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -177,18 +178,18 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
                       borderRadius: BorderRadius.circular(8)),
                   child: const Center(
                       child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        'Inicio',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ],
-                  )),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.home,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Inicio',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ],
+                      )),
                 ),
               ),
             ),
@@ -201,7 +202,7 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
 
   dioProof(File filePdf, String filename) async {
     var bytesPdf = base64Encode(filePdf.readAsBytesSync());
-
+    log("filename :  $fileName ");
     final formData = FormData.fromMap({
       'base64data': bytesPdf,
       'filename': filename,
@@ -268,7 +269,7 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
       setState(() {
         loading = true;
         fileName =
-            "$nomenclaturaLink-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
+        "$nomenclaturaLink-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
       });
     }
   }
@@ -323,10 +324,10 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
               borderRadius: BorderRadius.circular(8)),
           child: Center(
               child: Text(
-            titlePdf,
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-          )),
+                titlePdf,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              )),
         ),
       ),
     );
@@ -339,23 +340,23 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
       body: SafeArea(
         child: !loading
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [getLoadEffect()],
-                ),
-              )
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [getLoadEffect()],
+          ),
+        )
             : Padding(
-                padding: const EdgeInsets.only(left: 25, right: 25),
-                child: Column(
-                  children: [
-                    titleWidget(title),
-                    spaceWidget(30),
-                    containerWidget(),
-                    expandedWidget(),
-                    uploadPdfButton(titleUploadButton)
-                  ],
-                ),
-              ),
+          padding: const EdgeInsets.only(left: 25, right: 25),
+          child: Column(
+            children: [
+              titleWidget(title),
+              spaceWidget(30),
+              containerWidget(),
+              expandedWidget(),
+              uploadPdfButton(titleUploadButton)
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -365,9 +366,9 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
         context,
         MaterialPageRoute(
             builder: (context) => const HomePage(
-                  isRoot: true,
-                )),
-        (Route<dynamic> route) => false);
+              isRoot: true,
+            )),
+            (Route<dynamic> route) => false);
   }
 
   @override

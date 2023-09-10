@@ -1,24 +1,32 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:sepcon_salud/page/pase_medico/pase_medico_carousel_page.dart';
-import 'package:sepcon_salud/resource/model/pase_medico_model.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path/path.dart' as Path;
+import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
+import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
+import 'package:sepcon_salud/resource/model/vacuna_model.dart';
+import 'package:sepcon_salud/util/share_widget.dart';
+import 'package:sepcon_salud/util/widget/pdf_container.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/custom_permission.dart';
 import 'package:sepcon_salud/util/general_color.dart';
-import 'package:sepcon_salud/util/share_widget.dart';
-import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
-class PaseMedicoHomePage extends StatefulWidget {
-  final PaseMedicoModel paseMedicoModel;
-  const PaseMedicoHomePage({super.key,required this.paseMedicoModel});
+class ControlMedicoFHomePage extends StatefulWidget {
+  final VacunaModel covidModel;
+  const ControlMedicoFHomePage({super.key,required this.covidModel});
 
   @override
-  State<PaseMedicoHomePage> createState() => _PaseMedicoHomePageState();
+  State<ControlMedicoFHomePage> createState() => _ControlMedicoFHomePageState();
 }
 
-class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
+class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
+
 
   late CheckPermission checkAllPermissions;
   late DirectoryPath getPathFile;
@@ -42,7 +50,6 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   late String splitUrl;
   late List<String> imgList;
   late List<String> titleList;
-  late int numberPage;
 
   @override
   void initState() {
@@ -51,13 +58,12 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   }
 
   initVariable(){
-    title =  Constants.TITLE_PASE_MEDICO;
-    urlPdfContainer = widget.paseMedicoModel.adjunto!;
-    keyDocument = Constants.KEY_PASE_MEDICO;
+    title =  Constants.TITLE_CONTROL_MEDICO;
+    urlPdfContainer = widget.covidModel.adjunto!;
+    keyDocument = Constants.KEY_CONTROL_MEDICO;
     imgList = Constants.imgListVacuum;
     titleList = Constants.titleListVacuum;
-    numberPage = Constants.PASE_MEDICO_FIRST_PAGE;
-    downloadName = "PM-${DateTime.now().millisecondsSinceEpoch}";
+    downloadName = "CM-${DateTime.now().millisecondsSinceEpoch}";
 
     localStore = LocalStore();
     titleDownloadButton = "Descargar";
@@ -69,8 +75,8 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     getPathFile = DirectoryPath();
     titleValidated = "Verificado";
     noTitleValidated = "Pendiente de verificar";
-    statuValidated = widget.paseMedicoModel.validated!;
-    splitUrl = widget.paseMedicoModel.adjunto!;
+    statuValidated = widget.covidModel.validated!;
+    splitUrl = widget.covidModel.adjunto!;
   }
 
   titleWidget(String title){
@@ -160,10 +166,10 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     );
   }
 
-  updateButtonWidget(String titleButton,String keyDocument){
+  updateButtonWidget(String titleButton){
     return  GestureDetector(
       onTap: (){
-        routeCarouselPage(keyDocument);
+        widgetBottomSheet();
       },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 15),
@@ -244,6 +250,163 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     }
   }
 
+
+  galleryButtonWidget(String titleButton){
+    return GestureDetector(
+      onTap: () {
+        findGalleryPhone();
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Container(
+          padding: const EdgeInsets.only(top: 15, bottom: 15),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: GeneralColor.mainColor),
+              borderRadius: BorderRadius.circular(8)),
+          child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.photo,
+                    color: GeneralColor.mainColor,
+                  ),
+                  Text(
+                    titleButton,
+                    style: TextStyle(
+                        color: GeneralColor.mainColor,
+                        fontSize: 16),
+                  ),
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+
+  takePhotoWidget(String titleButton){
+    return  GestureDetector(
+      onTap: (){
+        routeCarouselPage();
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Container(
+          padding: const EdgeInsets.only(top: 15, bottom: 15),
+          //margin: const EdgeInsets.symmetric(horizontal: 15),
+          //height: 50,
+          decoration: BoxDecoration(
+              color: GeneralColor.mainColor,
+              borderRadius: BorderRadius.circular(8)),
+          child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.photo_camera,
+                    color: Colors.white,
+                  ),
+                  Text(
+                    titleButton,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16),
+                  ),
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+
+  widgetBottomSheet(){
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            width: widthScreen,
+            color: Colors.white,
+            child: Padding(
+                padding: const EdgeInsets.only(left: 25,right: 25),
+                child: Column(
+                  children: [
+                    titleBottomWidget("Tenemos dos opciones para subir los archivos"),
+                    spaceWidget(20),
+                    galleryButtonWidget("Subir fotos o archivos pdf"),
+                    takePhotoWidget("Tomar una foto")
+                  ],
+                )
+            ),
+          ),
+        );
+      },
+      isScrollControlled:true,
+    );
+  }
+
+  titleBottomWidget(String title){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: widthScreen! * 0.8,
+          child: Text(
+            title,
+            style: const
+            TextStyle(fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 2,
+          ),
+        ),
+      ],
+    );
+  }
+
+  findGalleryPhone() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+
+    if (result != null) {
+      List<File> files = result.paths.map((pathR) => File(pathR!)).toList();
+
+      List<String> tempList = await localStore.fetchPathsFileByTypeDocument(keyDocument);
+
+      for(File tempFile in files){
+        tempList.add(tempFile.path);
+      }
+
+      bool resultFiles = await localStore.saveFilePaths(keyDocument,tempList);
+
+      if(resultFiles){
+        routeCollectPage();
+      }
+
+    } else {
+      log("result null");
+    }
+  }
+
+  routeCollectPage() async {
+    Navigator.pushReplacement(
+        context ,
+        MaterialPageRoute(
+            builder: (_) => const CovidCollectPage()));
+  }
+
+  routeCarouselPage() async {
+    bool result = await localStore.deleteKey(keyDocument);
+    if(result){
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) =>
+              CovidCarouselPage(
+                  imgList: imgList,
+                  titleList: titleList, titlePage: title )));
+
+    }
+  }
+
   appBarWidget(){
     return AppBar(
       backgroundColor: Colors.white,
@@ -256,22 +419,6 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
       ),
     );
   }
-
-  // REPLACE
-
-  routeCarouselPage(String keyDocument) async {
-    bool result = await localStore.deleteKey(keyDocument);
-    if(result){
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>PaseMedicoCarouselPage(
-                imgList: imgList ,
-                titleList: titleList,
-                numberPage: numberPage,)));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -293,13 +440,14 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
               pdfContainerWidget(urlPdfContainer),
               expandedWidget(),
               downloadButtonWidget(titleDownloadButton),
-              updateButtonWidget(titleUpdateButton,keyDocument),
+              updateButtonWidget(titleUpdateButton),
             ],
           ),
         ),
       ),
     );
   }
+
 }
 
 

@@ -279,9 +279,9 @@ class _DocumentFilterPageState extends State<DocumentFilterPage> {
   }
 
   saveLocalStoragePaths() async {
-    List<String> tempList = await localStore.fetchPathsFileByTypeDocument(Constants.DOCUMENT_IDENTIDAD);
+    List<String> tempList = await localStore.fetchPathsFileByTypeDocument(Constants.KEY_DOCUMENTO_IDENTIDAD);
     tempList.add(viewPhoto);
-    bool result = await localStore.saveFilePaths(Constants.DOCUMENT_IDENTIDAD,tempList);
+    bool result = await localStore.saveFilePaths(Constants.KEY_DOCUMENTO_IDENTIDAD,tempList);
     if(result){
       routeDocumentCollectPage();
     }

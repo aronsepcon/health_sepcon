@@ -1,11 +1,10 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Uint8List;
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/pase_medico/pase_medico_carousel_page.dart';
-import 'package:sepcon_salud/page/pase_medico/pase_medico_preview_pdf_page.dart';
+import 'package:sepcon_salud/page/vacuum/vaccum_filter_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_preview_pdf_page.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/constantes.dart';
@@ -13,15 +12,14 @@ import 'package:sepcon_salud/util/edge_detection/process_image.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class PaseMedicoCollectPage extends StatefulWidget {
-  final int numberPage;
-  const PaseMedicoCollectPage({super.key,required this.numberPage});
+class VacuumCollectPage extends StatefulWidget {
+  const VacuumCollectPage({super.key});
 
   @override
-  State<PaseMedicoCollectPage> createState() => _PaseMedicoCollectPageState();
+  State<VacuumCollectPage> createState() => _VacuumCollectPageState();
 }
 
-class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
+class _VacuumCollectPageState extends State<VacuumCollectPage> {
 
   late List<String> filePaths;
   late List<File> files;
@@ -36,8 +34,6 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
   late String titleCreatePdfButton;
   late double? heightScreen;
   late double? widthScreen;
-  late List<String> imgList;
-  late List<String> titleList;
 
   @override
   void initState() {
@@ -47,11 +43,9 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
   }
 
   initVariable(){
-    title = Constants.TITLE_PASE_MEDICO;
-    keyDocument = Constants.KEY_PASE_MEDICO;
-    nextTitlePage = Constants.TITLE_PASE_MEDICO;
-    titleList =  Constants.titleListVacuum;
-    imgList = Constants.imgListVacuum;
+    title = Constants.TITLE_CERTIFICADO_VACUNA;
+    keyDocument = Constants.KEY_CERTIFICADO_VACUNA;
+    nextTitlePage = Constants.TITLE_CERTIFICADO_VACUNA;
     titleAddButton = 'Agregar una foto';
     titleCreatePdfButton = 'Crear PDF';
     files = [];
@@ -113,30 +107,28 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
       onTap: (){
         openEdgeDetectionCamara();
       },
-      child: widget.numberPage == 1 ? GestureDetector(
-        onTap: (){
-          routeDocumentCarouselPage();
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(bottom:15),
-          child: Container(
-            padding: const EdgeInsets.only(top: 15,bottom: 15),
-            //margin: const EdgeInsets.symmetric(horizontal: 15),
-            //height: 50,
-            decoration: BoxDecoration(
-                color: GeneralColor.mainColor,
-                borderRadius: BorderRadius.circular(8)),
-            child: Center(
-                child: Text(
-                  titleButton,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
-                )),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom:5),
+        child: Container(
+          padding: const EdgeInsets.only(top: 15,bottom: 15),
+          //margin: const EdgeInsets.symmetric(horizontal: 15),
+          //height: 50,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: GeneralColor.mainColor,
+                  width: 2),
+              borderRadius: BorderRadius.circular(8)
           ),
+          child: Center(
+              child: Text(
+               titleButton,
+                style: TextStyle(
+                    color: GeneralColor.mainColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              )),
         ),
-      ) : Container(),
+      ),
     );
   }
 
@@ -147,28 +139,21 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
           createPDFNew();
         }
       },
-      child:  widget.numberPage == 1 ? Container() : GestureDetector(
-        onTap: (){
-          createPDFNew();
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(bottom:15),
-          child: Container(
-            padding: const EdgeInsets.only(top: 15,bottom: 15),
-            //margin: const EdgeInsets.symmetric(horizontal: 15),
-            //height: 50,
-            decoration: BoxDecoration(
-                color: GeneralColor.mainColor,
-                borderRadius: BorderRadius.circular(8)),
-            child: Center(
-                child: Text(
-                  titleButton,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
-                )),
-          ),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom:5),
+        child: Container(
+          padding: const EdgeInsets.only(top: 15,bottom: 15),
+          decoration: BoxDecoration(
+              color: GeneralColor.mainColor,
+              borderRadius: BorderRadius.circular(8)),
+          child: Center(
+              child: Text(
+                titleButton,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              )),
         ),
       ),
     );
@@ -192,12 +177,17 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
     if(imagePath.isNotEmpty){
       bool result = await ProcessImage.getImageFromCamera(imagePath);
       if(result){
-        routeDocumentCarouselPage();
+        routeVacuumFilterPage();
       }
     }
   }
 
+  routeVacuumFilterPage(){
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) =>
+            VacuumFilterPage(file: File(imagePath),titlePage:nextTitlePage,)));
 
+  }
 
   fetchFilePaths() async {
     LocalStore localStore = LocalStore();
@@ -246,27 +236,20 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
     filePdf = File("${output.path}/example${now.toString().trim()}.pdf");
     File file = await filePdf.writeAsBytes(bytes, flush: true);
     if(file.existsSync()){
-      routeDocumentPreviewPdfPage();
+      routePreviewPdf();
     }
   }
 
-  routeDocumentPreviewPdfPage(){
+  routePreviewPdf(){
+    setState(() {
+      loading = true;
+    });
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PaseMedicoPreviewPdfPage(file: filePdf)));
+            builder: (context) => VacuumPreviewPdfPage(file: filePdf )));
   }
-
-  routeDocumentCarouselPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PaseMedicoCarouselPage(
-              imgList: imgList,
-              titleList: titleList,
-              numberPage : Constants.DOCUMENT_SECOND,)));
-  }
-
+  
   loadWidget(){
     return Center(
       child: Column(

@@ -103,7 +103,7 @@ class _DocumentInitPageState extends State<DocumentInitPage> {
     localStore = LocalStore();
   }
   routePage() async {
-    await localStore.deleteKey(Constants.DOCUMENT_IDENTIDAD);
+    await localStore.deleteKey(Constants.KEY_DOCUMENTO_IDENTIDAD);
     Navigator.push(
         context,
         MaterialPageRoute(

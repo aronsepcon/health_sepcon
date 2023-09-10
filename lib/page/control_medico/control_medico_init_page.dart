@@ -9,14 +9,14 @@ import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class CovidInitPage extends StatefulWidget {
-  const CovidInitPage({super.key});
+class ControlMedicoInitPage extends StatefulWidget {
+  const ControlMedicoInitPage({super.key});
 
   @override
-  State<CovidInitPage> createState() => _CovidInitPageState();
+  State<ControlMedicoInitPage> createState() => _ControlMedicoInitPageState();
 }
 
-class _CovidInitPageState extends State<CovidInitPage> {
+class _ControlMedicoInitPageState extends State<ControlMedicoInitPage> {
 
   late double? heightScreen;
   late double? widthScreen;
@@ -35,8 +35,8 @@ class _CovidInitPageState extends State<CovidInitPage> {
   }
 
   initVariable(){
-    title = Constants.TITLE_COVID;
-    keyDocument = Constants.KEY_COVID;
+    title = Constants.TITLE_CONTROL_MEDICO;
+    keyDocument = Constants.KEY_CONTROL_MEDICO;
     titleButton = "Iniciar";
     pathIllustration = 'assets/medicine.png';
     imgList = Constants.imgListVacuum;

@@ -192,7 +192,7 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
   }
 
   routeDocumentCarouselPage() async {
-    await localStore.deleteKey(Constants.DOCUMENT_IDENTIDAD);
+    await localStore.deleteKey(Constants.KEY_DOCUMENTO_IDENTIDAD);
     Navigator.push(
         context,
         MaterialPageRoute(

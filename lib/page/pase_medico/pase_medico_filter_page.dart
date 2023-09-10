@@ -25,19 +25,24 @@ class PaseMedicoFilterPage extends StatefulWidget {
 
 class _PaseMedicoFilterPageState extends State<PaseMedicoFilterPage> {
 
-  late bool loading = false;
-  String newPhoto = "";
-
+  late bool loading;
   late File normalFile;
   late File claroFile;
   late File magicFile;
-
   late String pathNormalFile;
   late String pathClaroFile;
   late String pathMagicFile;
-
   late String viewPhoto;
+  late double? heightScreen;
+  late double? widthScreen;
+  late String title;
+  late String mainPathPhoto;
   late LocalStore localStore;
+  late String titlePhotoButton;
+  late String titleFilterButton;
+  late String keyDocument;
+  late List<String> imgList;
+  late List<String> titleList;
 
   @override
   void initState() {
@@ -46,209 +51,235 @@ class _PaseMedicoFilterPageState extends State<PaseMedicoFilterPage> {
     createFiles();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: Icon(Icons.arrow_back_ios),
-      ),
-      body: SafeArea(
-          child: loading ?
-          Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25),
-            child: Column(
+  initVariable(){
+    title = Constants.TITLE_PASE_MEDICO;
+    keyDocument = Constants.KEY_PASE_MEDICO;
+    titleList =  Constants.titleListVacuum;
+    imgList = Constants.imgListVacuum;
+    loading = false;
+    localStore = LocalStore();
+    titlePhotoButton = "Reintentar";
+    titleFilterButton = "Confirmar";
+  }
+
+  appBarWidget(){
+    return AppBar(
+        backgroundColor: loading ? Colors.black: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios,
+              color: loading ? Colors.white : Colors.black,),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        )
+    );
+  }
+
+  titleWidget(String title){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(
+          width:  widthScreen! * 0.6,
+          child: Text(title,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
+              maxLines: 2,overflow: TextOverflow.ellipsis),
+        )
+      ],
+    );
+  }
+
+  mainImageWidget(String filePath){
+    return Image.file(
+      File(filePath),
+      height:  heightScreen! * 0.3,
+    );
+  }
+
+  filterImageWidget(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // normal
+        GestureDetector(
+            onTap: (){
+              setState(() {
+                setState(() {
+                  viewPhoto = pathNormalFile;
+                });
+              });
+            },
+            child:Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Stack(
+                children: [
+                  Image.file(
+                    File(pathNormalFile),
+                    width: widthScreen! * 0.28,
+                  ),
+                  Container(
+                    width: widthScreen! * 0.28,
+                    color: Colors.black38,
+                    height: 20,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Text('Normal',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white,
+                        ),),
+                    ),
+                  )
+                ],
+              ),
+            )
+        ),
+
+        // claro
+        GestureDetector(
+          onTap: (){
+            setState(() {
+              viewPhoto = pathClaroFile;
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: Stack(
               children: [
-
-                const SizedBox(
-                  height: 10,
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Primera cara',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-
                 Image.file(
-                  File(viewPhoto),
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width * 0.9,
+                  File(pathClaroFile),
+                  width: widthScreen! * 0.28,
                 ),
-
-
-                const SizedBox(height: 20,),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-
-                    // normal
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          setState(() {
-                            viewPhoto = pathNormalFile;
-                          });
-                        });
-                      },
-                      child:Column(
-                        children: [
-                          Image.file(
-                            File(pathNormalFile),
-                            height: 80,
-                            width: 80,
-                          ),
-                          Text('Normal'),
-                        ],
-                      )
-                    ),
-
-                    // claro
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          viewPhoto = pathClaroFile;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Column(
-                          children: [
-                            Image.file(
-                              File(pathClaroFile),
-                              height: 80,
-                              width: 80,
-                            ),
-                            Text('Aclarar'),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // magico
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          viewPhoto = pathMagicFile;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Column(
-                          children: [
-                            Image.file(
-                              File(pathMagicFile),
-                              height: 80,
-                              width: 80,
-                            ),
-                            Text('Magico'),
-                          ],
-                        ),
-                      ),
-                    ),
-
-
-                  ],
-                ),
-                const Expanded(
-                  child: SizedBox(),
-                ),
-
-                GestureDetector(
-                  onTap: (){
-                    routeDocumentCarouselPage();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom:30),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 15,bottom: 15),
-                      //margin: const EdgeInsets.symmetric(horizontal: 15),
-                      //height: 50,
-                      decoration: BoxDecoration(
-                          color: GeneralColor.mainColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: const Center(
-                          child: Text(
-                            'Volver a tomar foto',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          )),
-                    ),
+                Container(
+                  width: widthScreen! * 0.28,
+                  color: Colors.black38,
+                  height: 20,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Text('Aclarar',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white,
+                      ),),
                   ),
-                ),
-
-
-                GestureDetector(
-                  onTap: (){
-                    saveLocalStoragePaths();
-                    },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom:30),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 15,bottom: 15),
-                      //margin: const EdgeInsets.symmetric(horizontal: 15),
-                      //height: 50,
-                      decoration: BoxDecoration(
-                          color: GeneralColor.mainColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: const Center(
-                          child: Text(
-                            'Siguiente',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          )),
-                    ),
-                  ),
-                ),
+                )
               ],
             ),
-          ) : Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [getLoadEffect()],
+          ),
+        ),
+
+        // magico
+        GestureDetector(
+          onTap: (){
+            setState(() {
+              viewPhoto = pathMagicFile;
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: Stack(
+              children: [
+                Image.file(
+                  File(pathMagicFile),
+                  width: widthScreen! * 0.28,
+                ),
+                Container(
+                  width: widthScreen! * 0.28,
+                  color: Colors.black38,
+                  height: 20,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Text('Mágico',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white,
+                      ),),
+                  ),
+                )
+              ],
             ),
-          )
+          ),
+        ),
+      ],
+    );
+  }
+
+  photoButtonWidget(String titleButton){
+    return  GestureDetector(
+      onTap: () {
+        routeCarouselPage();
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Container(
+          padding: const EdgeInsets.only(top: 15, bottom: 15),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: GeneralColor.mainColor,
+                  width: 2),
+              borderRadius: BorderRadius.circular(8)),
+          child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.photo_camera,
+                    color: GeneralColor.mainColor,
+                  ),
+                  Text(
+                    titleButton,
+                    style: TextStyle(
+                        color: GeneralColor.mainColor,
+                        fontSize: 16),
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }
 
-  initVariable(){
-    localStore = LocalStore();
+  appliedButtonWidget(String titleButton,String keyDocument){
+    return   GestureDetector(
+      onTap: (){
+        saveLocalStoragePaths(keyDocument);
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom:30),
+        child: Container(
+          padding: const EdgeInsets.only(top: 15,bottom: 15),
+          //margin: const EdgeInsets.symmetric(horizontal: 15),
+          //height: 50,
+          decoration: BoxDecoration(
+              color: GeneralColor.mainColor,
+              borderRadius: BorderRadius.circular(8)),
+          child: Center(
+              child: Text(
+                titleButton,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16),
+              )),
+        ),
+      ),
+    );
   }
 
-  saveLocalStoragePaths() async {
-    List<String> tempList = await localStore.fetchPathsFileByTypeDocument(Constants.DOCUMENT_IDENTIDAD);
+  loadWidget(){
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [getLoadEffect()],
+      ),
+    );
+  }
+  saveLocalStoragePaths(String keyDocument) async {
+    List<String> tempList = await localStore.fetchPathsFileByTypeDocument(
+        keyDocument);
     tempList.add(viewPhoto);
-    bool result = await localStore.saveFilePaths(Constants.DOCUMENT_IDENTIDAD,tempList);
+    bool result = await localStore.saveFilePaths(
+        keyDocument,tempList);
     if(result){
-      routeDocumentCollectPage();
+      routeCollectPage();
     }
-  }
-
-  routeDocumentCarouselPage(){
-    Navigator.pushReplacement(
-        context ,
-        MaterialPageRoute(
-            builder: (_) => PaseMedicoCarouselPage(
-                imgList: Constants.imgListDocumentFirst,
-                titleList: Constants.titleListDocumentFirst,
-                numberPage: Constants.DOCUMENT_FIRST)));
-  }
-
-  routeDocumentCollectPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PaseMedicoCollectPage(numberPage: widget.numberPage,)));
   }
 
   createFiles() async {
@@ -299,6 +330,64 @@ class _PaseMedicoFilterPageState extends State<PaseMedicoFilterPage> {
       viewPhoto = pathMagicFile;
       loading = true;
     });
+  }
+
+  routeCollectPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PaseMedicoCollectPage(
+                numberPage:widget.numberPage)));
+  }
+
+  routeCarouselPage(){
+    Navigator.pushReplacement(
+        context ,
+        MaterialPageRoute(
+            builder: (_) => PaseMedicoCarouselPage(
+              numberPage: widget.numberPage,
+              imgList: imgList,
+              titleList: titleList,)));
+  }
+
+  spaceWidget(double space){
+    return SizedBox(
+      height: space,
+    );
+  }
+
+  expandedWidget(){
+    return const Expanded(
+      child: SizedBox(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    heightScreen =  MediaQuery.of(context).size.height;
+    widthScreen =  MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      backgroundColor: loading ? Colors.black : Colors.white,
+      appBar: appBarWidget(),
+      body: SafeArea(
+          child: loading? Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Column(
+              children: [
+                titleWidget(title),
+                spaceWidget(20),
+                mainImageWidget(viewPhoto),
+                spaceWidget(20),
+                filterImageWidget(),
+                expandedWidget(),
+                photoButtonWidget(titlePhotoButton),
+                appliedButtonWidget(titleFilterButton,keyDocument),
+              ],
+            ),
+          ) : loadWidget()) ,
+    );
   }
 
 }

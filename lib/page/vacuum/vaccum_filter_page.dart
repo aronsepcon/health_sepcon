@@ -1,28 +1,28 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show Uint8List;
+import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:opencv_brightness/edge_detection.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
-import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_carousel_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_collect_page.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/edge_detection/edge_detector.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 
-class CovidFilterPage extends StatefulWidget {
+class VacuumFilterPage extends StatefulWidget {
   final File file;
   final String titlePage;
 
-  const CovidFilterPage({super.key,required this.file,required this.titlePage});
+  const VacuumFilterPage({super.key,required this.file,required this.titlePage});
 
   @override
-  State<CovidFilterPage> createState() => _CovidFilterPageState();
+  State<VacuumFilterPage> createState() => _VacuumFilterPageState();
 }
 
-class _CovidFilterPageState extends State<CovidFilterPage> {
+class _VacuumFilterPageState extends State<VacuumFilterPage> {
 
   late bool loading;
   late File normalFile;
@@ -56,7 +56,7 @@ class _CovidFilterPageState extends State<CovidFilterPage> {
     localStore = LocalStore();
     titlePhotoButton = "Reintentar";
     titleFilterButton = "Confirmar";
-    keyDocument = Constants.KEY_COVID;
+    keyDocument = Constants.KEY_CERTIFICADO_VACUNA;
     titleList =  Constants.titleListVacuum;
     imgList = Constants.imgListVacuum;
   }
@@ -82,8 +82,8 @@ class _CovidFilterPageState extends State<CovidFilterPage> {
         SizedBox(
           width:  widthScreen! * 0.6,
           child: Text(title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
-              maxLines: 2,overflow: TextOverflow.ellipsis),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
+            maxLines: 2,overflow: TextOverflow.ellipsis),
         )
       ],
     );
@@ -335,17 +335,17 @@ class _CovidFilterPageState extends State<CovidFilterPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const CovidCollectPage()));
+            builder: (context) => const VacuumCollectPage()));
   }
 
   routeCarouselPage(){
     Navigator.pushReplacement(
         context ,
         MaterialPageRoute(
-            builder: (_) => CovidCarouselPage(
+            builder: (_) => VacuumCarouselPage(
               titlePage: title,
-              imgList: imgList,
-              titleList: titleList,)));
+                imgList: imgList,
+                titleList: titleList,)));
   }
 
   spaceWidget(double space){
