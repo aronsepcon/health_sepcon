@@ -18,7 +18,7 @@ class Constants{
   static const String KEY_CERTIFICADO_VACUNA = "CERTIFICADO_VACUNA";
 
   // PASE MEDICO
-  static const String TITLE_PASE_MEDICO = "Pase Medico";
+  static const String TITLE_PASE_MEDICO = "Pase Médico";
   static const String KEY_PASE_MEDICO = "PASE_MEDICO";
   static const int PASE_MEDICO_FIRST_PAGE = 1;
   static const int PASE_MEDICO_SECOND_PAGE = 2;
@@ -31,30 +31,40 @@ class Constants{
   static const String TITLE_CONTROL_MEDICO = 'Control Medico';
   static const String KEY_CONTROL_MEDICO = "CONTROL_MEDICO";
 
-  static final List<String> imgListDocumentFirst = [
-    'assets/document/document_frontal_0.png',
-    'assets/document/document_frontal_4.png',
-  ];
-  static final List<String> titleListDocumentFirst = [
+  // EMO
+  static const String TITLE_EMO = 'EMO';
+
+
+  static final List<String> titleListGeneral = [
     '1. Posición correcta del documento',
-    '2. Empezar a tomar la foto',
+  ];
+
+  static final List<String> imgListDocumentFirst = [
+    'assets/documento_cara.png',
   ];
 
   static final List<String> imgListDocumentSecond = [
-    'assets/document/document_reverso_0.png',
-    'assets/document/document_frontal_4.png',
-  ];
-  static final List<String> titleListDocumentSecond = [
-    '1. Posición correcta del documento',
-    '2. Empezar a tomar la foto',
+    'assets/documento_reverso.png',
   ];
 
   static final List<String> imgListVacuum = [
-    'assets/vaccine/vacuna_1.png',
-    'assets/document/document_frontal_4.png',
+    'assets/certificado_vacuna.png',
   ];
-  static final List<String> titleListVacuum = [
-    '1. Posición correcta del documento',
-    '2. Empezar a tomar la foto',
+
+  static final List<String> imgListPaseMedicoFirst = [
+    'assets/pase_medico_cara.png'
   ];
+
+  static final List<String> imgListPaseMedicoSecond = [
+    'assets/pase_medico_reverso.png'
+  ];
+
+  static final List<String> imgListControlMedico = [
+    'assets/control_medico.png'
+  ];
+
+  static final List<String> imgListCovid = [
+    'assets/covid.png'
+  ];
+
 }

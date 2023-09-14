@@ -63,8 +63,8 @@ class _CovidCollectPageState extends State<CovidCollectPage> {
     loading = false;
     filePdf = File("");
     localStore = LocalStore();
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    imgList = Constants.imgListCovid;
+    titleList = Constants.titleListGeneral;
   }
 
 
@@ -449,15 +449,11 @@ class _CovidCollectPageState extends State<CovidCollectPage> {
   }
 
   routeCarouselPage() async {
-    bool result = await localStore.deleteKey(keyDocument);
-    if(result){
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) =>
-              CovidCarouselPage(
-                  imgList: imgList,
-                  titleList: titleList, titlePage: title )));
-
-    }
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) =>
+            CovidCarouselPage(
+                imgList: imgList,
+                titleList: titleList, titlePage: title )));
   }
 
   spaceWidget(double space){

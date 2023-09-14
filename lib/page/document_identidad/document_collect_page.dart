@@ -110,7 +110,7 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
                       borderRadius: BorderRadius.circular(8)),
                   child: const Center(
                       child: Text(
-                        'Tomar la reversa',
+                        'Tomar la parte posterior',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -241,7 +241,7 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
         MaterialPageRoute(
             builder: (context) =>DocumentCarouselPage(
               imgList: Constants.imgListDocumentSecond,
-              titleList: Constants.titleListDocumentSecond,
+              titleList: Constants.titleListGeneral,
               numberPage : Constants.DOCUMENT_SECOND,)));
   }
 

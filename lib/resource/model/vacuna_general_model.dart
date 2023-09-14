@@ -5,13 +5,16 @@ import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 class VacunaGeneralModel{
   late bool? hasDocument;
   late bool? validated;
+  late String? documentGeneral;
   late List<VacunaModel>? tiposVacunas;
 
-  VacunaGeneralModel(this.hasDocument,this.validated,this.tiposVacunas);
+  VacunaGeneralModel(this.hasDocument,this.validated,this.documentGeneral,
+      this.tiposVacunas);
 
   VacunaGeneralModel.fromJson(Map<String,dynamic> formatJson){
-    hasDocument = formatJson['has_document_general'];
+    hasDocument = formatJson['has_document_general'] ?? "";
     validated = formatJson['Validated'];
+    documentGeneral = formatJson['document_general'];
     tiposVacunas = parseVacunaModel(formatJson['tipos_vacunas']);
   }
 

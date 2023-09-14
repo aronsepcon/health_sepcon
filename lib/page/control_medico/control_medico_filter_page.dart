@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Uint8List;
 import 'package:opencv_brightness/edge_detection.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
-import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_carousel_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_collect_page.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/animation/progress_bar.dart';
 import 'package:sepcon_salud/util/constantes.dart';
@@ -56,9 +56,9 @@ class _ControlMedicoFilterPageState extends State<ControlMedicoFilterPage> {
     localStore = LocalStore();
     titlePhotoButton = "Reintentar";
     titleFilterButton = "Confirmar";
-    keyDocument = Constants.KEY_COVID;
-    titleList =  Constants.titleListVacuum;
-    imgList = Constants.imgListVacuum;
+    keyDocument = Constants.KEY_CONTROL_MEDICO;
+    titleList =  Constants.titleListGeneral;
+    imgList = Constants.imgListControlMedico;
   }
 
   appBarWidget(){
@@ -335,14 +335,14 @@ class _ControlMedicoFilterPageState extends State<ControlMedicoFilterPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const CovidCollectPage()));
+            builder: (context) => const ControlMedicoCollectPage()));
   }
 
   routeCarouselPage(){
     Navigator.pushReplacement(
         context ,
         MaterialPageRoute(
-            builder: (_) => CovidCarouselPage(
+            builder: (_) => ControlMedicoCarouselPage(
               titlePage: title,
               imgList: imgList,
               titleList: titleList,)));

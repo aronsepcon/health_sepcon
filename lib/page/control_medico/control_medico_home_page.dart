@@ -5,27 +5,26 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path/path.dart' as Path;
-import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
-import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
-import 'package:sepcon_salud/resource/model/vacuna_model.dart';
-import 'package:sepcon_salud/util/share_widget.dart';
-import 'package:sepcon_salud/util/widget/pdf_container.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_carousel_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_collect_page.dart';
+import 'package:sepcon_salud/resource/model/control_medico_detalle_model.dart';
+import 'package:sepcon_salud/resource/model/control_medico_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/custom_permission.dart';
 import 'package:sepcon_salud/util/general_color.dart';
+import 'package:sepcon_salud/util/share_widget.dart';
+import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
-class ControlMedicoFHomePage extends StatefulWidget {
-  final VacunaModel covidModel;
-  const ControlMedicoFHomePage({super.key,required this.covidModel});
+class ControlMedicoHomePage extends StatefulWidget {
+  final ControlMedicoModel controlMedicoModel;
+  const ControlMedicoHomePage({super.key,required this.controlMedicoModel});
 
   @override
-  State<ControlMedicoFHomePage> createState() => _ControlMedicoFHomePageState();
+  State<ControlMedicoHomePage> createState() => _ControlMedicoHomePageState();
 }
 
-class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
+class _ControlMedicoHomePageState extends State<ControlMedicoHomePage> {
 
 
   late CheckPermission checkAllPermissions;
@@ -39,7 +38,6 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
   late bool isDownloading;
 
   late String title;
-  late String urlPdfContainer;
   late LocalStore localStore;
   late String keyDocument;
   late String titleDownloadButton;
@@ -59,10 +57,9 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
 
   initVariable(){
     title =  Constants.TITLE_CONTROL_MEDICO;
-    urlPdfContainer = widget.covidModel.adjunto!;
     keyDocument = Constants.KEY_CONTROL_MEDICO;
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    imgList = Constants.imgListControlMedico;
+    titleList = Constants.titleListGeneral;
     downloadName = "CM-${DateTime.now().millisecondsSinceEpoch}";
 
     localStore = LocalStore();
@@ -75,8 +72,8 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     getPathFile = DirectoryPath();
     titleValidated = "Verificado";
     noTitleValidated = "Pendiente de verificar";
-    statuValidated = widget.covidModel.validated!;
-    splitUrl = widget.covidModel.adjunto!;
+    statuValidated = widget.controlMedicoModel.validated!;
+    splitUrl =widget.controlMedicoModel.controlMedico![0].nombreDoc!;
   }
 
   titleWidget(String title){
@@ -103,21 +100,36 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     );
   }
 
-  pdfContainerWidget(String urlPdf){
-    return SizedBox( height: heightScreen! * 0.6,child:
-    PdfContainer(
-      urlPdf: urlPdf,
-      isLocal : false,
-      titlePDF: titlePdf(),));
+  pdfContainerWidget() {
+    return SizedBox(
+        height: heightScreen! * 0.6,
+        width: widthScreen!,
+        child: ListView.builder(
+            itemCount: widget.controlMedicoModel.controlMedico!.length,
+            itemBuilder: (context,index){
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                statusDocument(widget.controlMedicoModel.controlMedico![index]),
+                SizedBox(
+                  height:  300,
+                  child: PdfContainer(
+                    urlPdf: widget.controlMedicoModel.controlMedico![index].nombreDoc!,
+                    isLocal: false,
+                    titlePDF: titlePdf(),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }));
   }
 
   downloadButtonWidget(String titleButton){
     return GestureDetector(
       onTap: () {
-        if(!isDownloading){
-          downloadFile(downloadName);
-          isDownloading = true;
-        }
+        widgetDownloadBottomSheet();
       },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 15),
@@ -201,8 +213,8 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     );
   }
 
-  Widget statusDocument(){
-    if(statuValidated){
+  Widget statusDocument(ControlMedicoDetalleModel controlMedicoDetalleModel){
+    if(controlMedicoDetalleModel.validated!){
       return Row(
         children: [
           const Icon(Icons.check_circle,color: GeneralColor.greenColor,),
@@ -219,6 +231,14 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     }
   }
 
+  Widget amountDocument(){
+    return Row(
+      children: [
+        Text("${widget.controlMedicoModel.controlMedico!.length} documento(s)")
+      ],
+    );
+  }
+
   String titlePdf(){
     List<String> splitUrl = this.splitUrl.split("/");
     return splitUrl.last;
@@ -228,7 +248,7 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     var permission = await checkAllPermissions.isStoragePermission();
     if (permission) {
       FileDownloader.downloadFile(
-          url: urlPdfContainer,
+          url: name,
           name: name,
           onProgress: (String? fileName, double progressInput) {
             setState(() {
@@ -346,6 +366,59 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     );
   }
 
+  widgetDownloadBottomSheet(){
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            width: widthScreen,
+            color: Colors.white,
+            child: Padding(
+                padding: const EdgeInsets.only(left: 25,right: 25),
+                child: Column(
+                  children: [
+                    titleBottomWidget("Escoger el documento a descargar"),
+                    spaceWidget(20),
+                    Column(
+                      children: widgetList(widget.controlMedicoModel.controlMedico!),
+                    )
+                  ],
+                )
+            ),
+          ),
+        );
+      },
+      isScrollControlled:true,
+    );
+  }
+
+  List<Widget> widgetList(List<ControlMedicoDetalleModel> details){
+    List<Widget> listTipos = [];
+    int index = 1;
+    for(ControlMedicoDetalleModel controlMedicoDetalleModel in details){
+      Widget widget = GestureDetector(
+        onTap: (){
+          downloadFile( controlMedicoDetalleModel.nombreDoc!);
+          Navigator.of(context).pop();
+        },
+        child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: GeneralColor.mainColor),
+                borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+              padding: EdgeInsets.only(bottom: 10 ,top: 10),
+              child: Text("$index. ${controlMedicoDetalleModel.nombreDoc!}")),
+        ),
+      );
+      listTipos.add(widget);
+      index++;
+    }
+
+    return listTipos;
+  }
+
   titleBottomWidget(String title){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -392,7 +465,7 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     Navigator.pushReplacement(
         context ,
         MaterialPageRoute(
-            builder: (_) => const CovidCollectPage()));
+            builder: (_) => const ControlMedicoCollectPage()));
   }
 
   routeCarouselPage() async {
@@ -400,7 +473,7 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
     if(result){
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) =>
-              CovidCarouselPage(
+              ControlMedicoCarouselPage(
                   imgList: imgList,
                   titleList: titleList, titlePage: title )));
 
@@ -435,9 +508,9 @@ class _ControlMedicoFHomePageState extends State<ControlMedicoFHomePage> {
             children: [
               titleWidget(title),
               spaceWidget(10),
-              statusDocument(),
+              amountDocument(),
               spaceWidget(10),
-              pdfContainerWidget(urlPdfContainer),
+              pdfContainerWidget(),
               expandedWidget(),
               downloadButtonWidget(titleDownloadButton),
               updateButtonWidget(titleUpdateButton),

@@ -15,8 +15,10 @@ import 'package:sepcon_salud/util/general_color.dart';
 class VacuumFilterPage extends StatefulWidget {
   final File file;
   final String titlePage;
+  final String nomenclatura;
 
-  const VacuumFilterPage({super.key,required this.file,required this.titlePage});
+  const VacuumFilterPage({super.key,required this.file,required this.titlePage,
+  required this.nomenclatura});
 
   @override
   State<VacuumFilterPage> createState() => _VacuumFilterPageState();
@@ -57,7 +59,7 @@ class _VacuumFilterPageState extends State<VacuumFilterPage> {
     titlePhotoButton = "Reintentar";
     titleFilterButton = "Confirmar";
     keyDocument = Constants.KEY_CERTIFICADO_VACUNA;
-    titleList =  Constants.titleListVacuum;
+    titleList =  Constants.titleListGeneral;
     imgList = Constants.imgListVacuum;
   }
 
@@ -335,7 +337,8 @@ class _VacuumFilterPageState extends State<VacuumFilterPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const VacuumCollectPage()));
+            builder: (context) => VacuumCollectPage(
+                nomenclatura: widget.nomenclatura)));
   }
 
   routeCarouselPage(){
@@ -345,7 +348,7 @@ class _VacuumFilterPageState extends State<VacuumFilterPage> {
             builder: (_) => VacuumCarouselPage(
               titlePage: title,
                 imgList: imgList,
-                titleList: titleList,)));
+                titleList: titleList,nomenclatura: widget.nomenclatura)));
   }
 
   spaceWidget(double space){

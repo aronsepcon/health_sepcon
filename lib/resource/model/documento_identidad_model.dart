@@ -25,7 +25,11 @@ class DocumentoIdentidadModel{
     error = formatJson['error']!;
     validated = formatJson['validated']!;
     mensaje = formatJson['mensaje']!;
-    adjunto = formatJson['adjunto']!;
+    if (formatJson['adjunto'] == null) {
+      adjunto = "";
+    } else {
+      adjunto = formatJson['adjunto'];
+    }
   }
 }
 

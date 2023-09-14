@@ -31,8 +31,8 @@ class _PaseMedicoInitPageState extends State<PaseMedicoInitPage> {
     title = Constants.TITLE_PASE_MEDICO;
     titleButton = "Iniciar";
     pathIllustration = 'assets/empty_document_identity.png';
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    imgList = Constants.imgListPaseMedicoFirst;
+    titleList = Constants.titleListGeneral;
   }
 
   appBarWidget(){

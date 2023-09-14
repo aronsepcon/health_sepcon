@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage>{
         children: views,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         currentIndex: selectedIndex,
         onTap: (value){
           setState(() {
@@ -46,7 +47,7 @@ class _HomePageState extends State<HomePage>{
           BottomNavigationBarItem(
               icon: Icon(Icons.exposure_outlined),
               activeIcon: Icon(Icons.exposure_sharp),
-              label: 'Examen',
+              label: 'EMO',
               backgroundColor: GeneralColor.mainColor
           ),
           BottomNavigationBarItem(

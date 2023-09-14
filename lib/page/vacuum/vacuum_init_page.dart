@@ -18,6 +18,7 @@ class _VacuumInitPageState extends State<VacuumInitPage> {
   late String title;
   late String titleButton;
   late String pathIllustration;
+  late String NOMENCLATURA_VACUNA_INIT;
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _VacuumInitPageState extends State<VacuumInitPage> {
     title = Constants.TITLE_CERTIFICADO_VACUNA;
     titleButton = "Iniciar";
     pathIllustration = 'assets/medicine.png';
+    NOMENCLATURA_VACUNA_INIT = "TV";
   }
 
   appBarWidget(){
@@ -104,7 +106,9 @@ class _VacuumInitPageState extends State<VacuumInitPage> {
           MaterialPageRoute(
               builder: (context) => VacuumCarouselPage(
                 imgList: Constants.imgListVacuum,
-                titleList: Constants.titleListVacuum,titlePage: "Certificado de vacunas",)));
+                titleList: Constants.titleListGeneral,titlePage: "Certificado de vacunas",
+                  nomenclatura: NOMENCLATURA_VACUNA_INIT
+              )));
     }
   }
 

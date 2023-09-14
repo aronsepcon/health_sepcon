@@ -54,8 +54,8 @@ class _PaseMedicoFilterPageState extends State<PaseMedicoFilterPage> {
   initVariable(){
     title = Constants.TITLE_PASE_MEDICO;
     keyDocument = Constants.KEY_PASE_MEDICO;
-    titleList =  Constants.titleListVacuum;
-    imgList = Constants.imgListVacuum;
+    titleList =  Constants.titleListGeneral;
+    imgList = Constants.imgListPaseMedicoFirst;
     loading = false;
     localStore = LocalStore();
     titlePhotoButton = "Reintentar";

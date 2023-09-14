@@ -16,7 +16,7 @@ class GeneralWord{
   static const titleDocumentHome = 'Documentos';
   static const identityDocumentHome = 'Documento de identidad';
   static const vacuumHome = 'Vacunas';
-  static const passMedicHome = 'Pase Medico';
+  static const passMedicHome = 'Pase Médico';
   static const controlMedicHome = 'Control Medico';
   static const covidHome = 'COVID';
 }

@@ -13,7 +13,8 @@ import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class VacuumCollectPage extends StatefulWidget {
-  const VacuumCollectPage({super.key});
+  final String nomenclatura;
+  const VacuumCollectPage({super.key, required this.nomenclatura});
 
   @override
   State<VacuumCollectPage> createState() => _VacuumCollectPageState();
@@ -185,7 +186,8 @@ class _VacuumCollectPageState extends State<VacuumCollectPage> {
   routeVacuumFilterPage(){
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) =>
-            VacuumFilterPage(file: File(imagePath),titlePage:nextTitlePage,)));
+            VacuumFilterPage(file: File(imagePath),titlePage:nextTitlePage,
+                nomenclatura: widget.nomenclatura)));
 
   }
 
@@ -247,7 +249,7 @@ class _VacuumCollectPageState extends State<VacuumCollectPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => VacuumPreviewPdfPage(file: filePdf )));
+            builder: (context) => VacuumPreviewPdfPage(file: filePdf,nomenclatura: widget.nomenclatura )));
   }
   
   loadWidget(){

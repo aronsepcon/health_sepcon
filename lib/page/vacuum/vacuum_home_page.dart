@@ -25,18 +25,6 @@ class VacuumHomePage extends StatefulWidget {
 
 class _VacuumHomePageState extends State<VacuumHomePage> {
 
-  List<String> list = [
-    'Fiebre Amarilla',
-    'Difteria',
-    'Hepatitis A',
-    'Hepatitis B',
-    'Influenza',
-    'Polio',
-    'Trivirica',
-    'Rabia',
-    'Tifoidea',
-    'Neumococo',
-  ];
   late File filePdf;
 
   String path = "";
@@ -51,6 +39,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
   late LoginResponse? loginResponse;
   late double? heightScreen;
   late double? widthScreen;
+  late String? keyDocument;
   @override
   void initState() {
     // TODO: implement initState
@@ -59,6 +48,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     listVacunaModel = [];
     listRequiredVacuum = [];
     listNotRequiredVacuum = [];
+    keyDocument = Constants.KEY_CERTIFICADO_VACUNA;
     fetchDataLocal();
   }
 
@@ -157,7 +147,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                     height: 20,
                   ),
                   Container(
-                    width: widthScreen! * 0.5,
+                    width: widthScreen!,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: GeneralColor.mainColor,
@@ -174,6 +164,9 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -239,7 +232,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                 leading:  vacunaModel.validated! ?
                 const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
                     : const Icon(Icons.warning_amber,color: Colors.amber,),
-                title: Text(vacunaModel.nombre!),
+                title: Text(vacunaModel.nomenclatura!),
                 trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
               )
           ),
@@ -329,7 +322,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      routePDFViewer();
+                      routePDFViewer(vacunaModel.nombre!);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15),
@@ -403,13 +396,15 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     return listTipos;
   }
 
-  routePDFViewer(){
+  routePDFViewer(String nomenclatura) async {
+    bool result = await localStore.deleteKey(keyDocument!);
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>  VacuumCarouselPage(
               titlePage: Constants.TITLE_CERTIFICADO_VACUNA,
-              imgList: Constants.imgListVacuum, titleList: Constants.titleListVacuum)));
+              imgList: Constants.imgListVacuum, titleList: Constants.titleListGeneral,
+                nomenclatura: nomenclatura)));
   }
 
   certificadoVacuna(){
@@ -437,15 +432,23 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
   }
 
   generateTwoListVacunas(){
+
+    listNotRequiredVacuum = documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!;
+
     for(VacunaModel vacunaModel in
     documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!){
       for(String vacuna in vacunaCostosModel!.vacunas){
         if(vacuna == vacunaModel.nombre){
           listRequiredVacuum.add(vacunaModel);
-        }else{
-          listNotRequiredVacuum.add(vacunaModel);
         }
       }
     }
+
+    for(VacunaModel vacunaModel in listRequiredVacuum){
+      if(listNotRequiredVacuum.contains(vacunaModel)){
+        listNotRequiredVacuum.remove(vacunaModel);
+      }
+    }
+
   }
 }

@@ -50,9 +50,9 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
     title = Constants.TITLE_PASE_MEDICO;
     keyDocument = Constants.KEY_PASE_MEDICO;
     nextTitlePage = Constants.TITLE_PASE_MEDICO;
-    titleList =  Constants.titleListVacuum;
-    imgList = Constants.imgListVacuum;
-    titleAddButton = 'Agregar una foto';
+    titleList =  Constants.titleListGeneral;
+    imgList = Constants.imgListPaseMedicoSecond;
+    titleAddButton = 'Tomar la parte posterior';
     titleCreatePdfButton = 'Crear PDF';
     files = [];
     loading = false;

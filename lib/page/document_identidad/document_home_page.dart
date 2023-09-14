@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
-import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
 import 'package:sepcon_salud/resource/model/documento_identidad_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
@@ -198,7 +197,7 @@ class _DocumentHomePageState extends State<DocumentHomePage> {
         MaterialPageRoute(
             builder: (context) => DocumentCarouselPage(
                   imgList: Constants.imgListDocumentFirst,
-                  titleList: Constants.titleListDocumentFirst,
+                  titleList:  Constants.titleListGeneral,
                   numberPage: Constants.DOCUMENT_FIRST,
                 )));
   }

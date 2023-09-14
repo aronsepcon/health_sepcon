@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "48821177403",
+    "project_id": "salud-4bbb5",
+    "storage_bucket": "salud-4bbb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48821177403:android:74c6afbf5122a1ca7b201e",
+        "android_client_info": {
+          "package_name": "com.example.sepcon_salud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmDBPRP3I6YbaPc0M-ALEAq2iXOFwa43Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

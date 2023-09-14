@@ -2,16 +2,14 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:edge_detection/edge_detection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
-import 'package:sepcon_salud/page/covid/covid_filter_page.dart';
-import 'package:sepcon_salud/page/covid/covid_preview_pdf_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_carousel_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_filter_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_preview_pdf_page.dart';
 import 'package:sepcon_salud/util/edge_detection/process_image.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
@@ -54,17 +52,17 @@ class _ControlMedicoCollectPageState extends State<ControlMedicoCollectPage> {
   }
 
   initVariable(){
-    title = Constants.TITLE_COVID;
-    keyDocument = Constants.KEY_COVID;
-    nextTitlePage = Constants.TITLE_COVID;
+    title = Constants.TITLE_CONTROL_MEDICO;
+    keyDocument = Constants.KEY_CONTROL_MEDICO;
+    nextTitlePage = Constants.TITLE_CONTROL_MEDICO;
     titleAddButton = 'Agregar una foto';
     titleCreatePdfButton = 'Crear PDF';
     files = [];
     loading = false;
     filePdf = File("");
     localStore = LocalStore();
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    imgList = Constants.imgListControlMedico;
+    titleList = Constants.titleListGeneral;
   }
 
 
@@ -209,7 +207,7 @@ class _ControlMedicoCollectPageState extends State<ControlMedicoCollectPage> {
   routeVacuumFilterPage(){
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) =>
-            CovidFilterPage(file: File(imagePath),titlePage:nextTitlePage,)));
+            ControlMedicoFilterPage(file: File(imagePath),titlePage:nextTitlePage,)));
 
   }
 
@@ -295,7 +293,7 @@ class _ControlMedicoCollectPageState extends State<ControlMedicoCollectPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CovidPreviewPdfPage(file: filePdf )));
+            builder: (context) => ControlMedicoPreviewPage(file: filePdf )));
   }
 
   loadWidget(){
@@ -453,7 +451,7 @@ class _ControlMedicoCollectPageState extends State<ControlMedicoCollectPage> {
     if(result){
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) =>
-              CovidCarouselPage(
+              ControlMedicoCarouselPage(
                   imgList: imgList,
                   titleList: titleList, titlePage: title )));
 
@@ -503,7 +501,7 @@ class _ControlMedicoCollectPageState extends State<ControlMedicoCollectPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CovidPreviewPdfPage(file: tempFile )));
+            builder: (context) => ControlMedicoPreviewPage(file: tempFile )));
   }
 
 }

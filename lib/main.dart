@@ -1,8 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:sepcon_salud/firebase_options.dart';
 import 'package:sepcon_salud/util/general_color.dart';
+import 'package:sepcon_salud/util/notification/firebase_notification.dart';
 import 'package:sepcon_salud/util/route.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
 
@@ -19,6 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
       initialRoute: '/',
+      //home: ProofDart(),
     );
   }
 }

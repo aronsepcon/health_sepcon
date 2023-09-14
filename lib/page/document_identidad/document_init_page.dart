@@ -109,7 +109,7 @@ class _DocumentInitPageState extends State<DocumentInitPage> {
         MaterialPageRoute(
             builder: (context) =>DocumentCarouselPage(
               imgList: Constants.imgListDocumentFirst,
-              titleList: Constants.titleListDocumentFirst,
+              titleList:  Constants.titleListGeneral,
               numberPage : Constants.DOCUMENT_FIRST,)));
   }
 

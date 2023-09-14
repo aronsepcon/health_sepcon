@@ -16,9 +16,11 @@ import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
 class VacuumPreviewPdfPage extends StatefulWidget {
+  final String nomenclatura;
   final File file;
 
-  const VacuumPreviewPdfPage({super.key, required this.file});
+  const VacuumPreviewPdfPage({super.key, required this.file,
+    required this.nomenclatura});
 
   @override
   State<VacuumPreviewPdfPage> createState() => _VacuumPreviewPdfPageState();
@@ -276,7 +278,8 @@ class _VacuumPreviewPdfPageState extends State<VacuumPreviewPdfPage> {
     if (loginResponse != null) {
       setState(() {
         loading = true;
-        fileName = "$nomenclaturaLink-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
+        fileName = "${widget.nomenclatura}-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}PROOF.pdf";
+        log("url vacuna : $fileName");
       });
     }
   }

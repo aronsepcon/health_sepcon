@@ -38,7 +38,8 @@ class _VacuumCertificadoPageState extends State<VacuumCertificadoPage> {
   late String titleUpdateButton;
   late String titleValidated;
   late String noTitleValidated;
-  
+  late String NOMENCLATURA_VACUNA_INIT;
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +48,7 @@ class _VacuumCertificadoPageState extends State<VacuumCertificadoPage> {
 
   initVariable(){
     title =  Constants.TITLE_CERTIFICADO_VACUNA;
-    urlPdfContainer = widget.vacunaGeneralModel.tiposVacunas![2].adjunto!;
+    urlPdfContainer = widget.vacunaGeneralModel.documentGeneral!;
     downloadName = "TV-${DateTime.now().millisecondsSinceEpoch}";
     localStore = LocalStore();
     keyDocument = Constants.KEY_CERTIFICADO_VACUNA;
@@ -60,6 +61,7 @@ class _VacuumCertificadoPageState extends State<VacuumCertificadoPage> {
     getPathFile = DirectoryPath();
     titleValidated = "Verificado";
     noTitleValidated = "Pendiente de verificar";
+    NOMENCLATURA_VACUNA_INIT = "TV";
   }
 
   titleWidget(String title){
@@ -256,8 +258,9 @@ class _VacuumCertificadoPageState extends State<VacuumCertificadoPage> {
           MaterialPageRoute(
               builder: (context) => VacuumCarouselPage(
                 imgList: Constants.imgListVacuum,
-                titleList: Constants.titleListVacuum,
+                titleList: Constants.titleListGeneral,
                 titlePage: Constants.TITLE_CERTIFICADO_VACUNA,
+                  nomenclatura: NOMENCLATURA_VACUNA_INIT
               )));
     }
   }

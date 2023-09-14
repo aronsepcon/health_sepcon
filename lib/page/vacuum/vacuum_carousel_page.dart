@@ -11,9 +11,11 @@ class VacuumCarouselPage extends StatefulWidget {
   final List<String> imgList;
   final List<String> titleList;
   final String titlePage;
+  final String nomenclatura;
 
   const VacuumCarouselPage({super.key,
-    required this.imgList, required this.titleList,required this.titlePage});
+    required this.imgList, required this.titleList,required this.titlePage,
+    required this.nomenclatura});
 
   @override
   State<VacuumCarouselPage> createState() => _VacuumCarouselPageState();
@@ -153,7 +155,8 @@ class _VacuumCarouselPageState extends State<VacuumCarouselPage> {
   routeVacuumFilterPage(){
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) =>
-            VacuumFilterPage(file: File(_imagePath!),titlePage: widget.titlePage,)));
+            VacuumFilterPage(file: File(_imagePath!),
+              titlePage: widget.titlePage,nomenclatura: widget.nomenclatura,)));
   }
 
 

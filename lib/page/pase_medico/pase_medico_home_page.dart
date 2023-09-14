@@ -54,8 +54,8 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     title =  Constants.TITLE_PASE_MEDICO;
     urlPdfContainer = widget.paseMedicoModel.adjunto!;
     keyDocument = Constants.KEY_PASE_MEDICO;
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    imgList = Constants.imgListPaseMedicoFirst;
+    titleList = Constants.titleListGeneral;
     numberPage = Constants.PASE_MEDICO_FIRST_PAGE;
     downloadName = "PM-${DateTime.now().millisecondsSinceEpoch}";
 
@@ -200,17 +200,25 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
       return Row(
         children: [
           const Icon(Icons.check_circle,color: GeneralColor.greenColor,),
-          Text(titleValidated ,style: TextStyle(color: GeneralColor.greenColor),)
+          Text(titleValidated ,style: TextStyle(color: GeneralColor.greenColor),),
         ],
       );
     }else{
       return Row(
         children: [
           const Icon(Icons.check_circle,color: Colors.amber,),
-          Text(noTitleValidated,style: TextStyle(color: Colors.amber,),)
+          Text(noTitleValidated,style: TextStyle(color: Colors.amber,),),
         ],
       );
     }
+  }
+
+  Widget messagePaseMedico(){
+    return Row(
+      children: [
+        Text(widget.paseMedicoModel.mensaje! ),
+      ],
+    );
   }
 
   String titlePdf(){
@@ -289,6 +297,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
               titleWidget(title),
               spaceWidget(10),
               statusDocument(),
+              messagePaseMedico(),
               spaceWidget(10),
               pdfContainerWidget(urlPdfContainer),
               expandedWidget(),

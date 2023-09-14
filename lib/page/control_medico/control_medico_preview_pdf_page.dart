@@ -53,10 +53,10 @@ class _ControlMedicoPreviewPageState extends State<ControlMedicoPreviewPage> {
     localStore = LocalStore();
     progressAnimation = 0.0;
     stateProgress = 1;
-    title = Constants.TITLE_COVID;
-    titlePdf = Constants.TITLE_COVID;
+    title = Constants.TITLE_CONTROL_MEDICO;
+    titlePdf = Constants.TITLE_CONTROL_MEDICO;
     titleUploadButton = "Subir PDF";
-    nomenclaturaLink = "COVID19";
+    nomenclaturaLink = "CM";
   }
 
   appBarWidget() {

@@ -61,8 +61,8 @@ class _CovidHomePageState extends State<CovidHomePage> {
     title =  Constants.TITLE_COVID;
     urlPdfContainer = widget.covidModel.adjunto!;
     keyDocument = Constants.KEY_COVID;
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    imgList = Constants.imgListCovid;
+    titleList = Constants.titleListGeneral;
     downloadName = "COVID19-${DateTime.now().millisecondsSinceEpoch}";
 
     localStore = LocalStore();

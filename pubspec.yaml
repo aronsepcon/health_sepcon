@@ -62,6 +62,9 @@ dependencies:
   file_picker: ^5.5.0
   pdf_manipulator: ^0.5.9
   liquid_progress_indicator_v2: ^0.5.0
+  firebase_core: ^2.15.1
+  firebase_messaging: ^14.6.7
+  flutter_local_notifications: ^15.1.1
 
 dev_dependencies:
   flutter_test:
@@ -109,6 +112,13 @@ flutter:
      - assets/pasemedico/pase_medico_reversa_2.PNG
      - assets/dni_proof.jpeg
      - assets/proof_doc.pdf
+     - assets/certificado_vacuna.png
+     - assets/control_medico.png
+     - assets/covid.png
+     - assets/documento_cara.png
+     - assets/documento_reverso.png
+     - assets/pase_medico_cara.png
+     - assets/pase_medico_reverso.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

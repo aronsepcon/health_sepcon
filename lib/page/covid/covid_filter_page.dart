@@ -57,8 +57,8 @@ class _CovidFilterPageState extends State<CovidFilterPage> {
     titlePhotoButton = "Reintentar";
     titleFilterButton = "Confirmar";
     keyDocument = Constants.KEY_COVID;
-    titleList =  Constants.titleListVacuum;
-    imgList = Constants.imgListVacuum;
+    titleList =  Constants.titleListGeneral;
+    imgList = Constants.imgListCovid;
   }
 
   appBarWidget(){

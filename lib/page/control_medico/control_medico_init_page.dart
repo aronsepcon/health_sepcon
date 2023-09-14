@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
-import 'package:sepcon_salud/page/covid/covid_collect_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_carousel_page.dart';
+import 'package:sepcon_salud/page/control_medico/control_medico_collect_page.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/general_color.dart';
@@ -39,8 +39,8 @@ class _ControlMedicoInitPageState extends State<ControlMedicoInitPage> {
     keyDocument = Constants.KEY_CONTROL_MEDICO;
     titleButton = "Iniciar";
     pathIllustration = 'assets/medicine.png';
-    imgList = Constants.imgListVacuum;
-    titleList = Constants.titleListVacuum;
+    imgList = Constants.imgListControlMedico;
+    titleList = Constants.titleListGeneral;
     localStore = LocalStore();
   }
 
@@ -243,7 +243,7 @@ class _ControlMedicoInitPageState extends State<ControlMedicoInitPage> {
       Navigator.pushReplacement(
           context ,
           MaterialPageRoute(
-              builder: (_) => const CovidCollectPage()));
+              builder: (_) => const ControlMedicoCollectPage()));
     }
   }
 
@@ -252,7 +252,7 @@ class _ControlMedicoInitPageState extends State<ControlMedicoInitPage> {
     if(result){
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) =>
-              CovidCarouselPage(
+              ControlMedicoCarouselPage(
                   imgList: imgList,
                   titleList: titleList, titlePage: title )));
 

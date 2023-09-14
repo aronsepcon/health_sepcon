@@ -293,7 +293,7 @@ class _DocumentFilterPageState extends State<DocumentFilterPage> {
         MaterialPageRoute(
             builder: (_) => DocumentCarouselPage(
                 imgList: Constants.imgListDocumentFirst,
-                titleList: Constants.titleListDocumentFirst,
+                titleList: Constants.titleListGeneral,
                 numberPage: Constants.DOCUMENT_FIRST)));
   }
 
