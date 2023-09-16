@@ -278,7 +278,7 @@ class _VacuumPreviewPdfPageState extends State<VacuumPreviewPdfPage> {
     if (loginResponse != null) {
       setState(() {
         loading = true;
-        fileName = "${widget.nomenclatura}-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}PROOF.pdf";
+        fileName = "${widget.nomenclatura}-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
         log("url vacuna : $fileName");
       });
     }

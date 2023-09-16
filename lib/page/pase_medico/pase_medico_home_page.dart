@@ -98,7 +98,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   }
 
   pdfContainerWidget(String urlPdf){
-    return SizedBox( height: heightScreen! * 0.6,child:
+    return SizedBox( height: heightScreen! * 0.5,child:
     PdfContainer(
       urlPdf: urlPdf,
       isLocal : false,
@@ -214,9 +214,11 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   }
 
   Widget messagePaseMedico(){
-    return Row(
+    return Column(
       children: [
-        Text(widget.paseMedicoModel.mensaje! ),
+        Text("Vigencia : "+widget.paseMedicoModel.vigencia! ),
+        Text("Motivo : "+widget.paseMedicoModel.motivo! ),
+        Text("Mensaje : "+widget.paseMedicoModel.mensaje! ),
       ],
     );
   }

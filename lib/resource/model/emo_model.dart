@@ -24,9 +24,9 @@ class EmoModel {
   EmoModel.fromJson(Map<String, dynamic> formatJson) {
     tipo = formatJson['tipo']!;
     hasDocument = formatJson['has_document']!;
-    fecha = formatJson['fecha']!;
+    fecha = formatJson['fecha'] ?? "";
     mensaje = formatJson['mensaje']!;
-    validated = formatJson['validated']!;
-    adjunto = formatJson['adjunto']!;
+    validated = formatJson['validated'] ?? false;
+    adjunto = formatJson['adjunto'];
   }
 }

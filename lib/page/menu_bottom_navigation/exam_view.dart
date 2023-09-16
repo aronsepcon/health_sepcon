@@ -97,11 +97,16 @@ class _ExamViewState extends State<ExamView> {
   }
 
   pdfContainerWidget(String urlPdf){
-    return SizedBox( height: heightScreen! * 0.6,child:
-    PdfContainer(
-      urlPdf: urlPdf,
-      isLocal : false,
-      titlePDF: titlePdf(),));
+    if(urlPdf.isEmpty){
+      return Container();
+    }else{
+      return SizedBox( height: heightScreen! * 0.6,child:
+      PdfContainer(
+        urlPdf: urlPdf,
+        isLocal : false,
+        titlePDF: titlePdf(),));
+    }
+
   }
 
   downloadButtonWidget(String titleButton){
@@ -207,7 +212,7 @@ class _ExamViewState extends State<ExamView> {
         children: [
           const Icon(Icons.check_circle,color: Colors.amber,),
           Text(noTitleValidated,style: TextStyle(color: Colors.amber,),),
-          Text(mensajeEmo  ,style: TextStyle(color: GeneralColor.greenColor),),
+          Text(mensajeEmo  ,style: TextStyle(color: Colors.amber,),),
 
         ],
       );
@@ -315,6 +320,7 @@ class _ExamViewState extends State<ExamView> {
       setState(() {
         loading = true;
         urlPdfContainer = documentVacuumModel!.emoModel!.adjunto!;
+        log("url : " + urlPdfContainer);
         statuValidated =documentVacuumModel!.emoModel!.validated!;
         splitUrl = documentVacuumModel!.emoModel!.adjunto!;
         mensajeEmo =  documentVacuumModel!.emoModel!.mensaje!;

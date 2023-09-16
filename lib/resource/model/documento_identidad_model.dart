@@ -22,7 +22,6 @@ class DocumentoIdentidadModel{
     hasDocument = formatJson['has_document']!;
     tipo = formatJson['tipo']!;
     clase = formatJson['clase']!;
-    error = formatJson['error']!;
     validated = formatJson['validated']!;
     mensaje = formatJson['mensaje']!;
     if (formatJson['adjunto'] == null) {

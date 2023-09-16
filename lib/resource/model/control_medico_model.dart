@@ -15,10 +15,10 @@ class ControlMedicoModel{
   List<ControlMedicoDetalleModel> get _controlMedico => this.controlMedico!;
 
   ControlMedicoModel.fromJson(Map<String,dynamic> formatJson){
-    hasDocument = formatJson['has_document']!;
-    tipo = formatJson['tipo']!;
-    validated = formatJson['validated']!;
-    controlMedico = parseControlDetalle(formatJson['control_medico']);
+    hasDocument = formatJson['has_document'] ?? false;
+    tipo = formatJson['tipo'] ?? "";
+    validated = formatJson['validated'] ?? false;
+    controlMedico = parseControlDetalle(formatJson['control_medico'] ?? []) ;
   }
 
 

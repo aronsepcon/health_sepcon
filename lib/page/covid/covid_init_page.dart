@@ -238,13 +238,10 @@ class _CovidInitPageState extends State<CovidInitPage> {
   }
 
   routeCollectPage() async {
-    bool result = await localStore.deleteKey(keyDocument);
-    if(result){
-      Navigator.pushReplacement(
-          context ,
-          MaterialPageRoute(
-              builder: (_) => const CovidCollectPage()));
-    }
+    Navigator.pushReplacement(
+        context ,
+        MaterialPageRoute(
+            builder: (_) => const CovidCollectPage()));
   }
 
   routeCarouselPage() async {

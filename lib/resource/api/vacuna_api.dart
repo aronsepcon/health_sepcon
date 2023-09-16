@@ -22,6 +22,7 @@ class VacunaApi{
 
     if(response.statusCode==200){
       log('update data');
+      log(response.body);
       Map<String,dynamic > formatJson = jsonDecode(response.body);
       localStore.saveDocuments(formatJson);
       var result = DocumentVacunaModel.formatJsonDocument(formatJson);

@@ -17,11 +17,11 @@ class ControlMedicoDetalleModel{
   String get _nombreDoc => this.nombreDoc!;
 
   ControlMedicoDetalleModel.fromJson(Map<String,dynamic> fromJson){
-    hasDocument = fromJson['has_document'];
-    tipo = fromJson['tipo'];
-    validated = fromJson['validated'];
-    id = fromJson['id'];
-    fechaReg = fromJson['fechareg'];
-    nombreDoc = fromJson['nombre_doc'];
+    hasDocument = fromJson['has_document'] ?? false;
+    tipo = fromJson['tipo'] ?? "";
+    validated = fromJson['validated'] ?? false;
+    id = fromJson['id'] ?? "";
+    fechaReg = fromJson['fechareg'] ?? "";
+    nombreDoc = fromJson['nombre_doc'] ?? "";
   }
 }

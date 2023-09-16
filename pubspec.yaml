@@ -111,7 +111,6 @@ flutter:
      - assets/pasemedico/pase_medico_reversa_1.png
      - assets/pasemedico/pase_medico_reversa_2.PNG
      - assets/dni_proof.jpeg
-     - assets/proof_doc.pdf
      - assets/certificado_vacuna.png
      - assets/control_medico.png
      - assets/covid.png

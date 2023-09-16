@@ -5,6 +5,7 @@ import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_costos_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
+import 'package:sepcon_salud/util/helper.dart';
 import 'package:sepcon_salud/util/notification/background_message.dart';
 import 'package:sepcon_salud/util/notification/custom_notification.dart';
 
@@ -40,12 +41,26 @@ class FirebaseApi{
             await localStore.fetchVacunaGeneral();
 
         if(documentVacunaModel != null){
+
+          //Helper.editValue(documentVacunaModel.vacunaGeneralModel!.tiposVacunas!);
+
+          Helper.validateDates(documentVacunaModel.vacunaGeneralModel!.tiposVacunas!);
+          String message = "\n";
+          for(VacunaModel vacunaModel in documentVacunaModel.vacunaGeneralModel!.tiposVacunas!){
+            if(vacunaModel.vigenciaVacuna == VigenciaVacuna.noActive){
+              message += "${vacunaModel.nombre} : ${vacunaModel.amountDay} día(s) vencidos \n";
+
+            }
+            if( vacunaModel.vigenciaVacuna == VigenciaVacuna.toExpire){
+              message += "${vacunaModel.nombre} : ${vacunaModel.amountDay} día(s) para vencer  \n";
+            }
+          }
+
           final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
           FlutterLocalNotificationsPlugin();
           CustomNotification.initialize(flutterLocalNotificationsPlugin);
-          CustomNotification.showBigTextNotification(title: "New message title",
-              body: "Your long body "
-                  "${documentVacunaModel.documentoIdentidadModel!.adjunto}",
+          CustomNotification.showBigTextNotification(title: "Sepcon Salud",
+              body: message,
               fln: flutterLocalNotificationsPlugin);
         }
       });
@@ -82,3 +97,4 @@ class FirebaseApi{
 
   }
 }
+

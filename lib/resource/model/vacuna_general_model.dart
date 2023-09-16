@@ -12,10 +12,10 @@ class VacunaGeneralModel{
       this.tiposVacunas);
 
   VacunaGeneralModel.fromJson(Map<String,dynamic> formatJson){
-    hasDocument = formatJson['has_document_general'] ?? "";
-    validated = formatJson['Validated'];
-    documentGeneral = formatJson['document_general'];
-    tiposVacunas = parseVacunaModel(formatJson['tipos_vacunas']);
+    hasDocument = formatJson['has_document_general'] ?? false;
+    validated = formatJson['Validated'] ?? false;
+    documentGeneral = formatJson['document_general'] ?? "";
+    tiposVacunas = parseVacunaModel(formatJson['tipos_vacunas']) ?? [];
   }
 
   List<VacunaModel> parseVacunaModel(List<dynamic> parsed){

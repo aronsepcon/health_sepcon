@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:sepcon_salud/resource/model/dosis_model.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
 import 'package:sepcon_salud/resource/model/refuerzo_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_costos_model.dart';
+import 'package:sepcon_salud/resource/model/vacuna_detalle_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_general_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
@@ -27,7 +29,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
 
   late File filePdf;
 
-  String path = "";
+  //String path = "";
   late File file;
   late DocumentVacunaModel? documentVacunaModel;
   late LocalStore localStore;
@@ -180,7 +182,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                   const SizedBox(height: 20,),
 
                   Column(
-                    children: widgetListTipos(listRequiredVacuum)
+                    children: widgetListTipos(documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!,true)
                   ),
                   const SizedBox(height: 20,),
 
@@ -196,7 +198,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                   const SizedBox(height: 20,),
 
                   Column(
-                      children: widgetListTipos(listNotRequiredVacuum)
+                      children: widgetListTipos(documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!,false)
                   )
 
 
@@ -212,34 +214,36 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     );
   }
 
-  List<Widget> widgetListTipos(List<VacunaModel> listVacunaModel){
+  List<Widget> widgetListTipos(List<VacunaModel> listVacunaModel,bool request){
     List<Widget> listTipos = [];
 
     for(VacunaModel vacunaModel in listVacunaModel){
-      Widget widget = Column(
-        children: [
-          const SizedBox(height: 10,),
+      if(vacunaModel.requiredVacuum == request){
+        Widget widget = Column(
+          children: [
+            const SizedBox(height: 10,),
 
-          Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: GeneralColor.grayBoldColor,
-              ),
-              child: ListTile(
-                onTap: (){
-                  widgetBottomSheet(vacunaModel);
-                },
-                leading:  vacunaModel.validated! ?
-                const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                    : const Icon(Icons.warning_amber,color: Colors.amber,),
-                title: Text(vacunaModel.nomenclatura!),
-                trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
-              )
-          ),
+            Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: GeneralColor.grayBoldColor,
+                ),
+                child: ListTile(
+                  onTap: (){
+                    widgetBottomSheet(vacunaModel);
+                  },
+                  leading: statusVigenciaIcon(vacunaModel.vigenciaVacuna),
+                  title: Text(vacunaModel.nomenclatura!),
+                  subtitle:statusVigenciaMessage(vacunaModel.vigenciaVacuna,vacunaModel.amountDay!),
+                  trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
+                )
+            ),
 
-        ],
-      );
-      listTipos.add(widget);
+          ],
+        );
+        listTipos.add(widget);
+      }
+
     }
 
     return listTipos;
@@ -285,9 +289,10 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                     ],
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
 
+                  statusVigencia(vacunaModel.vigenciaVacuna,vacunaModel.amountDay!),
                   const SizedBox(
                     height: 10,
                   ),
@@ -352,6 +357,74 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     );
   }
 
+  statusVigencia(VigenciaVacuna vigenciaVacuna,int amountDay){
+    Widget widgetIcon = Container();
+    if(vigenciaVacuna == VigenciaVacuna.empty){
+      widgetIcon = const Row(
+        children: [
+          Icon(Icons.hourglass_empty),
+          Text("No cuenta con ninguna vacuna registrada"),
+        ],
+      );
+    }
+    if(vigenciaVacuna == VigenciaVacuna.active){
+      widgetIcon = const Row(
+        children: [
+          Icon(Icons.check_circle,color: GeneralColor.greenColor,),
+          Text("Vigente",style: TextStyle(color: GeneralColor.greenColor,fontWeight: FontWeight.bold),),
+        ],
+      );
+    }
+    if(vigenciaVacuna == VigenciaVacuna.noActive){
+      widgetIcon = Row(
+        children: [
+          Icon(Icons.error,color: Colors.red,),
+          Text("Vencido : $amountDay día(s) ",style: TextStyle(color:  Colors.red,fontWeight: FontWeight.bold),),
+        ],
+      );
+    }
+    if(vigenciaVacuna == VigenciaVacuna.toExpire){
+      widgetIcon = Row(
+        children: [
+          Icon(Icons.warning,color: Colors.amber,),
+          Text("Por vencer : $amountDay día(s)",style: TextStyle(color: Colors.amber,fontWeight: FontWeight.bold),),
+
+    ],
+      );
+    }
+    return widgetIcon;
+  }
+
+  statusVigenciaIcon(VigenciaVacuna vigenciaVacuna){
+    Widget widgetIcon = Container();
+    if(vigenciaVacuna == VigenciaVacuna.empty){
+      widgetIcon = Icon(Icons.hourglass_empty);
+    }
+    if(vigenciaVacuna == VigenciaVacuna.active){
+      widgetIcon = const Icon(Icons.check_circle,color: GeneralColor.greenColor,);
+    }
+    if(vigenciaVacuna == VigenciaVacuna.noActive){
+      widgetIcon = const  Icon(Icons.error,color: Colors.red,);
+    }
+    if(vigenciaVacuna == VigenciaVacuna.toExpire){
+      widgetIcon = const  Icon(Icons.warning,color: Colors.amber,);
+    }
+    return widgetIcon;
+  }
+
+  statusVigenciaMessage(VigenciaVacuna vigenciaVacuna,int amountDay){
+    Widget widgetIcon = const Text("");
+    if(vigenciaVacuna == VigenciaVacuna.noActive){
+      widgetIcon = Text("$amountDay día(s) vencido");
+    }
+    if(vigenciaVacuna == VigenciaVacuna.toExpire){
+      widgetIcon = Text("A $amountDay día(s) por vencer");
+    }
+    return widgetIcon;
+  }
+
+
+
   List<Widget> widgetListDosis(List<DosisModel> listDosisModel){
     List<Widget> listTipos = [];
 
@@ -360,16 +433,12 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
         children: [
           ListTile(
             leading: Text("#${dosisModel.nDosis.toString()}"),
-            title: Text(dosisModel.fecha != null ? dosisModel.fecha! : "fecha pendiente"),
-            trailing: dosisModel.estadoDosis! != "PENDIENTE_REVISAR" ?
-            const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                : const Icon(Icons.warning_amber,color: Colors.amber,),
+            title: Text(dosisModel.fecha != null ? dosisModel.fecha! : "-"),
           ),
         ],
       );
       listTipos.add(widget);
     }
-
     return listTipos;
   }
 
@@ -382,10 +451,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
           ListTile(
             leading: Text("#${refuerzoModel.nDosis.toString()}"),
             title: Text(refuerzoModel.proximaFecha != null ?
-    refuerzoModel.proximaFecha! : "fecha pendiente"),
-            trailing: refuerzoModel.estado! != "PENDIENTE_REVISAR" ?
-            const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                : const Icon(Icons.warning_amber,color: Colors.amber,),
+    refuerzoModel.proximaFecha! : "-"),
           ),
 
         ],
@@ -425,30 +491,254 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
         showView = true;
         listVacunaModel = documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!;
         generateTwoListVacunas();
-        path = documentVacunaModel!.vacunaGeneralModel!.tiposVacunas![0]
-            .adjunto!;
       });
     }
   }
 
   generateTwoListVacunas(){
 
-    listNotRequiredVacuum = documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!;
+    //editValue();
+    //listNotRequiredVacuum = documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!;
 
     for(VacunaModel vacunaModel in
     documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!){
       for(String vacuna in vacunaCostosModel!.vacunas){
         if(vacuna == vacunaModel.nombre){
-          listRequiredVacuum.add(vacunaModel);
+          //listRequiredVacuum.add(vacunaModel);
+          vacunaModel.requiredVacuum = true;
         }
       }
     }
 
-    for(VacunaModel vacunaModel in listRequiredVacuum){
+    /*for(VacunaModel vacunaModel in listRequiredVacuum){
       if(listNotRequiredVacuum.contains(vacunaModel)){
         listNotRequiredVacuum.remove(vacunaModel);
       }
-    }
+    }*/
 
+    validateDates(documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!);
+
+    log("NOT REQUIRED");
+
+    validateDates(listNotRequiredVacuum);
+  }
+
+  /*editValue(){
+    for(VacunaModel vacunaModel in
+    documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!){
+      if(vacunaModel.nombre == "HepatitisB"){
+        vacunaModel.vacunaDetalle!.dosis[0].fecha = "2023-08-11";
+        vacunaModel.vacunaDetalle!.dosis[1].fecha = "2023-09-11";
+        vacunaModel.vacunaDetalle!.dosis[2].fecha = null;
+      }
+      if(vacunaModel.nombre == "Difteria"){
+        vacunaModel.vacunaDetalle!.dosis[2].fecha = "2023-08-11";
+        vacunaModel.vacunaDetalle!.refuerzos[0].proximaFecha = "2023-09-11";
+        vacunaModel.vacunaDetalle!.refuerzos[1].proximaFecha = null;
+      }
+    }
+  }*/
+  validateDates(List<VacunaModel> vacunasModel){
+    for(VacunaModel vacuna in vacunasModel){
+
+      log("vacuna : ${vacuna.nombre} , dosis : ${vacuna.vacunaDetalle!.dosis.length} , refuerzo : ${vacuna.vacunaDetalle!.refuerzos.length}");
+
+      // VACUNAS CON UNA SOLA DOSIS
+      if(vacuna.vacunaDetalle!.dosis.length == 1 &&
+          vacuna.vacunaDetalle!.refuerzos.isEmpty){
+
+        if(vacuna.vacunaDetalle!.dosis.last.fecha != null){
+          vacuna.vigenciaVacuna = VigenciaVacuna.active;
+        }else{
+          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+        }
+      }
+
+      // VACUNAS CON MAS DE UNA DOSIS
+      if(vacuna.vacunaDetalle!.dosis.length > 1 &&
+          vacuna.vacunaDetalle!.refuerzos.isEmpty){
+
+        int amountNull = 0;
+
+        for(DosisModel dosisModel in vacuna.vacunaDetalle!.dosis){
+          if(dosisModel.fecha == null){
+            amountNull += 1;
+          }
+        }
+
+        DosisModel lastDosis = vacuna.vacunaDetalle!.dosis.last;
+
+        if( amountNull == vacuna.vacunaDetalle!.dosis.length ){
+          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+        }else{
+
+          if( lastDosis.fecha != null ) {
+            if(calculateDay(lastDosis.fecha!) <= 0){
+              vacuna.vigenciaVacuna = stateVacuum(lastDosis.fecha!);
+              vacuna.amountDay = calculateDay(lastDosis.fecha!);
+            }else{
+              vacuna.vigenciaVacuna = VigenciaVacuna.active;
+            }
+
+          } else {
+
+            List<int> listIndex = [];
+            int index = 0;
+
+            for(DosisModel dosisModelTemp in vacuna.vacunaDetalle!.dosis){
+              if(dosisModelTemp.fecha != null){
+                listIndex.add(index);
+              }
+              index += 1;
+            }
+
+            // Verificar si tiene almenos dos items
+
+            if(listIndex.length > 1){
+              int indexSelected = listIndex.last;
+              vacuna.vigenciaVacuna = stateVacuum(vacuna.vacunaDetalle!.dosis[indexSelected].fecha!);
+              vacuna.amountDay = calculateDay(vacuna.vacunaDetalle!.dosis[indexSelected].fecha!);
+
+            }else if(listIndex.length == 1){
+              // ACTIVE
+              vacuna.vigenciaVacuna = VigenciaVacuna.active;
+            }else if(listIndex.isEmpty){
+              // ACTIVE
+              vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+            }
+
+          }
+        }
+
+
+      }
+
+      // VACUNAS CON MAS DE UNA DOSIS Y MAS DE UN REFUERZO
+      if(vacuna.vacunaDetalle!.dosis.length > 1 &&
+          vacuna.vacunaDetalle!.refuerzos.length > 1) {
+
+        List<DosisModel> dosisGeneral = [];
+
+        int amountNull = 0;
+
+        for (DosisModel dosisModel in vacuna.vacunaDetalle!.dosis) {
+          dosisGeneral.add(dosisModel);
+          if(dosisModel.fecha == null){
+            amountNull += 1;
+          }
+        }
+
+        for (RefuerzoModel refuerzoModel in vacuna.vacunaDetalle!.refuerzos) {
+          DosisModel dosisModel = DosisModel(
+              refuerzoModel.nombre, refuerzoModel.nDosis,
+              refuerzoModel.documento, refuerzoModel.estado,
+              refuerzoModel.proximaFecha);
+          dosisGeneral.add(dosisModel);
+          if(dosisModel.fecha == null){
+            amountNull += 1;
+          }
+        }
+
+        // Si la cantidad de null es igual a la cantidad total
+        if( amountNull == dosisGeneral.length ){
+          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+        }else{
+
+          if(dosisGeneral.last.fecha != null){
+            vacuna.vigenciaVacuna = stateVacuum(dosisGeneral.last.fecha!);
+            vacuna.amountDay = calculateDay(dosisGeneral.last.fecha!);
+
+          }else{
+
+            List<int> listIndex = [];
+            int index = 0;
+
+            for(DosisModel dosisModelTemp in dosisGeneral){
+              if(dosisModelTemp.fecha != null){
+                listIndex.add(index);
+              }
+              index += 1;
+            }
+
+            // Verificar si tiene almenos dos items
+
+            if(listIndex.length > 1){
+              int indexSelected = listIndex.last;
+
+              vacuna.vigenciaVacuna = stateVacuum(dosisGeneral[indexSelected].fecha!);
+              vacuna.amountDay = calculateDay(dosisGeneral[indexSelected].fecha!);
+
+            }else if(listIndex.length == 1){
+              // ACTIVE
+              vacuna.vigenciaVacuna = VigenciaVacuna.active;
+            }else if(listIndex.isEmpty){
+              // ACTIVE
+              vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+            }
+          }
+
+        }
+
+
+      }
+
+      // VACUNAS SIN DOSIS Y MAS DE UN REFUERZO
+      if(vacuna.vacunaDetalle!.dosis.isEmpty  &&
+          vacuna.vacunaDetalle!.refuerzos.length > 1){
+
+        int amountNull = 0;
+
+        for(RefuerzoModel refuerzoModel in vacuna.vacunaDetalle!.refuerzos){
+          if(refuerzoModel.proximaFecha == null){
+            amountNull += 1;
+          }
+        }
+        if(amountNull != vacuna.vacunaDetalle!.refuerzos.length ){
+
+          RefuerzoModel refuerzoModel = vacuna.vacunaDetalle!.refuerzos[1];
+
+          vacuna.vigenciaVacuna = stateVacuum(refuerzoModel.proximaFecha!);
+          vacuna.amountDay = calculateDay(refuerzoModel.proximaFecha!);
+
+        }else if (amountNull == 1){
+          vacuna.vigenciaVacuna = VigenciaVacuna.active;
+
+        }else if ( amountNull == 0 ){
+          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+        }
+      }
+
+    }
+  }
+
+  VigenciaVacuna stateVacuum(String fecha){
+    VigenciaVacuna vigenciaVacuna = VigenciaVacuna.empty;
+    DateTime now = DateTime.now();
+    DateTime parseFecha = DateTime.parse(fecha);
+
+    int amountDay = now.difference(parseFecha).inDays;
+
+    log(" $now - $parseFecha : $amountDay");
+    // VIGENTE
+    if( amountDay > 0){
+      vigenciaVacuna = VigenciaVacuna.noActive;
+    }
+    // POR VENCERSE
+    if( -7 < amountDay && amountDay <= 0 ){
+      vigenciaVacuna = VigenciaVacuna.toExpire;
+    }
+    // VENCIDO
+    if( amountDay <= -7 ){
+      vigenciaVacuna = VigenciaVacuna.active;
+    }
+    return vigenciaVacuna;
+  }
+
+  int calculateDay(String fecha){
+    DateTime now = DateTime.now();
+    DateTime parseFecha = DateTime.parse(fecha);
+
+    int amountDay = now.difference(parseFecha).inDays;
+    return amountDay;
   }
 }

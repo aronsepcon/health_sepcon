@@ -24,15 +24,14 @@ class PaseMedicoModel{
   String get _motivo => this.motivo!;
 
   PaseMedicoModel.fromJson(Map<String,dynamic> formatJson){
-    tipo = formatJson['tipo']!;
-    hasDocument = formatJson['has_document']!;
-    clase = formatJson['clase']!;
+    tipo = formatJson['tipo'] ?? "";
+    hasDocument = formatJson['has_document'] ?? false;
+    clase = formatJson['clase'] ?? "";
     adjunto = formatJson['adjunto'] ?? "";
-    error = formatJson['error']!;
-    validated = formatJson['validated']!;
-    mensaje = formatJson['mensaje']!;
-    vigencia = formatJson['vigencia']!;
-    motivo = formatJson['motivo']!;
+    validated = formatJson['validated'] ?? false;
+    mensaje = formatJson['mensaje'] ?? "";
+    vigencia = formatJson['vigencia'] ?? "";
+    motivo = formatJson['motivo'] ?? "";
   }
 
 }

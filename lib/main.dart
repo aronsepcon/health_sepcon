@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:sepcon_salud/firebase_options.dart';
+import 'package:sepcon_salud/util/notification/firebase_options.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:sepcon_salud/util/notification/firebase_notification.dart';
 import 'package:sepcon_salud/util/route.dart';
