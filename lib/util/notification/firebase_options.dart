@@ -67,7 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '48821177403',
     projectId: 'salud-4bbb5',
     storageBucket: 'salud-4bbb5.appspot.com',
-    iosBundleId: 'com.example.sepconSalud',
+    iosBundleId: 'com.sepcon.sepconSalud',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -76,6 +76,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '48821177403',
     projectId: 'salud-4bbb5',
     storageBucket: 'salud-4bbb5.appspot.com',
-    iosBundleId: 'com.example.sepconSalud.RunnerTests',
+    iosBundleId: 'com.sepcon.sepconSalud.RunnerTests',
   );
 }
