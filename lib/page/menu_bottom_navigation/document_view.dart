@@ -450,9 +450,9 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     documentVacuumModel!.paseMedicoModel!.adjunto!.isNotEmpty
         ? true : false;
 
-    FLOW_VACUNA =
-    documentVacuumModel!.vacunaGeneralModel!.documentGeneral!.isNotEmpty
-        ? true : false;
+    FLOW_VACUNA = documentVacuumModel!.vacunaGeneralModel!.validated! == true ? true : false;
+    //documentVacuumModel!.vacunaGeneralModel!.documentGeneral!.isNotEmpty
+     //   ? true : false;
 
     FLOW_CONTROL_MEDICO = documentVacuumModel!.controlMedicoModel!.controlMedico!
         .isNotEmpty ? true : false;

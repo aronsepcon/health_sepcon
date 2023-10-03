@@ -13,7 +13,7 @@ class VacunaGeneralModel{
 
   VacunaGeneralModel.fromJson(Map<String,dynamic> formatJson){
     hasDocument = formatJson['has_document_general'] ?? false;
-    validated = formatJson['Validated'] ?? false;
+    validated = formatJson['validated'] ?? false;
     documentGeneral = formatJson['document_general'] ?? "";
     tiposVacunas = parseVacunaModel(formatJson['tipos_vacunas']) ?? [];
   }

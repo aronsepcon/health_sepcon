@@ -153,7 +153,20 @@ class _LoginPageState extends State<LoginPage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    )
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        privacy();
+                      },
+                      child: const Center(
+                        child: Text(
+                          "Politica de Privacidad"
+                        ),
+                      ),
+                    ),
                   ],
                 ),
         ),
@@ -169,6 +182,45 @@ class _LoginPageState extends State<LoginPage> {
     localStore = LocalStore();
   }
 
+  privacy(){
+    print("Privacidad");
+    return showDialog(
+      context: context, 
+      builder: (context){
+        return AlertDialog(
+          content: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              actions: [
+                InkWell(
+                  onTap: (){
+                    privacy();
+                  },
+                  child: IconButton(
+                    icon: const Icon(
+                    Icons.close_sharp,
+                    color: Colors.red,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                )
+              ],
+            ),
+            body: ListView(
+              children: const [
+                Column(
+                  children: [
+                    Text("Politica de Privacidad"),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      });
+  }
 
   authenticate() async {
 
