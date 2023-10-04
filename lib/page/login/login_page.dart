@@ -183,7 +183,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   privacy(){
-    print("Privacidad");
     return showDialog(
       context: context, 
       builder: (context){
@@ -212,9 +211,54 @@ class _LoginPageState extends State<LoginPage> {
               children: const [
                 Column(
                   children: [
-                    Text("Politica de Privacidad"),
+                    Text("Politica de Privacidad",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.blue)),
                   ],
-                )
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: [
+                    Text('La presente Política de Privacidad establece los términos en que sepcon usa y protege la información que es proporcionada por sus usuarios al momento de utilizar su sitio web. Esta compañía está comprometida con la seguridad de los datos de sus usuarios. Cuando le pedimos llenar los campos de información personal con la cual usted pueda ser identificado, lo hacemos asegurando que sólo se empleará de acuerdo con los términos de este documento. Sin embargo esta Política de Privacidad puede cambiar con el tiempo o ser actualizada por lo que le recomendamos y enfatizamos revisar continuamente esta página para asegurarse que está de acuerdo con dichos cambios.')
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: [
+                    Text("Uso de la información recogida",                      
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.blue),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: [
+                    Text("Nuestro sitio web emplea la información con el fin de proporcionar el mejor servicio posible, particularmente para mantener un registro de usuarios, de pedidos en caso que aplique, y mejorar nuestros productos y servicios.  Es posible que sean enviados correos electrónicos periódicamente a través de nuestro sitio con ofertas especiales, nuevos productos y otra información publicitaria que consideremos relevante para usted o que pueda brindarle algún beneficio, estos correos electrónicos serán enviados a la dirección que usted proporcione y podrán ser cancelados en cualquier momento. SEPCON está altamente comprometido para cumplir con el compromiso de mantener su información segura. Usamos los sistemas más avanzados y los actualizamos constantemente para asegurarnos que no exista ningún acceso no autorizado."),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: [
+                    Text("Control de su información personal", 
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.blue)
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: [
+                    Text("En cualquier momento usted puede restringir la recopilación o el uso de la información personal que es proporcionada a nuestro sitio web.  Cada vez que se le solicite rellenar un formulario, como el de alta de usuario, puede marcar o desmarcar la opción de recibir información por correo electrónico.  En caso de que haya marcado la opción de recibir nuestro boletín o publicidad usted puede cancelarla en cualquier momento.Esta compañía no venderá, cederá ni distribuirá la información personal que es recopilada sin su consentimiento, salvo que sea requerido por un juez con un orden judicial."),
+                  ],
+                ),
               ],
             ),
           ),
