@@ -18,5 +18,5 @@ class GeneralWord{
   static const vacuumHome = 'Vacunas';
   static const passMedicHome = 'Pase Médico';
   static const controlMedicHome = 'Control Medico';
-  static const covidHome = 'COVID';
+  static const covidHome = 'Vacuna PDF';
 }

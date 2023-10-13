@@ -11,7 +11,7 @@ class Constants{
   static const String TITLE_DOCUMENTO_IDENTIDAD = 'Documento de identidad';
   static const String KEY_DOCUMENTO_IDENTIDAD = "DOCUMENT_IDENTIDAD";
   static const String DOCUMENT_VACUUM = "DOCUMENT_VACUUM";
-  static const String COVID = "COVID";
+  static const String COVID = "Vacuna PDF";
 
   // VACUNA
   static const String TITLE_CERTIFICADO_VACUNA = 'Certificado de Vacunas';
@@ -24,8 +24,8 @@ class Constants{
   static const int PASE_MEDICO_SECOND_PAGE = 2;
 
   // COVID
-  static const String TITLE_COVID = 'Covid';
-  static const String KEY_COVID = "COVID";
+  static const String TITLE_COVID = 'Vacuna PDF';
+  static const String KEY_COVID = "Vacuna PDF";
 
   // CONTROL MEDICO
   static const String TITLE_CONTROL_MEDICO = 'Control Medico';
