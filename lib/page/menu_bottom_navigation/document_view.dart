@@ -308,6 +308,18 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       )
                   ),
 
+                  const SizedBox(height: 10,),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: GeneralColor.grayBoldColor
+                    ),
+                    child: const ListTile(
+                      title: Text(GeneralWord.emoHome),
+                      trailing: Icon(Icons.arrow_forward_ios,color: Colors.black54,),
+                    ),
+                  )
                 ],
               ),
             ),
