@@ -6,6 +6,7 @@ import 'package:sepcon_salud/page/control_medico/control_medico_init_page.dart';
 import 'package:sepcon_salud/page/covid/covid_home_page.dart';
 import 'package:sepcon_salud/page/covid/covid_init_page.dart';
 import 'package:sepcon_salud/page/document_identidad/document_home_page.dart';
+import 'package:sepcon_salud/page/menu_bottom_navigation/exam_view.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_home_page.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_init_page.dart';
 import 'package:sepcon_salud/page/vacuum/vacuum_home_page.dart';
@@ -51,6 +52,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   bool STATE_PASE_MEDICO = false;
   bool STATE_COVID19 = false;
   bool STATE_CONTROL_MEDICO = false;
+  bool STATE_EMO = false;
 
   String KEY_DOCUMENTO_IDENTIDAD = "DOCUMENTO_IDENTIDAD";
   String KEY_VACUNA = "VACUNA";
@@ -63,6 +65,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   bool FLOW_PASE_MEDICO = false;
   bool FLOW_COVID19 = false;
   bool FLOW_CONTROL_MEDICO = false;
+  bool FLOW_EMO = false;
 
   @override
   void initState() {
@@ -315,9 +318,15 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       borderRadius: BorderRadius.circular(10),
                       color: GeneralColor.grayBoldColor
                     ),
-                    child: const ListTile(
-                      title: Text(GeneralWord.emoHome),
-                      trailing: Icon(Icons.arrow_forward_ios,color: Colors.black54,),
+                    child: ListTile(
+                      onTap: (){
+                        routeExamViewPage();
+                      },
+                      leading:  STATE_EMO ?
+                        const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
+                            : const Icon(Icons.warning_amber,color: Colors.amber,),
+                      title: const Text(GeneralWord.emoHome),
+                      trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
                     ),
                   )
                 ],
@@ -390,7 +399,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
       }
     }
 
-    porcentajeMap[KEY_CONTROL_MEDICO] = documentVacuumModel!.controlMedicoModel!.validated!;
+    //porcentajeMap[KEY_CONTROL_MEDICO] = documentVacuumModel!.controlMedicoModel!.validated!;
 
     porcentajeMap.forEach((key, value) {
       if(value!){
@@ -427,6 +436,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
         documentVacuumModel!.paseMedicoModel!.validated!;
 
     STATE_CONTROL_MEDICO = documentVacuumModel!.controlMedicoModel!.validated!;
+
+    STATE_EMO = documentVacuumModel!.emoModel!.validate_vigencia!;
 
     // VALIDATE VACUUM
     for(VacunaModel vacunaModel in documentVacuumModel!.vacunaGeneralModel!.tiposVacunas!){
@@ -476,6 +487,12 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
       }
     }
 
+  }
+
+  routeExamViewPage(){
+    Navigator.push(
+      context, MaterialPageRoute(
+        builder: (context) => ExamView()));
   }
 
   routeDocumentoIdentidadInitPage(){

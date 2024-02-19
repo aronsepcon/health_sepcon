@@ -326,7 +326,7 @@ class _CovidFilterPageState extends State<CovidFilterPage> {
     setState(() {
       imageCache.clearLiveImages();
       imageCache.clear();
-      viewPhoto = pathMagicFile;
+      viewPhoto = pathNormalFile;
       loading = true;
     });
   }

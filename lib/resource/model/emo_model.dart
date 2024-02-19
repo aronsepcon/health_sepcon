@@ -5,9 +5,12 @@ class EmoModel {
   late String? mensaje;
   late bool? validated;
   late String? adjunto;
+  late String? vigencia;
+  late String? msj_vigencia;
+  late bool? validate_vigencia;
 
   EmoModel(this.tipo, this.hasDocument, this.fecha, this.mensaje,
-      this.validated, this.adjunto);
+      this.validated, this.adjunto, this.vigencia, this.msj_vigencia, this.validate_vigencia);
 
   String get _tipo => this.tipo!;
 
@@ -21,6 +24,12 @@ class EmoModel {
 
   String get _adjunto => this.adjunto!;
 
+  String get _vigencia => this.vigencia!;
+  
+  String get _msj_vigencia => this.msj_vigencia!;
+
+  bool get _validate_vigencia => this.validate_vigencia!;
+
   EmoModel.fromJson(Map<String, dynamic> formatJson) {
     tipo = formatJson['tipo']!;
     hasDocument = formatJson['has_document']!;
@@ -28,5 +37,8 @@ class EmoModel {
     mensaje = formatJson['mensaje']!;
     validated = formatJson['validated'] ?? false;
     adjunto = formatJson['adjunto'];
+    vigencia = formatJson['vigencia'];
+    msj_vigencia = formatJson['msj_vigencia'];
+    validate_vigencia = formatJson['validate_vigencia'];
   }
 }

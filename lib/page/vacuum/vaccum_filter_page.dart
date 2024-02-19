@@ -328,7 +328,7 @@ class _VacuumFilterPageState extends State<VacuumFilterPage> {
     setState(() {
       imageCache.clearLiveImages();
       imageCache.clear();
-      viewPhoto = pathMagicFile;
+      viewPhoto = pathNormalFile;
       loading = true;
     });
   }

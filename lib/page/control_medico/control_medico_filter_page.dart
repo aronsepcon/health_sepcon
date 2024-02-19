@@ -326,7 +326,7 @@ class _ControlMedicoFilterPageState extends State<ControlMedicoFilterPage> {
     setState(() {
       imageCache.clearLiveImages();
       imageCache.clear();
-      viewPhoto = pathMagicFile;
+      viewPhoto = pathNormalFile;
       loading = true;
     });
   }

@@ -41,7 +41,9 @@ class _ExamViewState extends State<ExamView> {
   late String titleUpdateButton;
   late String titleValidated;
   late String noTitleValidated;
+  late String titleVigencia;
   late bool statuValidated;
+  late bool statusVigencia;
   late String splitUrl;
   late List<String> imgList;
   late List<String> titleList;
@@ -49,6 +51,7 @@ class _ExamViewState extends State<ExamView> {
   late DocumentVacunaModel? documentVacuumModel;
   late bool loading = false;
   late String mensajeEmo ;
+  late String mensajeVigencia;
 
   @override
   void initState() {
@@ -68,8 +71,9 @@ class _ExamViewState extends State<ExamView> {
     downloading = false;
     checkAllPermissions = CheckPermission();
     getPathFile = DirectoryPath();
-    titleValidated = "Verificado";
+    titleValidated = "Verificado ";
     noTitleValidated = "Pendiente de verificar";
+    titleVigencia = "Vigencia hasta ";
   }
 
   titleWidget(String title){
@@ -219,6 +223,27 @@ class _ExamViewState extends State<ExamView> {
     }
   }
 
+  Widget statusVigenciaDate(){
+    if (statusVigencia) {
+      return Row(
+        children: [
+          const Icon(Icons.check_circle, color: Colors.green,),
+          Text(titleVigencia,style: TextStyle(color: GeneralColor.greenColor),),
+          Text(mensajeVigencia,style: TextStyle(color: GeneralColor.greenColor),)
+        ],
+      );
+    }else{
+      return Row(
+        children: [
+          const Icon(Icons.check_circle, color: Colors.green,),
+          Text(titleVigencia,style: TextStyle(color: Colors.amber,),),
+          Text(mensajeVigencia,style: TextStyle(color: Colors.amber,),),
+        ],
+      );
+    }
+    
+  }
+
   String titlePdf(){
     List<String> splitUrl = this.splitUrl.split("/");
     return splitUrl.last;
@@ -296,6 +321,8 @@ class _ExamViewState extends State<ExamView> {
                 titleWidget(title),
                 spaceWidget(10),
                 statusDocument(),
+                spaceWidget(3),
+                statusVigenciaDate(),
                 spaceWidget(10),
                 pdfContainerWidget(urlPdfContainer),
                 expandedWidget(),
@@ -315,7 +342,7 @@ class _ExamViewState extends State<ExamView> {
 
   findUserAndDocumentAndCostosLocalStorage() async {
     documentVacuumModel = await localStore.fetchVacunaGeneral();
-
+    print(documentVacuumModel);
     if(documentVacuumModel != null ){
       setState(() {
         loading = true;
@@ -324,7 +351,11 @@ class _ExamViewState extends State<ExamView> {
         statuValidated =documentVacuumModel!.emoModel!.validated!;
         splitUrl = documentVacuumModel!.emoModel!.adjunto!;
         mensajeEmo =  documentVacuumModel!.emoModel!.mensaje!;
+        mensajeVigencia = documentVacuumModel!.emoModel!.vigencia!;
+        statusVigencia = documentVacuumModel!.emoModel!.validate_vigencia!;
       });
+    }else{
+      print('errror pdf');
     }
   }
 }

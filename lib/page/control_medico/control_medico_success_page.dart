@@ -53,7 +53,7 @@ class _ControlMedicoSuccessPageState extends State<ControlMedicoSuccessPage> {
   }
 
   routePDFViewer(BuildContext context){
-    log("COVID HOME");
+    log("Vacuna HOME");
     Navigator.push(
         context ,
         MaterialPageRoute(

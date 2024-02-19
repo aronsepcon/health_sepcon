@@ -218,6 +218,9 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     List<Widget> listTipos = [];
 
     for(VacunaModel vacunaModel in listVacunaModel){
+          var test = vacunaModel.amountDay;
+          print("la vigencia es $test");
+
       if(vacunaModel.requiredVacuum == request){
         Widget widget = Column(
           children: [

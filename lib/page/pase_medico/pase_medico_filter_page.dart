@@ -327,7 +327,7 @@ class _PaseMedicoFilterPageState extends State<PaseMedicoFilterPage> {
     setState(() {
       imageCache.clearLiveImages();
       imageCache.clear();
-      viewPhoto = pathMagicFile;
+      viewPhoto = pathNormalFile;
       loading = true;
     });
   }

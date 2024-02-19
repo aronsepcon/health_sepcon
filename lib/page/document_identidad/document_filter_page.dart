@@ -349,7 +349,7 @@ class _DocumentFilterPageState extends State<DocumentFilterPage> {
     setState(() {
       imageCache.clearLiveImages();
       imageCache.clear();
-      viewPhoto = pathMagicFile;
+      viewPhoto = pathNormalFile;
       loading = true;
     });
   }

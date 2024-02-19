@@ -19,7 +19,7 @@ class VacunaGeneralModel{
   }
 
   List<VacunaModel> parseVacunaModel(List<dynamic> parsed){
-    //final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    //final parsed = json.decode(responseBody).cast<Map<String, dynamic>>(); 
     return parsed.map<VacunaModel>((json)=>VacunaModel.fromJson(json)).toList();
   }
 }
