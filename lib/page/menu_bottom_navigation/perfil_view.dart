@@ -117,7 +117,7 @@ class _PerfilViewState extends State<PerfilView> {
       onPressed: logOut,
       child: const Text('Cerrar sesión'),
       style: ElevatedButton.styleFrom(
-        primary: Colors.white, // // foreground
+        backgroundColor: Colors.white, // // foreground
       ),
     );
   }

@@ -641,14 +641,16 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
             amountNull += 1;
           }
         }
-print('listadoDosis');
-          print(dosisGeneral);
+          
         // Si la cantidad de null es igual a la cantidad total
         if( amountNull == dosisGeneral.length ){
           vacuna.vigenciaVacuna = VigenciaVacuna.empty;
         }else{
           
           if(dosisGeneral.last.fecha != null){
+            print('listadoDosis');
+            print(dosisGeneral.last.nombre);
+            log("esta es :  ${vacuna.nombre}");
             vacuna.vigenciaVacuna = stateVacuum(dosisGeneral.last.fecha!);
             vacuna.amountDay = calculateDay(dosisGeneral.last.fecha!);
 
