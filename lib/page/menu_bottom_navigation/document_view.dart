@@ -5,6 +5,7 @@ import 'package:sepcon_salud/page/control_medico/control_medico_home_page.dart';
 import 'package:sepcon_salud/page/control_medico/control_medico_init_page.dart';
 import 'package:sepcon_salud/page/covid/covid_home_page.dart';
 import 'package:sepcon_salud/page/covid/covid_init_page.dart';
+import 'package:sepcon_salud/page/covid/covid_preview_page.dart';
 import 'package:sepcon_salud/page/document_identidad/document_home_page.dart';
 import 'package:sepcon_salud/page/menu_bottom_navigation/exam_view.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_home_page.dart';
@@ -62,6 +63,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
 
   bool FLOW_DOCUMENTO_IDENTIDAD = false;
   bool FLOW_VACUNA = false;
+  bool VALIDATE_VACUNA = false;
   bool FLOW_PASE_MEDICO = false;
   bool FLOW_COVID19 = false;
   bool FLOW_CONTROL_MEDICO = false;
@@ -300,7 +302,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       ),
                       child: ListTile(
                         onTap: (){
-                          FLOW_COVID19 ? routeHomeCovidPage()
+                          FLOW_COVID19 ? routePreviewCovidPage()
                               : routeInitCovidPage();
                         },
                         leading:  STATE_COVID19 ?
@@ -483,7 +485,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     for(VacunaModel vacunaModel in documentVacuumModel!.vacunaGeneralModel!.tiposVacunas!){
       if(vacunaModel.nombre == "Covid19"){
         covidModel = vacunaModel;
-        FLOW_COVID19 = vacunaModel.adjunto!.isNotEmpty ? true : false;
+        //FLOW_COVID19 = vacunaModel.adjunto!.isNotEmpty ? true : false;/// cambiar esto 
+        FLOW_COVID19 = vacunaModel.hasDocument == false ? false : true;
       }
     }
 
@@ -548,6 +551,12 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     Navigator.push(
         context, MaterialPageRoute(
         builder: (context) =>  CovidHomePage(covidModel: covidModel,)));
+  }
+
+  routePreviewCovidPage(){
+    Navigator.push(
+      context, MaterialPageRoute(
+        builder: (context) => CovidPreviewPage(covidModel: covidModel,)));
   }
 
   routeInitControlMedico(){

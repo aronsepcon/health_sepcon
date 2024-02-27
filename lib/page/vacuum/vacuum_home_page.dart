@@ -546,173 +546,174 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
 
       log("vacuna : ${vacuna.nombre} , dosis : ${vacuna.vacunaDetalle!.dosis.length} , refuerzo : ${vacuna.vacunaDetalle!.refuerzos.length}");
 
-      // VACUNAS CON UNA SOLA DOSIS
-      if(vacuna.vacunaDetalle!.dosis.length == 1 &&
-          vacuna.vacunaDetalle!.refuerzos.isEmpty){
+      if (vacuna.nombre != 'Covid19') {
+        // VACUNAS CON UNA SOLA DOSIS
+        if(vacuna.vacunaDetalle!.dosis.length == 1 &&
+            vacuna.vacunaDetalle!.refuerzos.isEmpty){
 
-        if(vacuna.vacunaDetalle!.dosis.last.fecha != null){
-          vacuna.vigenciaVacuna = VigenciaVacuna.active;
-        }else{
-          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+          if(vacuna.vacunaDetalle!.dosis.last.fecha != null){
+            vacuna.vigenciaVacuna = VigenciaVacuna.active;
+          }else{
+            vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+          }
         }
-      }
 
       // VACUNAS CON MAS DE UNA DOSIS
-      if(vacuna.vacunaDetalle!.dosis.length > 1 &&
-          vacuna.vacunaDetalle!.refuerzos.isEmpty){
+        if(vacuna.vacunaDetalle!.dosis.length > 1 && vacuna.vacunaDetalle!.refuerzos.isEmpty){
 
-        int amountNull = 0;
+          int amountNull = 0;
 
-        for(DosisModel dosisModel in vacuna.vacunaDetalle!.dosis){
-          if(dosisModel.fecha == null){
-            amountNull += 1;
-          }
-        }
-
-        DosisModel lastDosis = vacuna.vacunaDetalle!.dosis.last;
-
-        if( amountNull == vacuna.vacunaDetalle!.dosis.length ){
-          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
-        }else{
-
-          if( lastDosis.fecha != null ) {
-            if(calculateDay(lastDosis.fecha!) <= 0){
-              vacuna.vigenciaVacuna = stateVacuum(lastDosis.fecha!);
-              vacuna.amountDay = calculateDay(lastDosis.fecha!);
-            }else{
-              vacuna.vigenciaVacuna = VigenciaVacuna.active;
+          for(DosisModel dosisModel in vacuna.vacunaDetalle!.dosis){
+            if(dosisModel.fecha == null){
+              amountNull += 1;
             }
-
-          } else {
-
-            List<int> listIndex = [];
-            int index = 0;
-
-            for(DosisModel dosisModelTemp in vacuna.vacunaDetalle!.dosis){
-              if(dosisModelTemp.fecha != null){
-                listIndex.add(index);
-              }
-              index += 1;
-            }
-
-            // Verificar si tiene almenos dos items
-
-            if(listIndex.length > 1){
-              int indexSelected = listIndex.last;
-              vacuna.vigenciaVacuna = stateVacuum(vacuna.vacunaDetalle!.dosis[indexSelected].fecha!);
-              vacuna.amountDay = calculateDay(vacuna.vacunaDetalle!.dosis[indexSelected].fecha!);
-
-            }else if(listIndex.length == 1){
-              // ACTIVE
-              vacuna.vigenciaVacuna = VigenciaVacuna.active;
-            }else if(listIndex.isEmpty){
-              // ACTIVE
-              vacuna.vigenciaVacuna = VigenciaVacuna.empty;
-            }
-
           }
-        }
 
+          DosisModel lastDosis = vacuna.vacunaDetalle!.dosis.last;
 
-      }
-
-      // VACUNAS CON MAS DE UNA DOSIS Y MAS DE UN REFUERZO
-      if(vacuna.vacunaDetalle!.dosis.length > 1 &&
-          vacuna.vacunaDetalle!.refuerzos.length > 1) {
-
-        List<DosisModel> dosisGeneral = [];
-
-        int amountNull = 0;
-
-        for (DosisModel dosisModel in vacuna.vacunaDetalle!.dosis) {
-          dosisGeneral.add(dosisModel);
-          if(dosisModel.fecha == null){
-            amountNull += 1;
-          }
-        }
-
-        for (RefuerzoModel refuerzoModel in vacuna.vacunaDetalle!.refuerzos) {
-          DosisModel dosisModel = DosisModel(
-              refuerzoModel.nombre, refuerzoModel.nDosis,
-              refuerzoModel.documento, refuerzoModel.estado,
-              refuerzoModel.proximaFecha);
-          dosisGeneral.add(dosisModel);
-          if(dosisModel.fecha == null){
-            amountNull += 1;
-          }
-        }
-          
-        // Si la cantidad de null es igual a la cantidad total
-        if( amountNull == dosisGeneral.length ){
-          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
-        }else{
-          
-          if(dosisGeneral.last.fecha != null){
-            print('listadoDosis');
-            print(dosisGeneral.last.nombre);
-            log("esta es :  ${vacuna.nombre}");
-            vacuna.vigenciaVacuna = stateVacuum(dosisGeneral.last.fecha!);
-            vacuna.amountDay = calculateDay(dosisGeneral.last.fecha!);
-
+          if( amountNull == vacuna.vacunaDetalle!.dosis.length ){
+            vacuna.vigenciaVacuna = VigenciaVacuna.empty;
           }else{
 
-            List<int> listIndex = [];
-            int index = 0;
-
-            for(DosisModel dosisModelTemp in dosisGeneral){
-              if(dosisModelTemp.fecha != null){
-                listIndex.add(index);
+            if( lastDosis.fecha != null ) {
+              if(calculateDay(lastDosis.fecha!) <= 0){
+                vacuna.vigenciaVacuna = stateVacuum(lastDosis.fecha!);
+                vacuna.amountDay = calculateDay(lastDosis.fecha!);
+              }else{
+                vacuna.vigenciaVacuna = VigenciaVacuna.active;
               }
-              index += 1;
+
+            } else {
+
+              List<int> listIndex = [];
+              int index = 0;
+
+              for(DosisModel dosisModelTemp in vacuna.vacunaDetalle!.dosis){
+                if(dosisModelTemp.fecha != null){
+                  listIndex.add(index);
+                }
+                index += 1;
+              }
+
+              // Verificar si tiene almenos dos items
+
+              if(listIndex.length > 1){
+                int indexSelected = listIndex.last;
+                vacuna.vigenciaVacuna = stateVacuum(vacuna.vacunaDetalle!.dosis[indexSelected].fecha!);
+                vacuna.amountDay = calculateDay(vacuna.vacunaDetalle!.dosis[indexSelected].fecha!);
+
+              }else if(listIndex.length == 1){
+                // ACTIVE
+                vacuna.vigenciaVacuna = VigenciaVacuna.active;
+              }else if(listIndex.isEmpty){
+                // ACTIVE
+                vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+              }
+
             }
+          }
+        }
 
-            // Verificar si tiene almenos dos items
+      // VACUNAS CON MAS DE UNA DOSIS Y MAS DE UN REFUERZO
+        if(vacuna.vacunaDetalle!.dosis.length > 1 &&
+            vacuna.vacunaDetalle!.refuerzos.length > 1) {
 
-            if(listIndex.length > 1){
-              int indexSelected = listIndex.last;
+          List<DosisModel> dosisGeneral = [];
 
-              vacuna.vigenciaVacuna = stateVacuum(dosisGeneral[indexSelected].fecha!);
-              vacuna.amountDay = calculateDay(dosisGeneral[indexSelected].fecha!);
+          int amountNull = 0;
 
-            }else if(listIndex.length == 1){
-              // ACTIVE
-              vacuna.vigenciaVacuna = VigenciaVacuna.active;
-            }else if(listIndex.isEmpty){
-              // ACTIVE
-              vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+          for (DosisModel dosisModel in vacuna.vacunaDetalle!.dosis) {
+            dosisGeneral.add(dosisModel);
+            if(dosisModel.fecha == null){
+              amountNull += 1;
             }
           }
 
+          for (RefuerzoModel refuerzoModel in vacuna.vacunaDetalle!.refuerzos) {
+            DosisModel dosisModel = DosisModel(
+                refuerzoModel.nombre, refuerzoModel.nDosis,
+                refuerzoModel.documento, refuerzoModel.estado,
+                refuerzoModel.proximaFecha);
+            dosisGeneral.add(dosisModel);
+            if(dosisModel.fecha == null){
+              amountNull += 1;
+            }
+          }
+            
+          // Si la cantidad de null es igual a la cantidad total
+          if( amountNull == dosisGeneral.length ){
+            vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+          }else{
+            
+            if(dosisGeneral.last.fecha != null){
+              print('listadoDosis');
+              print(dosisGeneral.last.nombre);
+              print("esta es :  ${vacuna.nombre}");
+              vacuna.vigenciaVacuna = stateVacuum(dosisGeneral.last.fecha!);
+              vacuna.amountDay = calculateDay(dosisGeneral.last.fecha!);
+
+            }else{
+
+              List<int> listIndex = [];
+              int index = 0;
+
+              for(DosisModel dosisModelTemp in dosisGeneral){
+                if(dosisModelTemp.fecha != null){
+                  listIndex.add(index);
+                }
+                index += 1;
+              }
+
+              // Verificar si tiene almenos dos items
+
+              if(listIndex.length > 1){
+                int indexSelected = listIndex.last;
+
+                vacuna.vigenciaVacuna = stateVacuum(dosisGeneral[indexSelected].fecha!);
+                vacuna.amountDay = calculateDay(dosisGeneral[indexSelected].fecha!);
+
+              }else if(listIndex.length == 1){
+                // ACTIVE
+                vacuna.vigenciaVacuna = VigenciaVacuna.active;
+              }else if(listIndex.isEmpty){
+                // ACTIVE
+                vacuna.vigenciaVacuna = VigenciaVacuna.empty;
+              }
+            }
+
+          }
+
+
         }
-
-
-      }
 
       // VACUNAS SIN DOSIS Y MAS DE UN REFUERZO
-      if(vacuna.vacunaDetalle!.dosis.isEmpty  &&
-          vacuna.vacunaDetalle!.refuerzos.length > 1){
+        if(vacuna.vacunaDetalle!.dosis.isEmpty  &&
+            vacuna.vacunaDetalle!.refuerzos.length > 1){
 
-        int amountNull = 0;
+          int amountNull = 0;
 
-        for(RefuerzoModel refuerzoModel in vacuna.vacunaDetalle!.refuerzos){
-          if(refuerzoModel.proximaFecha == null){
-            amountNull += 1;
+          for(RefuerzoModel refuerzoModel in vacuna.vacunaDetalle!.refuerzos){
+            if(refuerzoModel.proximaFecha == null){
+              amountNull += 1;
+            }
+          }
+          if(amountNull != vacuna.vacunaDetalle!.refuerzos.length ){
+
+            RefuerzoModel refuerzoModel = vacuna.vacunaDetalle!.refuerzos[1];
+
+            vacuna.vigenciaVacuna = stateVacuum(refuerzoModel.proximaFecha!);
+            vacuna.amountDay = calculateDay(refuerzoModel.proximaFecha!);
+
+          }else if (amountNull == 1){
+            vacuna.vigenciaVacuna = VigenciaVacuna.active;
+
+          }else if ( amountNull == 0 ){
+            vacuna.vigenciaVacuna = VigenciaVacuna.empty;
           }
         }
-        if(amountNull != vacuna.vacunaDetalle!.refuerzos.length ){
-
-          RefuerzoModel refuerzoModel = vacuna.vacunaDetalle!.refuerzos[1];
-
-          vacuna.vigenciaVacuna = stateVacuum(refuerzoModel.proximaFecha!);
-          vacuna.amountDay = calculateDay(refuerzoModel.proximaFecha!);
-
-        }else if (amountNull == 1){
-          vacuna.vigenciaVacuna = VigenciaVacuna.active;
-
-        }else if ( amountNull == 0 ){
-          vacuna.vigenciaVacuna = VigenciaVacuna.empty;
-        }
       }
+        
+      
 
     }
   }
