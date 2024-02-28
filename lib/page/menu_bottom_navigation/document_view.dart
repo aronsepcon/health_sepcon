@@ -12,6 +12,7 @@ import 'package:sepcon_salud/page/pase_medico/pase_medico_home_page.dart';
 import 'package:sepcon_salud/page/pase_medico/pase_medico_init_page.dart';
 import 'package:sepcon_salud/page/vacuum/vacuum_home_page.dart';
 import 'package:sepcon_salud/page/vacuum/vacuum_init_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_preview_page.dart';
 import 'package:sepcon_salud/resource/model/control_medico_model.dart';
 import 'package:sepcon_salud/resource/model/document_vacuna_model.dart';
 import 'package:sepcon_salud/resource/model/login_response.dart';
@@ -239,9 +240,9 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       ),
                       child: ListTile(
                           onTap: (){
-                            FLOW_VACUNA ?
-                            routeVacuumHomePage()
-                            :routeVacuumInitPage();
+                            FLOW_VACUNA == false ?
+                            routeVacuumInitPage()
+                            : VALIDATE_VACUNA ? routeVacuumHomePage() : routeVacuumPreviewPage();
                           },
                         leading: STATE_VACUNA ?
                         const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
@@ -475,12 +476,20 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     documentVacuumModel!.paseMedicoModel!.adjunto!.isNotEmpty
         ? true : false;
 
-    FLOW_VACUNA = documentVacuumModel!.vacunaGeneralModel!.validated! == true ? true : false;
+    //FLOW_VACUNA = documentVacuumModel!.vacunaGeneralModel!.validated! == true ? true : false;
     //documentVacuumModel!.vacunaGeneralModel!.documentGeneral!.isNotEmpty
      //   ? true : false;
+    if (documentVacuumModel!.vacunaGeneralModel!.hasDocument!) {
+      FLOW_VACUNA = true;
+      if (documentVacuumModel!.vacunaGeneralModel!.validated!) {//
+        VALIDATE_VACUNA = true;
+      }
+    }else {
+      FLOW_VACUNA = false;
+    }
 
-    FLOW_CONTROL_MEDICO = documentVacuumModel!.controlMedicoModel!.controlMedico!
-        .isNotEmpty ? true : false;
+    FLOW_CONTROL_MEDICO = documentVacuumModel!.controlMedicoModel!.controlMedico!.isNotEmpty ? true : false;
+    //FLOW_CONTROL_MEDICO = documentVacuumModel!.controlMedicoModel!.hasDocument! == true ? true : false;
 
     for(VacunaModel vacunaModel in documentVacuumModel!.vacunaGeneralModel!.tiposVacunas!){
       if(vacunaModel.nombre == "Covid19"){
@@ -524,6 +533,12 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
         MaterialPageRoute(
             builder: (context) => VacuumHomePage(
               vacunaGeneralModel: documentVacuumModel!.vacunaGeneralModel!,)));
+  }
+
+  routeVacuumPreviewPage(){
+    Navigator.push(
+      context, 
+      MaterialPageRoute(builder: (context) => VacuumPreviewPage(vacunaModel: documentVacuumModel!.vacunaGeneralModel!)));
   }
 
   routePaseMedicoInitPage(){

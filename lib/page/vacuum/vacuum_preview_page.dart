@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
+import 'package:sepcon_salud/resource/model/vacuna_general_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
 import 'package:sepcon_salud/util/constantes.dart';
@@ -12,7 +13,7 @@ import 'package:sepcon_salud/util/widget/pdf_container.dart';
 
 class VacuumPreviewPage extends StatefulWidget {
 
-  final VacunaModel vacunaModel;
+  final VacunaGeneralModel vacunaModel;
 
   const VacuumPreviewPage({super.key, required this.vacunaModel});
 
@@ -74,7 +75,7 @@ class _VacuumPreviewPageState extends State<VacuumPreviewPage>{
               SizedBox(
                 height: heightScreen! * 0.6,
                 child: PdfContainer(
-                  urlPdf: widget.vacunaModel.adjunto!,
+                  urlPdf: widget.vacunaModel.documentGeneral!,
                   isLocal: false,
                   titlePDF: titlePdf(),
                 ),
@@ -275,7 +276,7 @@ class _VacuumPreviewPageState extends State<VacuumPreviewPage>{
   }
 
   String titlePdf(){
-    List<String> splitUrl = widget.vacunaModel.adjunto!.split("/");
+    List<String> splitUrl = widget.vacunaModel.documentGeneral!.split("/");
     return splitUrl.last;
   }
 
