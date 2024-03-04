@@ -262,7 +262,7 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
     dioProof(widget.file, fileName);
   }
 
-  fetchDataLocal() async {
+  fetchDataLocal() async {//ver aqui
     loginResponse = await localStore.fetchUser();
     if (loginResponse != null) {
       setState(() {
