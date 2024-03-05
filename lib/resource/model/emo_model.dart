@@ -8,6 +8,7 @@ class EmoModel {
   late String? vigencia;
   late String? msj_vigencia;
   late bool? validate_vigencia;
+  late String? motivo_vigencia;
 
   EmoModel(this.tipo, this.hasDocument, this.fecha, this.mensaje,
       this.validated, this.adjunto, this.vigencia, this.msj_vigencia, this.validate_vigencia);
