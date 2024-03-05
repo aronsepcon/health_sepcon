@@ -45,6 +45,7 @@ class _ExamViewState extends State<ExamView> {
   late bool statuValidated;
   late bool statusVigencia;
   late String splitUrl;
+  late String motivoEmo;
   late List<String> imgList;
   late List<String> titleList;
   late int numberPage;
@@ -244,6 +245,12 @@ class _ExamViewState extends State<ExamView> {
     
   }
 
+  Widget motivoVigencia(){
+    return Row(children: [
+      Text(motivoEmo)
+    ],);
+  }
+
   String titlePdf(){
     List<String> splitUrl = this.splitUrl.split("/");
     return splitUrl.last;
@@ -323,6 +330,8 @@ class _ExamViewState extends State<ExamView> {
                 statusDocument(),
                 spaceWidget(3),
                 statusVigenciaDate(),
+                spaceWidget(3),
+                motivoVigencia(),
                 spaceWidget(10),
                 pdfContainerWidget(urlPdfContainer),
                 expandedWidget(),
@@ -353,6 +362,7 @@ class _ExamViewState extends State<ExamView> {
         mensajeEmo =  documentVacuumModel!.emoModel!.mensaje!;
         mensajeVigencia = documentVacuumModel!.emoModel!.vigencia!;
         statusVigencia = documentVacuumModel!.emoModel!.validate_vigencia!;
+        motivoEmo = documentVacuumModel!.emoModel!.motivo_vigencia!;
       });
     }else{
       print('errror pdf');

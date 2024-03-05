@@ -268,7 +268,7 @@ class _PaseMedicoPreviewPdfPageState extends State<PaseMedicoPreviewPdfPage> {
       setState(() {
         loading = true;
         fileName =
-            "$nomenclaturaLink-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
+            "$nomenclaturaLink-${loginResponse!.dni}-${loginResponse!.nombres!/*.replaceAll(" ", "")*/}.pdf";///test luego
       });
     }
   }
