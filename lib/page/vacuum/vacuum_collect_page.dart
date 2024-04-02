@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Uint8List;
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sepcon_salud/page/vacuum/vaccum_filter_page.dart';
 import 'package:sepcon_salud/page/vacuum/vacuum_preview_pdf_page.dart';
@@ -227,7 +228,16 @@ class _VacuumCollectPageState extends State<VacuumCollectPage> {
 
   Future<Uint8List> _readImageData(String name) async {
     File imageFile = File(name);
-    return imageFile.readAsBytes();
+    var result = await FlutterImageCompress.compressWithFile(
+      imageFile.absolute.path,
+      quality: 40,
+    );
+
+    if (result != null) {
+      return result;
+    }else{
+      return imageFile.readAsBytes();
+    }
 
   }
 

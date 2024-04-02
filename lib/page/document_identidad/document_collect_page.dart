@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
 import 'package:sepcon_salud/page/document_identidad/document_preview_pdf_page.dart';
@@ -214,8 +215,16 @@ class _DocumentCollectPageState extends State<DocumentCollectPage> {
 
   Future<Uint8List> _readImageData(String name) async {
     File imageFile = File(name);
-    return imageFile.readAsBytes();
+    var result = await FlutterImageCompress.compressWithFile(
+      imageFile.absolute.path,
+      quality: 40,
+    );
 
+    if (result != null) {
+      return result;
+    }else{
+      return imageFile.readAsBytes();
+    }
   }
 
   Future<void> saveAndLaunchFile(List<int> bytes) async {

@@ -12,7 +12,7 @@ import 'package:sepcon_salud/util/constantes.dart';
 import 'package:sepcon_salud/util/edge_detection/process_image.dart';
 import 'package:sepcon_salud/util/general_color.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 class PaseMedicoCollectPage extends StatefulWidget {
   final int numberPage;
   const PaseMedicoCollectPage({super.key,required this.numberPage});
@@ -233,9 +233,18 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
     saveAndLaunchFile(bytes);
   }
 
-  Future<Uint8List> _readImageData(String name) async {
+  Future<Uint8List> _readImageData(String name) async {////ES AQUI DONDE SE PUEDE REALIZAR LA COMPRESION
     File imageFile = File(name);
-    return imageFile.readAsBytes();
+    var result = await FlutterImageCompress.compressWithFile(
+      imageFile.absolute.path,
+      quality: 40,
+    );
+
+    if (result != null) {
+      return result;
+    } else{
+      return imageFile.readAsBytes();
+    }
 
   }
 
