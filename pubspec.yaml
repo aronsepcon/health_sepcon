@@ -115,6 +115,7 @@ flutter:
      - assets/certificado_vacuna.png
      - assets/control_medico.png
      - assets/covid.png
+     - assets/covid2.png
      - assets/documento_cara.png
      - assets/documento_reverso.png
      - assets/pase_medico_cara.png

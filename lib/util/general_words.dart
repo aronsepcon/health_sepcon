@@ -18,6 +18,6 @@ class GeneralWord{
   static const vacuumHome = 'Vacunas';
   static const passMedicHome = 'Pase Médico';
   static const controlMedicHome = 'Control Medico';
-  static const covidHome = 'Vacuna PDF';
+  static const covidHome = 'Vacuna C19';
   static const emoHome = 'Examen Medico';
 }

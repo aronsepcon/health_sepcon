@@ -63,7 +63,7 @@ class _PaseMedicoCarouselPageState extends State<PaseMedicoCarouselPage> {
     return listWidget;
   }
 
-  openEdgeDetectionCamara() async {
+  openEdgeDetectionCamara() async {/////aqui
     _imagePath = await ProcessImage.pathImage();
     if(_imagePath!.isNotEmpty){
       bool result = await ProcessImage.getImageFromCamera(_imagePath!);

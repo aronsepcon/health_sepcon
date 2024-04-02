@@ -38,7 +38,7 @@ class _CovidInitPageState extends State<CovidInitPage> {
     title = Constants.TITLE_COVID;
     keyDocument = Constants.KEY_COVID;
     titleButton = "Iniciar";
-    pathIllustration = 'assets/medicine.png';
+    pathIllustration = 'assets/covid2.png';
     imgList = Constants.imgListCovid;
     titleList = Constants.titleListGeneral;
     localStore = LocalStore();
