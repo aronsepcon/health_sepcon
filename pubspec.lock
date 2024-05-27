@@ -581,8 +581,8 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "32c804d55f919471b6a9d907f7aab1063c59a6c0"
-      url: "https://github.com/AnthonyFisi/opencv_brigthness.git"
+      resolved-ref: "135407ee2a63e2753a82a109c8b914c8fcca3278"
+      url: "https://github.com/aronsepcon/opencv_brigthness-main.git"
     source: git
     version: "0.0.4"
   path:
