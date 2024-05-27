@@ -247,7 +247,7 @@ class _ExamViewState extends State<ExamView> {
 
   Widget motivoVigencia(){
     return Row(children: [
-      Text(motivoEmo)
+      Text("Motivo: "+ motivoEmo)
     ],);
   }
 
