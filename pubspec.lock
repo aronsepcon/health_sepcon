@@ -580,7 +580,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "32c804d55f919471b6a9d907f7aab1063c59a6c0"
+      ref: main
       resolved-ref: "32c804d55f919471b6a9d907f7aab1063c59a6c0"
       url: "https://github.com/AnthonyFisi/opencv_brigthness.git"
     source: git
