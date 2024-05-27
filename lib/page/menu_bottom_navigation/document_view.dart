@@ -282,8 +282,9 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       ),
                       child: ListTile(
                           onTap: (){
-                            FLOW_CONTROL_MEDICO ? routeHomeControlMedico()
-                            : routeInitControlMedico();
+                            FLOW_CONTROL_MEDICO ? 
+                            routeHomeControlMedico()
+                                : routeInitControlMedico();
                           },
                         leading: STATE_CONTROL_MEDICO ?
                         const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
