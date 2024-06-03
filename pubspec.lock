@@ -505,7 +505,7 @@ packages:
     source: hosted
     version: "10.0.5"
   leak_tracker_flutter_testing:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: leak_tracker_flutter_testing
       sha256: "932549fb305594d82d7183ecd9fa93463e9914e1b67cacc34bc40906594a1806"
@@ -580,9 +580,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "32c804d55f919471b6a9d907f7aab1063c59a6c0"
-      resolved-ref: "32c804d55f919471b6a9d907f7aab1063c59a6c0"
-      url: "https://github.com/AnthonyFisi/opencv_brigthness.git"
+      ref: main
+      resolved-ref: "135407ee2a63e2753a82a109c8b914c8fcca3278"
+      url: "https://github.com/aronsepcon/opencv_brigthness-main.git"
     source: git
     version: "0.0.4"
   path:
