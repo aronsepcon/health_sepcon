@@ -65,7 +65,7 @@ dependencies:
   firebase_core: ^2.15.1
   firebase_messaging: ^14.6.7
   flutter_local_notifications: ^15.1.1
-  leak_tracker_flutter_testing: ^2.0.1 
+  leak_tracker_flutter_testing: ^3.0.5 
 
 dev_dependencies:
   flutter_test:

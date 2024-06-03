@@ -280,11 +280,12 @@ class _VacuumPreviewPageState extends State<VacuumPreviewPage>{
     return splitUrl.last;
   }
 
-  Widget statusDocument(){
-    return const Row(
+  Widget statusDocument(){///Puntos rojos por todos lados de ser necesario
+    return Row(
       children: [
-        Icon(Icons.check_circle, color: GeneralColor.greenColor),
-        Text('Verificado', style: TextStyle(color: GeneralColor.greenColor),)
+        Icon(Icons.check_circle, color: widget.vacunaModel.validated == false ? Colors.orange : GeneralColor.greenColor),
+        Text(widget.vacunaModel.validated == false ? "Por Validar" : "Validado",
+               style: TextStyle(color: widget.vacunaModel.validated == false ? Colors.orange : GeneralColor.greenColor)  ,)
       ],
     );
   }
