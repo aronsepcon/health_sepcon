@@ -103,6 +103,7 @@ class LocalStore{
   }
 
   Future<bool> deleteKey(String pattern) async{
+    print(pattern);
     SharedPreferences prefs = await init();
     bool  result = await prefs.remove(pattern);
     return result;

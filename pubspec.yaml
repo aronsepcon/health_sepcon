@@ -56,9 +56,9 @@ dependencies:
   open_file: ^3.3.1
   opencv_brightness:
     git:
-      url: https://github.com/aronsepcon/opencv_brigthness-main.git
-      #ref: 32c804d55f919471b6a9d907f7aab1063c59a6c0
-      ref: main
+      url: https://github.com/AnthonyFisi/opencv_brigthness.git
+      ref: 32c804d55f919471b6a9d907f7aab1063c59a6c0
+      #ref: main
   flutter_file_downloader: ^1.1.2
   file_picker: ^5.5.0
   pdf_manipulator: ^0.5.9
@@ -66,7 +66,7 @@ dependencies:
   firebase_core: ^2.15.1
   firebase_messaging: ^14.6.7
   flutter_local_notifications: ^15.1.1
-  leak_tracker_flutter_testing: ^2.0.1 
+  leak_tracker_flutter_testing: ^3.0.3 
   #leak_tracker_flutter_testing: ^2.0.1 
 
 dev_dependencies:

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
+import 'package:sepcon_salud/page/vacuum/vacuum_carousel_page.dart';
 import 'package:sepcon_salud/resource/model/vacuna_general_model.dart';
 import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
@@ -34,13 +35,14 @@ class _VacuumPreviewPageState extends State<VacuumPreviewPage>{
   late bool isDownloading = false;
   late double? heightScreen;
   late double? widthScreen;
+  late String NOMENCLATURA_VACUNA_INIT;
 
   @override
   void initState() {
     super.initState();
     checkPermission();
-    fileName = "FV-${DateTime.now().millisecondsSinceEpoch}";
-
+    fileName = "TV-${DateTime.now().millisecondsSinceEpoch}";
+    NOMENCLATURA_VACUNA_INIT = "TV";
   }
 
   @override
@@ -60,7 +62,7 @@ class _VacuumPreviewPageState extends State<VacuumPreviewPage>{
               const Row(
                 children: [
                   Text(
-                    'FICHA DE VACUNACION',
+                    'FICHA DE VACUNACIOOON',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   )
                 ],
@@ -179,15 +181,21 @@ class _VacuumPreviewPageState extends State<VacuumPreviewPage>{
   }
 
   routeDocumentCarouselPage() async {
-    await localStore.deleteKey(Constants.KEY_DOCUMENTO_IDENTIDAD);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => DocumentCarouselPage(
-                  imgList: Constants.imgListDocumentFirst,
-                  titleList:  Constants.titleListGeneral,
-                  numberPage: Constants.DOCUMENT_FIRST,
-                )));
+    localStore = LocalStore();
+    bool result = await localStore.deleteKey(Constants.KEY_CERTIFICADO_VACUNA);
+    if(result){
+      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => VacuumCarouselPage(
+                        imgList: Constants.imgListVacuum,
+                        titleList:  Constants.titleListGeneral,
+                        titlePage: "Certificado de vacunas",
+                        nomenclatura: NOMENCLATURA_VACUNA_INIT,
+                        //numberPage: Constants.DOCUMENT_FIRST,
+                      )));
+    }
+    
   }
 
   checkPermission() async {
@@ -283,9 +291,12 @@ class _VacuumPreviewPageState extends State<VacuumPreviewPage>{
   Widget statusDocument(){///Puntos rojos por todos lados de ser necesario
     return Row(
       children: [
-        Icon(Icons.check_circle, color: widget.vacunaModel.validated == false ? Colors.orange : GeneralColor.greenColor),
-        Text(widget.vacunaModel.validated == false ? "Por Validar" : "Validado",
-               style: TextStyle(color: widget.vacunaModel.validated == false ? Colors.orange : GeneralColor.greenColor)  ,)
+        Icon(widget.vacunaModel.vencido == '3' ? Icons.dangerous_rounded : Icons.check_circle, 
+            color: widget.vacunaModel.vencido == '3' ? Colors.red :
+              widget.vacunaModel.validated == false ? Colors.orange : GeneralColor.greenColor),
+        Text(widget.vacunaModel.vencido == '3' ? 'Rechazado' :
+              widget.vacunaModel.validated == false ? "Por Validar" : "Validado",
+               style: TextStyle(color: widget.vacunaModel.vencido == '3' ? Colors.red :widget.vacunaModel.validated == false ? Colors.orange : GeneralColor.greenColor)  ,)
       ],
     );
   }

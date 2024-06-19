@@ -38,6 +38,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   late String titleUpdateButton;
   late String titleValidated;
   late String noTitleValidated;
+  late String estado;
   late bool statuValidated;
   late String splitUrl;
   late List<String> imgList;
@@ -70,6 +71,7 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     titleValidated = "Verificado";
     noTitleValidated = "Pendiente de verificar";
     statuValidated = widget.paseMedicoModel.validated!;
+    estado = widget.paseMedicoModel.estado!;
     splitUrl = widget.paseMedicoModel.adjunto!;
   }
 

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
+import 'package:sepcon_salud/page/covid/covid_carousel_page.dart';
 import 'package:sepcon_salud/page/document_identidad/document_carousel_page.dart';
 import 'package:sepcon_salud/resource/model/vacuna_model.dart';
 import 'package:sepcon_salud/resource/share_preferences/local_store.dart';
@@ -39,6 +40,10 @@ class _CovidPreviewPageState extends State<CovidPreviewPage>{
     super.initState();
     checkPermission();
     fileName = "COVID19-${DateTime.now().millisecondsSinceEpoch}";
+  }
+
+  initVariable(){
+    localStore = LocalStore();
   }
 
   @override
@@ -182,20 +187,23 @@ class _CovidPreviewPageState extends State<CovidPreviewPage>{
     );
   }
 
-  initVariable(){
-    localStore = LocalStore();
-  }
+  
 
   routeDocumentCarouselPage() async {
-    await localStore.deleteKey(Constants.KEY_DOCUMENTO_IDENTIDAD);
-    Navigator.push(
+    //print(localStore);
+    localStore = LocalStore();
+    bool result = await localStore.deleteKey(Constants.KEY_COVID);
+    if (result) {
+      Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => DocumentCarouselPage(
-                  imgList: Constants.imgListDocumentFirst,
+            builder: (context) => CovidCarouselPage(
+                  imgList: Constants.imgListCovid,
                   titleList:  Constants.titleListGeneral,
-                  numberPage: Constants.DOCUMENT_FIRST,
+                  titlePage: Constants.TITLE_COVID,
+                  //numberPage: Constants.DOCUMENT_FIRST,
                 )));
+    }
   }
 
   checkPermission() async {

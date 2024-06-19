@@ -15,7 +15,7 @@ class VacunaApi{
 
   Future<DocumentVacunaModel?> vacunaByDocument(String documento) async {
 
-    var url=Uri.parse('https://rrhhperu.sepcon.net/medica_api/documentosApi.php');
+    var url=Uri.parse('http://192.168.92.1/medica_api/documentosApi.php');
     var map = <String, dynamic>{};
     map['dni'] = documento;
     final response = await client.post(url,body:map);
