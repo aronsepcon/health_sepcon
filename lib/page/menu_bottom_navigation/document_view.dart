@@ -246,9 +246,10 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                             routeVacuumInitPage()
                             : VALIDATE_VACUNA ? routeVacuumHomePage() : routeVacuumPreviewPage();
                           },
-                        leading: FLOW_VACUNA ? 
+                        leading: FLOW_VACUNA ? VALIDATE_VACUNA ?
                           VENCIMIENTO_VACUNA == '0'? const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
                             : (VENCIMIENTO_VACUNA == '1' || VENCIMIENTO_VACUNA == '3')? const Icon(Icons.dangerous_rounded,color: Colors.red,)
+                            : const Icon(Icons.check_circle,color: Colors.orange,)
                             : const Icon(Icons.check_circle,color: Colors.orange,)
                             : const Icon(Icons.warning_amber,color: Colors.grey,),
                         title: const   Text(GeneralWord.vacuumHome),

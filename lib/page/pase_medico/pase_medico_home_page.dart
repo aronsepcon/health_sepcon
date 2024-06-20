@@ -199,12 +199,29 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
 
   Widget statusDocument(){
     if(statuValidated){
-      return Row(
+      if (estado == '1') {
+        return Row(
+          children: [
+            const Icon(Icons.check_circle,color: GeneralColor.greenColor,),
+            Text(titleValidated ,style: TextStyle(color: GeneralColor.greenColor),),
+          ],
+        );
+      } else if (estado == '2' || estado == '3') {
+        return Row(
         children: [
-          const Icon(Icons.check_circle,color: GeneralColor.greenColor,),
-          Text(titleValidated ,style: TextStyle(color: GeneralColor.greenColor),),
-        ],
-      );
+            const Icon(Icons.check_circle,color: GeneralColor.greenColor,),
+            Text(titleValidated ,style: TextStyle(color: Color.fromARGB(255, 151, 34, 30)),),
+          ],
+        );
+      }else {
+        return Row(
+          children: [
+            const Icon(Icons.check_circle,color: Colors.amber,),
+            Text(noTitleValidated,style: TextStyle(color: Colors.orange,),),
+          ],
+        );
+      }
+      
     }else{
       return Row(
         children: [
