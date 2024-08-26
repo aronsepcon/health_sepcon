@@ -85,7 +85,7 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
   }
 
   amountPhotos(){
-    return Row(
+     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
@@ -231,6 +231,10 @@ class _PaseMedicoCollectPageState extends State<PaseMedicoCollectPage> {
     List<int> bytes = document.saveSync();
     document.dispose();
     saveAndLaunchFile(bytes);
+
+    setState(() {
+      files.clear();///esto limpia la memoria del archivo tras generar el pdf, luego ver otra forma mas confiable
+    });
   }
 
   Future<Uint8List> _readImageData(String name) async {////ES AQUI DONDE SE PUEDE REALIZAR LA COMPRESION
