@@ -236,9 +236,9 @@ class _ExamViewState extends State<ExamView> {
     }else{
       return Row(
         children: [
-          const Icon(Icons.check_circle, color: Colors.green,),
-          Text(titleVigencia,style: TextStyle(color: Colors.amber,),),
-          Text(mensajeVigencia,style: TextStyle(color: Colors.amber,),),
+          const Icon(Icons.dangerous_rounded, color: Colors.red,),
+          Text(titleVigencia,style: TextStyle(color: Colors.red,),),
+          Text(mensajeVigencia,style: TextStyle(color: Colors.red,),),
         ],
       );
     }

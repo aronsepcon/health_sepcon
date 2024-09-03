@@ -335,7 +335,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       },
                       leading:  STATE_EMO ?
                         const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                            : const Icon(Icons.warning_amber,color: Colors.amber,),
+                            : const Icon(Icons.dangerous_rounded,color: Colors.red,),
                       title: const Text(GeneralWord.emoHome),
                       trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
                     ),

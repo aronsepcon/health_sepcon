@@ -33,7 +33,7 @@ class VacunaModel{
     hasDocument = formatJson['has_document'] ?? false;
     vigenciaVacuna = VigenciaVacuna.empty;
     amountDay = 0;
-    requiredVacuum = false;
+    requiredVacuum = formatJson['obligatoria'] ?? false;
     vacunaDetalle = VacunaDetalleModel.fromJson(formatJson['vacunas_detalle']);
   }
 }
