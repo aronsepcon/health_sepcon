@@ -57,6 +57,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   bool STATE_EMO = false;
 
   String ESTADO_PM = "";
+  String ESTADO_DOCUMENTO_IDENTIDAD = "";
   String VENCIMIENTO_VACUNA = "";
   String KEY_DOCUMENTO_IDENTIDAD = "DOCUMENTO_IDENTIDAD";
   String KEY_VACUNA = "VACUNA";
@@ -252,7 +253,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                             : const Icon(Icons.check_circle,color: Colors.orange,)
                             : const Icon(Icons.check_circle,color: Colors.orange,)
                             : const Icon(Icons.warning_amber,color: Colors.grey,),
-                        title: const   Text(GeneralWord.vacuumHome),
+                        title: const   Text(GeneralWord.vacuumHome), ////validar el estado de las vacunas en caso sea faltante o etc
                         trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
                       )
                   ),
@@ -479,6 +480,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     FLOW_DOCUMENTO_IDENTIDAD =
     documentVacuumModel!.documentoIdentidadModel!.adjunto!.isNotEmpty
         ? true : false;
+
+    //ESTADO_DOCUMENTO_IDENTIDAD = documentVacuumModel!.documentoIdentidadModel!.estado!; ///ver luego
 
     FLOW_PASE_MEDICO =
     documentVacuumModel!.paseMedicoModel!.adjunto!.isNotEmpty

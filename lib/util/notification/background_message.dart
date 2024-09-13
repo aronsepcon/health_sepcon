@@ -31,7 +31,7 @@ Future<void> handleBackgroundMessage(RemoteMessage message) async {
       if( vacunaModel.vigenciaVacuna == VigenciaVacuna.toExpire){
         message += "${vacunaModel.nombre} : ${vacunaModel.amountDay} día(s) para vencer  \n";
       }
-    }
+    }///aqui xsc
 
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
