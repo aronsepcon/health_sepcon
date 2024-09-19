@@ -38,6 +38,8 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   late String titleUpdateButton;
   late String titleValidated;
   late String noTitleValidated;
+  late String titleVencido;
+  late String titleRechazado;
   late String estado;
   late bool statuValidated;
   late String splitUrl;
@@ -70,6 +72,8 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
     getPathFile = DirectoryPath();
     titleValidated = "Verificado";
     noTitleValidated = "Pendiente de verificar";
+    titleRechazado = "Se ha rechazado el pase medico, reenviar";
+    titleVencido = "Se ha vencido el pase medico";
     statuValidated = widget.paseMedicoModel.validated!;
     estado = widget.paseMedicoModel.estado!;
     splitUrl = widget.paseMedicoModel.adjunto!;
@@ -198,7 +202,10 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
   }
 
   Widget statusDocument(){
+     print("que pasoooo");
+      print(estado);
     if(statuValidated){
+     
       if (estado == '1') {
         return Row(
           children: [
@@ -206,14 +213,20 @@ class _PaseMedicoHomePageState extends State<PaseMedicoHomePage> {
             Text(titleValidated ,style: TextStyle(color: GeneralColor.greenColor),),
           ],
         );
-      } else if (estado == '2' || estado == '3') {
+      } else if (estado == '2') {
         return Row(
         children: [
-            const Icon(Icons.check_circle,color: GeneralColor.greenColor,),
-            Text(titleValidated ,style: TextStyle(color: Color.fromARGB(255, 151, 34, 30)),),
+            const Icon(Icons.dangerous_rounded,color: Colors.red,),
+            Text(titleRechazado ,style: TextStyle(color: Color.fromARGB(255, 151, 34, 30)),),
           ],
         );
-      }else {
+      } else if (estado == "3"){
+        return Row(
+          children: [
+            const Icon(Icons.dangerous_rounded,color: Color.fromARGB(255, 217, 41, 41),),
+            Text(titleVencido ,style: TextStyle(color: Color.fromARGB(255, 151, 34, 30)),),],
+        );
+      } else {
         return Row(
           children: [
             const Icon(Icons.check_circle,color: Colors.amber,),

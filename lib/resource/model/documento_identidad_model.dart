@@ -31,7 +31,7 @@ class DocumentoIdentidadModel{
     } else {
       adjunto = formatJson['adjunto'];
     }
-    estado = "0";//formatJson['estado']!;
+    estado = formatJson['estado']!;
   }
 }
 

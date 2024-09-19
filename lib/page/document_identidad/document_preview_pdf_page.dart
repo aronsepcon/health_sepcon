@@ -162,7 +162,7 @@ class _DocumentPreviewPdfPageState extends State<DocumentPreviewPdfPage> {
       setState(() {
         loading = true;
         fileName =
-            "DNI-${loginResponse!.dni}-${loginResponse!.nombres!.replaceAll(" ", "")}.pdf";
+            "DNI-${loginResponse!.dni}-${loginResponse!.nombres!}.pdf";
       });
     }
   }

@@ -58,6 +58,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
 
   String ESTADO_PM = "";
   String ESTADO_DOCUMENTO_IDENTIDAD = "";
+  String ESTADO_VACUNA = "";
   String VENCIMIENTO_VACUNA = "";
   String KEY_DOCUMENTO_IDENTIDAD = "DOCUMENTO_IDENTIDAD";
   String KEY_VACUNA = "VACUNA";
@@ -68,6 +69,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
   bool FLOW_DOCUMENTO_IDENTIDAD = false;
   bool FLOW_VACUNA = false;
   bool VALIDATE_VACUNA = false;
+  bool APROBADO_VACUNA = false;
   bool FLOW_PASE_MEDICO = false;
   bool FLOW_COVID19 = false;
   bool FLOW_CONTROL_MEDICO = false;
@@ -226,9 +228,14 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                           routeDocumentoIdentidadHomePage()
                           :routeDocumentoIdentidadInitPage();
                         },
-                        leading: STATE_DOCUMENTO_IDENTIDAD ?
-                        const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                            : const Icon(Icons.warning_amber,color: Colors.amber,),
+                        leading: 
+                          FLOW_DOCUMENTO_IDENTIDAD ?
+                            STATE_DOCUMENTO_IDENTIDAD ? 
+                              ESTADO_DOCUMENTO_IDENTIDAD == 1 ?
+                              const Icon(Icons.check_circle,color: GeneralColor.greenColor,) : 
+                              const Icon(Icons.dangerous_rounded, color: Colors.red,)
+                              : const Icon(Icons.warning_amber,color: Colors.amber,)
+                            : const Icon(Icons.warning_rounded, color: Colors.grey,),
                         title: const  Text(GeneralWord.identityDocumentHome),
                         trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
                       )
@@ -245,13 +252,14 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                           onTap: (){
                             FLOW_VACUNA == false ?
                             routeVacuumInitPage()
-                            : VALIDATE_VACUNA ? routeVacuumHomePage() : routeVacuumPreviewPage();
-                          },
-                        leading: FLOW_VACUNA ? VALIDATE_VACUNA ?
-                          VENCIMIENTO_VACUNA == '0'? const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                            : (VENCIMIENTO_VACUNA == '1' || VENCIMIENTO_VACUNA == '3')? const Icon(Icons.dangerous_rounded,color: Colors.red,)
-                            : const Icon(Icons.check_circle,color: Colors.orange,)
-                            : const Icon(Icons.check_circle,color: Colors.orange,)
+                            : ESTADO_VACUNA != "0" ? routeVacuumHomePage() : routeVacuumPreviewPage();
+                          },//////////////////aqui
+                        leading: FLOW_VACUNA ? 
+                            ESTADO_VACUNA == '0' ? const Icon(Icons.check_circle,color: Colors.orange,) :
+                              (VENCIMIENTO_VACUNA == '1' || VENCIMIENTO_VACUNA == '3')? const Icon(Icons.dangerous_rounded,color: Colors.red,) :
+                                  (ESTADO_VACUNA == '4' || ESTADO_VACUNA == '1') ? const Icon(Icons.check_circle,color: Colors.green,) :  
+                                    ESTADO_VACUNA == '3' ? const Icon(Icons.dangerous_rounded,color: Colors.red,) :
+                                      const Icon(Icons.warning_amber,color: Colors.grey,)
                             : const Icon(Icons.warning_amber,color: Colors.grey,),
                         title: const   Text(GeneralWord.vacuumHome), ////validar el estado de las vacunas en caso sea faltante o etc
                         trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
@@ -294,9 +302,10 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                             routeHomeControlMedico()
                                 : routeInitControlMedico();
                           },
-                        leading: STATE_CONTROL_MEDICO ?
-                        const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                            : const Icon(Icons.warning_amber,color: Colors.amber,),
+                        leading: FLOW_CONTROL_MEDICO ? STATE_CONTROL_MEDICO  ? 
+                                  const Icon(Icons.check_circle,color: GeneralColor.greenColor,) :
+                                   const Icon(Icons.warning_amber,color: Colors.amber,)
+                                   : const Icon(Icons.warning_amber,color: Colors.grey,),
                         title: const Text(GeneralWord.controlMedicHome),
                         trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
 
@@ -315,9 +324,10 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                           FLOW_COVID19 ? routePreviewCovidPage()
                               : routeInitCovidPage();
                         },
-                        leading:  STATE_COVID19 ?
-                        const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                            : const Icon(Icons.warning_amber,color: Colors.amber,),
+                        leading: FLOW_COVID19 ? STATE_COVID19 ?
+                            const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
+                                : const Icon(Icons.warning_amber,color: Colors.amber,)
+                                : const Icon(Icons.warning_amber,color: Colors.grey,),
                         title: const Text(GeneralWord.covidHome),
                         trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
                       )
@@ -334,9 +344,11 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                       onTap: (){
                         routeExamViewPage();
                       },
-                      leading:  STATE_EMO ?
-                        const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
-                            : const Icon(Icons.dangerous_rounded,color: Colors.red,),
+                      leading: FLOW_EMO ?
+                        STATE_EMO ?
+                          const Icon(Icons.check_circle,color: GeneralColor.greenColor,)
+                            : const Icon(Icons.dangerous_rounded,color: Colors.red,)
+                              : const Icon(Icons.warning_amber,color: Colors.grey,),
                       title: const Text(GeneralWord.emoHome),
                       trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
                     ),
@@ -446,8 +458,10 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
 
     ESTADO_PM =
         documentVacuumModel!.paseMedicoModel!.estado!;
-
+    
     STATE_CONTROL_MEDICO = documentVacuumModel!.controlMedicoModel!.validated!;
+
+    FLOW_EMO = documentVacuumModel!.emoModel!.hasDocument!;
 
     STATE_EMO = documentVacuumModel!.emoModel!.validate_vigencia!;
 
@@ -481,7 +495,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     documentVacuumModel!.documentoIdentidadModel!.adjunto!.isNotEmpty
         ? true : false;
 
-    //ESTADO_DOCUMENTO_IDENTIDAD = documentVacuumModel!.documentoIdentidadModel!.estado!; ///ver luego
+    ESTADO_DOCUMENTO_IDENTIDAD = documentVacuumModel!.documentoIdentidadModel!.estado!; ///ver luego
 
     FLOW_PASE_MEDICO =
     documentVacuumModel!.paseMedicoModel!.adjunto!.isNotEmpty
@@ -493,13 +507,14 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
     if (documentVacuumModel!.vacunaGeneralModel!.hasDocument!) {
       FLOW_VACUNA = true;
       if (documentVacuumModel!.vacunaGeneralModel!.validated!) {//
-        VALIDATE_VACUNA = true;
+            VALIDATE_VACUNA = true;
       }
     }else {
       FLOW_VACUNA = false;
     }
 
     VENCIMIENTO_VACUNA = documentVacuumModel!.vacunaGeneralModel!.vencido!;
+    ESTADO_VACUNA = documentVacuumModel!.vacunaGeneralModel!.estado!;
     print("VENCIMIENTO" + VENCIMIENTO_VACUNA);
 
     FLOW_CONTROL_MEDICO = documentVacuumModel!.controlMedicoModel!.controlMedico!.isNotEmpty ? true : false;

@@ -235,7 +235,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
                   onTap: (){
                     widgetBottomSheet(vacunaModel);
                   },
-                  leading: statusVigenciaIcon(vacunaModel.vigenciaVacuna),
+                  leading: statusVigenciaIcon(vacunaModel.vigenciaVacuna, vacunaModel.estado),
                   title: Text(vacunaModel.nomenclatura!),
                   subtitle:statusVigenciaMessage(vacunaModel.vigenciaVacuna,vacunaModel.amountDay!),
                   trailing: const Icon(Icons.arrow_forward_ios,color: Colors.black54,),
@@ -398,19 +398,24 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     return widgetIcon;
   }
 
-  statusVigenciaIcon(VigenciaVacuna vigenciaVacuna){
+  statusVigenciaIcon(VigenciaVacuna vigenciaVacuna, String? estado){
     Widget widgetIcon = Container();
-    if(vigenciaVacuna == VigenciaVacuna.empty){
+    if (estado == "Por validar") {
+      print("el estado es : ${estado}");
+      widgetIcon = const Icon(Icons.check_circle,color: Color.fromARGB(255, 189, 115, 4),);
+    } else {
+      if(vigenciaVacuna == VigenciaVacuna.empty){
       widgetIcon = Icon(Icons.hourglass_empty);
-    }
-    if(vigenciaVacuna == VigenciaVacuna.active){
-      widgetIcon = const Icon(Icons.check_circle,color: GeneralColor.greenColor,);
-    }
-    if(vigenciaVacuna == VigenciaVacuna.noActive){
-      widgetIcon = const  Icon(Icons.error,color: Colors.red,);
-    }
-    if(vigenciaVacuna == VigenciaVacuna.toExpire){
-      widgetIcon = const  Icon(Icons.warning,color: Colors.amber,);
+      }
+      if(vigenciaVacuna == VigenciaVacuna.active){
+        widgetIcon = const Icon(Icons.check_circle,color: GeneralColor.greenColor,);
+      }
+      if(vigenciaVacuna == VigenciaVacuna.noActive){
+        widgetIcon = const  Icon(Icons.error,color: Colors.red,);
+      }
+      if(vigenciaVacuna == VigenciaVacuna.toExpire){
+        widgetIcon = const  Icon(Icons.warning,color: Colors.amber,);
+      }
     }
     return widgetIcon;
   }

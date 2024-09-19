@@ -7,6 +7,7 @@ class VacunaGeneralModel{
   late bool? validated;
   late String? documentGeneral;
   late String? vencido;
+  late String? estado;
   late List<VacunaModel>? tiposVacunas;
   //late String? estado;
 
@@ -20,6 +21,7 @@ class VacunaGeneralModel{
     validated = formatJson['validated'] ?? false;
     documentGeneral = formatJson['document_general'] ?? "";
     vencido = formatJson['vencimiento'].toString();
+    estado = formatJson['estado'].toString();
     tiposVacunas = parseVacunaModel(formatJson['tipos_vacunas']) ?? [];
     //estado = formatJson['estado'] ?? '0';
   }
