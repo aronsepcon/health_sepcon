@@ -231,7 +231,7 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                         leading: 
                           FLOW_DOCUMENTO_IDENTIDAD ?
                             STATE_DOCUMENTO_IDENTIDAD ? 
-                              ESTADO_DOCUMENTO_IDENTIDAD == 1 ?
+                              ESTADO_DOCUMENTO_IDENTIDAD == "1" ?
                               const Icon(Icons.check_circle,color: GeneralColor.greenColor,) : 
                               const Icon(Icons.dangerous_rounded, color: Colors.red,)
                               : const Icon(Icons.warning_amber,color: Colors.amber,)
@@ -255,8 +255,8 @@ class _DocumentViewState extends State<DocumentView>  with SingleTickerProviderS
                             : ESTADO_VACUNA != "0" ? routeVacuumHomePage() : routeVacuumPreviewPage();
                           },//////////////////aqui
                         leading: FLOW_VACUNA ? 
-                            ESTADO_VACUNA == '0' ? const Icon(Icons.check_circle,color: Colors.orange,) :
-                              (VENCIMIENTO_VACUNA == '1' || VENCIMIENTO_VACUNA == '3')? const Icon(Icons.dangerous_rounded,color: Colors.red,) :
+                          (VENCIMIENTO_VACUNA == '1' || VENCIMIENTO_VACUNA == '3')? const Icon(Icons.dangerous_rounded,color: Colors.red,) :
+                              ESTADO_VACUNA == '0' ? const Icon(Icons.check_circle,color: Colors.orange,) :
                                   (ESTADO_VACUNA == '4' || ESTADO_VACUNA == '1') ? const Icon(Icons.check_circle,color: Colors.green,) :  
                                     ESTADO_VACUNA == '3' ? const Icon(Icons.dangerous_rounded,color: Colors.red,) :
                                       const Icon(Icons.warning_amber,color: Colors.grey,)
