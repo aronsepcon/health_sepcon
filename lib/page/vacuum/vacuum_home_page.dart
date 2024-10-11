@@ -216,10 +216,14 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
 
   List<Widget> widgetListTipos(List<VacunaModel> listVacunaModel,bool request){
     List<Widget> listTipos = [];
+    print(listVacunaModel[0].requiredVacuum);
 
     for(VacunaModel vacunaModel in listVacunaModel){
           var test = vacunaModel.amountDay;
+          var requerido = vacunaModel.requiredVacuum;
+          var nombre = vacunaModel.nombre;
           print("la vigencia es $test");
+          print("esta validado $nombre?: $requerido");
 
       if(vacunaModel.requiredVacuum == request){
         Widget widget = Column(
@@ -508,7 +512,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     //editValue();
     //listNotRequiredVacuum = documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!;
 
-    for(VacunaModel vacunaModel in
+    /*for(VacunaModel vacunaModel in
     documentVacunaModel!.vacunaGeneralModel!.tiposVacunas!){
       for(String vacuna in vacunaCostosModel!.vacunas){
         if(vacuna == vacunaModel.nombre){
@@ -516,7 +520,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
           vacunaModel.requiredVacuum = true;
         }
       }
-    }
+    }*/
 
     /*for(VacunaModel vacunaModel in listRequiredVacuum){
       if(listNotRequiredVacuum.contains(vacunaModel)){

@@ -19,10 +19,20 @@ class VacunaApi{
     var map = <String, dynamic>{};
     map['dni'] = documento;
     final response = await client.post(url,body:map);
-
+  
     if(response.statusCode==200){
       log('update data');
       log(response.body);
+
+      String jsonString = response.body; // tu respuesta JSON en forma de String
+        Map<String, dynamic> jsonResponse = jsonDecode(jsonString);
+        Map<String, dynamic> vacuna = jsonResponse['vacuna'];
+
+      // Convertir a una cadena JSON formateada
+      String prettyJson = const JsonEncoder.withIndent('  ').convert(vacuna);
+      print('update data');
+      print(prettyJson);
+
       Map<String,dynamic > formatJson = jsonDecode(response.body);
       localStore.saveDocuments(formatJson);
       var result = DocumentVacunaModel.formatJsonDocument(formatJson);

@@ -24,6 +24,7 @@ class VacunaModel{
       this.vacunaDetalle,this.vigenciaVacuna,this.amountDay,this.requiredVacuum);
 
   VacunaModel.fromJson(Map<String,dynamic> formatJson){
+    print("esto es: $formatJson");
     id = formatJson['id'] ?? 0;
     nombre = formatJson['nombre']?? "";
     estado = formatJson['estado']?? "";
