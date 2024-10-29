@@ -289,7 +289,7 @@ class _ExamViewState extends State<ExamView> {
         padding: const EdgeInsets.only(left: 20),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => log(""),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
     );
