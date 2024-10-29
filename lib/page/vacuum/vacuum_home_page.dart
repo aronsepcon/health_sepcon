@@ -214,7 +214,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
     );
   }
 
-  List<Widget> widgetListTipos(List<VacunaModel> listVacunaModel,bool request){
+  List<Widget> widgetListTipos(List<VacunaModel> listVacunaModel,bool request){////aqui es
     List<Widget> listTipos = [];
     print(listVacunaModel[0].requiredVacuum);
 
@@ -409,7 +409,7 @@ class _VacuumHomePageState extends State<VacuumHomePage> {
       widgetIcon = const Icon(Icons.check_circle,color: Color.fromARGB(255, 189, 115, 4),);
     } else {
       if(vigenciaVacuna == VigenciaVacuna.empty){
-      widgetIcon = Icon(Icons.hourglass_empty);
+        widgetIcon = Icon(Icons.error,color: Colors.red);
       }
       if(vigenciaVacuna == VigenciaVacuna.active){
         widgetIcon = const Icon(Icons.check_circle,color: GeneralColor.greenColor,);

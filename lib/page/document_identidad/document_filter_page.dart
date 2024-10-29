@@ -114,7 +114,7 @@ class _DocumentFilterPageState extends State<DocumentFilterPage> {
                           children: [
                             Image.file(
                               File(pathNormalFile),
-                              height: 80,
+                              //height: 80,
                               width: widthScreen! * 0.28,
                             ),
                             Container(
@@ -147,7 +147,7 @@ class _DocumentFilterPageState extends State<DocumentFilterPage> {
                           children: [
                             Image.file(
                               File(pathClaroFile),
-                              height: 80,
+                              //height: 80,
                               width: widthScreen! * 0.28,
                             ),
                             Container(
@@ -180,6 +180,7 @@ class _DocumentFilterPageState extends State<DocumentFilterPage> {
                           children: [
                             Image.file(
                               File(pathMagicFile),
+                              //height: 80,
                               width: widthScreen! * 0.28,
                             ),
                             Container(
